@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "DrugSearch",
+  "name": "Pharmacovigilance and Drug Safety Discovery System",
   "icons": [
     {
       "src": "favicon.ico",

@@ -1,13 +1,14 @@
-import React from 'react';
 import Container from 'react-bootstrap/Container';
+import Header from '../../components/Header'
 
-function Search() {
+const Search = () => {
     return (
-        <Container>
-            <div>
+        <>
+            <Header />
+            <Container>
                 <h1>Search</h1>
-            </div>
-        </Container>
+            </Container>
+        </>
     );
 }
 

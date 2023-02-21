@@ -1,11 +1,9 @@
 # DrugSearch
 
----
 This directory of the repository contains the code for the **DrugSearch** project.
 
 ## What is DrugSearch?
 
----
 **TL;DR:** DrugSearch is a web application that is developed as a final year project at KCL.
 It allows users to search for drugs and their interactions with other drugs.
 
@@ -18,7 +16,6 @@ without any medical background.
 
 ## How is it developed?
 
----
 The application is developed using **Flask**/**React** combo. The backend is handled by Flask
 and the frontend is handled by React. Since the app will not be only sending and receiving data
 through API calls bu also handling sensitive user data, this user data is going to be stored in a

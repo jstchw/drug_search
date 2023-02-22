@@ -7,7 +7,7 @@ const Search = () => {
     return (
         <div>
             <Header />
-            <Container className={'d-flex justify-content-center align-items-center my-3'}>
+            <Container className={'d-flex min-vh-100 justify-content-center align-items-center my-3'}>
                 <Row>
                     <SearchBox />
                 </Row>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Container, Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { getDrugEventsSearch } from '../services/FDA_Request';
 import SearchResultList from './SearchResultList';
 import { FilterLeft } from 'react-bootstrap-icons'
@@ -60,23 +60,26 @@ const SearchBox = () => {
 
 
 
-                <Form.Group controlId="searchType">
-                    <Form.Label>Search Type</Form.Label>
-                    <Form.Control as="select" value={searchType} onChange={handleSearchTypeChange}>
-                        <option value="patient.drug.openfda.brand_name">Brand Name</option>
-                        <option value="patient.drug.openfda.generic_name">Generic Name</option>
-                    </Form.Control>
-                </Form.Group>
+                {/*<Form.Group controlId="searchType">*/}
+                {/*    <Form.Label>Search Type</Form.Label>*/}
+                {/*    <Form.Control as="select" value={searchType} onChange={handleSearchTypeChange}>*/}
+                {/*        <option value="patient.drug.openfda.brand_name">Brand Name</option>*/}
+                {/*        <option value="patient.drug.openfda.generic_name">Generic Name</option>*/}
+                {/*    </Form.Control>*/}
+                {/*</Form.Group>*/}
 
-                <Form.Group controlId="limit">
-                    <Form.Label>Limit</Form.Label>
-                    <Form.Control type="number" min="1" max="100" value={limit} onChange={handleLimitChange}/>
-                </Form.Group>
+                {/*<Form.Group controlId="limit">*/}
+                {/*    <Form.Label>Limit</Form.Label>*/}
+                {/*    <Form.Control type="number" min="1" max="100" value={limit} onChange={handleLimitChange}/>*/}
+                {/*</Form.Group>*/}
 
-                <button className="btn btn-primary" onClick={handleSearch}>Search</button>
+                {/*<Container className='d-flex justify-content-center my-3'>*/}
+                {/*    <button className="btn btn-primary" onClick={handleSearch}>Search</button>*/}
+                {/*</Container>*/}
 
             </Form>
-            {searchResults && <SearchResultList searchResults={searchResults} />}
+
+            {/*{searchResults && <SearchResultList searchResults={searchResults} />}*/}
         </div>
     );
 }

@@ -1,17 +1,18 @@
 import { Container, Row } from 'react-bootstrap';
 import Header from '../../components/Header'
 import SearchBox from '../../components/SearchBox'
+import './Search.css'
 
 const Search = () => {
     return (
-        <>
+        <div>
             <Header />
-            <Container className={'d-flex align-items-center justify-content-center h-100'}>
-                <Row className={'mx-auto text-center'}>
+            <Container className={'d-flex justify-content-center align-items-center my-3'}>
+                <Row>
                     <SearchBox />
                 </Row>
             </Container>
-        </>
+        </div>
     );
 }
 

@@ -1,13 +1,14 @@
 import { Container, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import HeaderLink from './HeaderLink'
+import { Search as SearchIcon } from 'react-bootstrap-icons';
 
 const Header = () => {
     return (
         // Navbar containing the links to all the pages of the webapp
         <Navbar bg="dark" variant="dark" sticky={'top'} className="header-full-width">
             <Container>
-                <Navbar.Brand as={NavLink} to="/">DrugSearch</Navbar.Brand>
+                <Navbar.Brand as={NavLink} to="/"><SearchIcon />DrugSearch</Navbar.Brand>
                 <HeaderLink to="/dashboard">Dashboard</HeaderLink>
                 <HeaderLink to="/account">My account</HeaderLink>
                 <HeaderLink to="/settings">Settings</HeaderLink>

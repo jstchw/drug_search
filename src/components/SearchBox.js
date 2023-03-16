@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { getDrugEventsSearch } from '../services/FDA_Request';
 import SearchResultList from './SearchResultList';
+import LoadingPlaceholder from './LoadingPlaceholder';
 import { FilterLeft as FilterLeftIcon } from 'react-bootstrap-icons'
 import './SearchBox.css'
 
@@ -11,14 +12,17 @@ const SearchBox = () => {
     const [searchType, setSearchType] = React.useState(null)
     const [selectedSearchTypeIndex, setSelectedSearchTypeIndex] = React.useState(0);
 
-    const [limit, setLimit] = React.useState(1)
     const [searchResults, setSearchResults] = React.useState(null)
+    const [isLoading, setIsLoading] = React.useState(false)
 
     const handleSearch = async (e) => {
         e.preventDefault()
         if (searchTerm) {
-            const data = await getDrugEventsSearch(searchTerm, searchType, limit)
+            setIsLoading(true)
+            setSearchResults(null)
+            const data = await getDrugEventsSearch(searchTerm, searchType)
             setSearchResults(data)
+            setIsLoading(false)
         }
     }
 
@@ -31,26 +35,22 @@ const SearchBox = () => {
         setSelectedSearchTypeIndex(index)
     }
 
-    const handleLimitChange = (e) => {
-        setLimit(e.target.value)
-    }
-
     const popover = (
         <Popover id="popover-basic" className="searchbox-popover">
-            <Popover.Header as="h3">Search Types</Popover.Header>
+            <Popover.Header as="h3">Filters</Popover.Header>
             <Popover.Body>
+                <p
+                    className={`search-type-option${selectedSearchTypeIndex === 0 ? ' selected' : ''}`}
+                    onClick={() =>
+                        handleSearchTypeChange('patient.drug.openfda.brand_name', 0)
+                    }
+                >
+                    Generic Name
+                </p>
                 <p
                     className="search-type-option"
                 >
                     Brand Name
-                </p>
-                <p
-                    className={`search-type-option${selectedSearchTypeIndex === 1 ? ' selected' : ''}`}
-                    onClick={() =>
-                        handleSearchTypeChange('patient.drug.openfda.brand_name', 1)
-                    }
-                >
-                    Generic Name
                 </p>
             </Popover.Body>
         </Popover>
@@ -78,7 +78,7 @@ const SearchBox = () => {
                 <Button style={{ display: "none" }} type="submit" />
             </Form>
 
-            {searchResults && <SearchResultList searchResults={searchResults} />}
+            {isLoading ? <LoadingPlaceholder/> : searchResults && <SearchResultList searchResults={searchResults} />}
         </div>
     );
 }

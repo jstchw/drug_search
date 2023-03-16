@@ -1,7 +1,5 @@
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
+import { Container, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import '../styles/main.css'
 import HeaderLink from './HeaderLink'
 
 const Header = () => {
@@ -11,6 +9,8 @@ const Header = () => {
             <Container>
                 <Navbar.Brand as={NavLink} to="/">DrugSearch</Navbar.Brand>
                 <HeaderLink to="/dashboard">Dashboard</HeaderLink>
+                <HeaderLink to="/account">My account</HeaderLink>
+                <HeaderLink to="/settings">Settings</HeaderLink>
             </Container>
         </Navbar>
     );

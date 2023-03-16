@@ -1,0 +1,18 @@
+.header-link.header-link-active {
+    color: #000;
+    font-weight: bold;
+}
+
+.header-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2em;
+    margin: 0 0.5em;
+    transition: text-shadow 0.2s ease-in-out;
+}
+
+.header-link:hover {
+    color: #fff;
+    /* Make it glow with transition in and out */
+    text-shadow: 0 0 10px #fff;
+}

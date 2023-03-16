@@ -1,11 +1,16 @@
 import { NavLink } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
+import './HeaderLink.css'
 
 const HeaderLink = ({ to, children }) => {
     return (
-        <Container>
-            <NavLink to={to} className="header-link">{children}</NavLink>
-        </Container>
+        <NavLink
+            to={to}
+            exact
+            className="header-link"
+            activeClassName="header-link-active"
+        >
+            {children}
+        </NavLink>
     );
 }
 

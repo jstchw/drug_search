@@ -3,6 +3,7 @@ import { Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstr
 import { getDrugEventsSearch } from '../services/FDA_Request';
 import SearchResultList from './SearchResultList';
 import LoadingPlaceholder from './LoadingPlaceholder';
+import useSearchPlaceholder from "../hooks/useSearchPlaceholder";
 import { FilterLeft as FilterLeftIcon } from 'react-bootstrap-icons'
 import './SearchBox.css'
 
@@ -14,6 +15,8 @@ const SearchBox = () => {
 
     const [searchResults, setSearchResults] = React.useState(null)
     const [isLoading, setIsLoading] = React.useState(false)
+
+    const currentSearchPlaceholder = useSearchPlaceholder(3000)
 
     const handleSearch = async (e) => {
         e.preventDefault()
@@ -68,7 +71,7 @@ const SearchBox = () => {
                         <Form.Control
                             className="search-box"
                             type="text"
-                            placeholder={"Search for a drug..."}
+                            placeholder={currentSearchPlaceholder}
                             onChange={handleInputChange}
                         />
                         <OverlayTrigger trigger="click" placement="right" overlay={popover} rootClose={true}>

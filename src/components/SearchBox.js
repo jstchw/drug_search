@@ -45,12 +45,15 @@ const SearchBox = () => {
                         handleSearchTypeChange('patient.drug.openfda.brand_name', 0)
                     }
                 >
-                    Generic Name
+                    Drug Name
                 </p>
                 <p
-                    className="search-type-option"
+                    className={`search-type-option${selectedSearchTypeIndex === 1 ? ' selected' : ''}`}
+                    onClick={() =>
+                        handleSearchTypeChange('patient.reaction.reactionmeddrapt', 1)
+                    }
                 >
-                    Brand Name
+                    Side Effect
                 </p>
             </Popover.Body>
         </Popover>

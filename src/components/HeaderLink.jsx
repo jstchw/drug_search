@@ -5,9 +5,7 @@ const HeaderLink = ({ to, children }) => {
     return (
         <NavLink
             to={to}
-            exact
             className="header-link"
-            activeClassName="header-link-active"
         >
             {children}
         </NavLink>

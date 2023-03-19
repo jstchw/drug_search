@@ -1,5 +1,5 @@
 import Container from 'react-bootstrap/Container';
-import Header from '../../components/Header'
+import Header from '../../components/Header/Header'
 
 const Dashboard = () => {
     return (

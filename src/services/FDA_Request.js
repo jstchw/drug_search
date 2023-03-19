@@ -10,9 +10,9 @@ const formatDate = (date) => {
 export const getDrugEventsSearch = async (searchTerm, searchType) => {
     const fromDate = `20040101`
     const toDate = formatDate(new Date())
-    const limit = 1
+    const count = 'patient.reaction.reactionmeddrapt.exact'
 
-    const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&limit=${limit}`
+    const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
     const response = await fetch(url)
     return await response.json()
 }

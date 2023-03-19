@@ -1,5 +1,5 @@
 import { Container, Row } from 'react-bootstrap';
-import Header from '../../components/Header'
+import Header from '../../components/Header/Header'
 import './Settings.css'
 
 const Settings = () => {

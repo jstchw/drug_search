@@ -1,6 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import Header from '../../components/Header'
-import SearchBox from '../../components/SearchBox'
+import Header from '../../components/Header/Header'
+import SearchBox from '../../components/SearchBox/SearchBox'
 import './Search.css'
 
 const Search = () => {

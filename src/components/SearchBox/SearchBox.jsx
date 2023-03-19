@@ -1,20 +1,20 @@
 import React from 'react';
 import { Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstrap';
-import { getDrugEventsSearch } from '../services/FDA_Request';
+import { getDrugEventsSearch } from '../../services/FDA_Request';
 import SearchResultList from './SearchResultList';
 import LoadingPlaceholder from './LoadingPlaceholder';
-import useSearchPlaceholder from "../hooks/useSearchPlaceholder";
+import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons'
 import './SearchBox.css'
 
 const searchTypes = [
     {
-        value: 'patient.drug.openfda.brand_name',
+        value: 'patient.drug.activesubstance.activesubstancename',
         index: 0,
-        label: 'Drug Name'
+        label: 'Substance Name'
     },
     {
-        value: 'patient.reaction.reactionmeddrapt',
+        value: 'patient.reaction.reactionmeddrapt.exact',
         index: 1,
         label: 'Side Effect'
     },
@@ -78,7 +78,7 @@ const SearchBox = () => {
                 <Form.Group controlId="searchTerm">
                     <InputGroup>
                         <OverlayTrigger trigger="click" placement="left" overlay={popover} rootClose={true}>
-                            <Button variant="outline-secondary" id="button-addon2">
+                            <Button variant="outline-secondary" id="button-filters">
                                 <FilterLeftIcon />
                             </Button>
                         </OverlayTrigger>
@@ -88,7 +88,7 @@ const SearchBox = () => {
                             placeholder={currentSearchPlaceholder}
                             onChange={handleInputChange}
                         />
-                        <Button variant="outline-secondary" id="button-addon2" type="submit">
+                        <Button variant="outline-primary" id="button-submit" type="submit">
                             <SearchIcon />
                         </Button>
                     </InputGroup>

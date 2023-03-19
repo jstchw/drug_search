@@ -9,7 +9,7 @@ import './SearchBox.css'
 
 const searchTypes = [
     {
-        value: 'patient.drug.activesubstance.activesubstancename',
+        value: 'patient.drug.openfda.generic_name',
         index: 0,
         label: 'Substance Name'
     },

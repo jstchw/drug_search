@@ -1,10 +1,7 @@
 import React from 'react';
-import { Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstrap';
-import { getDrugEventsSearch } from '../../services/FDA_Request';
-import SearchResultObject from '../SearchResultObject/SearchResultObject';
-import LoadingPlaceholder from './LoadingPlaceholder';
+import {Button, Form, InputGroup, OverlayTrigger, Popover} from 'react-bootstrap';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
-import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons'
+import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
 import './SearchBox.css'
 
 const searchTypes = [
@@ -20,37 +17,25 @@ const searchTypes = [
     },
 ]
 
-const SearchBox = () => {
+const SearchBox = (props) => {
     const [searchTerm, setSearchTerm] = React.useState(null)
 
     const [selectedSearchTypeIndex, setSelectedSearchTypeIndex] = React.useState(0);
     const [searchType, setSearchType] = React.useState(searchTypes[selectedSearchTypeIndex].value)
 
-    const [searchResults, setSearchResults] = React.useState(null)
-    const [isLoading, setIsLoading] = React.useState(false)
-
     const currentSearchPlaceholder = useSearchPlaceholder(3000)
-    const [searchError, setSearchError] = React.useState(false)
 
-    const errorBox = searchError ? {borderColor: 'red'} : {}
+    const errorBox = props.searchError ? {borderColor: 'red'} : {}
 
     const handleSearch = async (e) => {
         e.preventDefault()
         if (searchTerm) {
-            setIsLoading(true)
-            setSearchResults(null)
-            const data = await getDrugEventsSearch(searchTerm, searchType)
-            if (data.error) {
-                setSearchError(true)
-            } else {
-                setSearchResults(data)
-            }
-            setIsLoading(false)
+            props.onSearch(searchTerm, searchType)
         }
     }
 
     const handleInputChange = (e) => {
-        if(searchError) setSearchError(false)
+        props.setSearchError(false)
         setSearchTerm(e.target.value)
     }
 
@@ -103,8 +88,6 @@ const SearchBox = () => {
                     </InputGroup>
                 </Form.Group>
             </Form>
-
-            {isLoading ? <LoadingPlaceholder/> : searchResults && <SearchResultObject searchResults={searchResults} searchTerm={searchTerm}/>}
         </div>
     );
 }

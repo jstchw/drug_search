@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, InputGroup, Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { getDrugEventsSearch } from '../../services/FDA_Request';
-import SearchResultList from './SearchResultList';
+import SearchResultObject from '../SearchResultObject/SearchResultObject';
 import LoadingPlaceholder from './LoadingPlaceholder';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons'
@@ -30,6 +30,9 @@ const SearchBox = () => {
     const [isLoading, setIsLoading] = React.useState(false)
 
     const currentSearchPlaceholder = useSearchPlaceholder(3000)
+    const [searchError, setSearchError] = React.useState(false)
+
+    const errorBox = searchError ? {borderColor: 'red'} : {}
 
     const handleSearch = async (e) => {
         e.preventDefault()
@@ -37,12 +40,17 @@ const SearchBox = () => {
             setIsLoading(true)
             setSearchResults(null)
             const data = await getDrugEventsSearch(searchTerm, searchType)
-            setSearchResults(data)
+            if (data.error) {
+                setSearchError(true)
+            } else {
+                setSearchResults(data)
+            }
             setIsLoading(false)
         }
     }
 
     const handleInputChange = (e) => {
+        if(searchError) setSearchError(false)
         setSearchTerm(e.target.value)
     }
 
@@ -87,6 +95,7 @@ const SearchBox = () => {
                             type="text"
                             placeholder={currentSearchPlaceholder}
                             onChange={handleInputChange}
+                            style={errorBox}
                         />
                         <Button variant="outline-primary" id="button-submit" type="submit">
                             <SearchIcon />
@@ -95,7 +104,7 @@ const SearchBox = () => {
                 </Form.Group>
             </Form>
 
-            {isLoading ? <LoadingPlaceholder/> : searchResults && <SearchResultList searchResults={searchResults} />}
+            {isLoading ? <LoadingPlaceholder/> : searchResults && <SearchResultObject searchResults={searchResults} searchTerm={searchTerm}/>}
         </div>
     );
 }

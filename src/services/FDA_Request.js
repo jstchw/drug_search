@@ -7,18 +7,30 @@ const formatDate = (date) => {
     return `${year}${month < 10 ? `0${month}` : month}${day < 10 ? `0${day}` : day}`
 }
 
+const processDrugEvents = (data) => {
+    const termCountDict = {}
+
+    const totalCount = data.results.reduce((total, item) => {
+        termCountDict[item.term] = item.count
+        return total + item.count
+    }, 0)
+    return { totalCount, termCountDict }
+}
+
 export const getDrugEventsSearch = async (searchTerm, searchType) => {
     const fromDate = `20040101`
     const toDate = formatDate(new Date())
     const count = 'patient.reaction.reactionmeddrapt.exact'
 
     const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
-    const response = await fetch(url)
-    return await response.json()
-}
-
-export const getDrugEventsCount = async (searchType, searchTerm, limit) => {
-    const url = `${BASE_URL}?count=${searchType}:${searchTerm}&limit=${limit}`
-    const response = await fetch(url)
-    return await response.json()
+    try {
+        const response = await fetch(url)
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}: ${response.statusText}`)
+        }
+        const data = await response.json()
+        return {result: processDrugEvents(data)}
+    } catch (error) {
+        return {error: error.message}
+    }
 }

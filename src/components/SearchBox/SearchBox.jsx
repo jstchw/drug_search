@@ -18,7 +18,7 @@ const searchTypes = [
 ]
 
 const SearchBox = (props) => {
-    const [searchTerm, setSearchTerm] = React.useState(null)
+    const [inputValue, setInputValue] = React.useState('')
 
     const [selectedSearchTypeIndex, setSelectedSearchTypeIndex] = React.useState(0);
     const [searchType, setSearchType] = React.useState(searchTypes[selectedSearchTypeIndex].value)
@@ -41,8 +41,8 @@ const SearchBox = (props) => {
 
     const handleSearch = async (e) => {
         e.preventDefault()
-        if (searchTerm) {
-            props.onSearch(searchTerm, searchType)
+        if (inputValue) {
+            props.onSearch(searchType, inputValue)
             if (props.searchError) {
                 setErrorAnimation((prevCount) => prevCount + 1)
             }
@@ -51,7 +51,7 @@ const SearchBox = (props) => {
 
     const handleInputChange = (e) => {
         props.setSearchError(false)
-        setSearchTerm(e.target.value)
+        setInputValue(e.target.value)
     }
 
     const handleSearchTypeChange = (index) => {
@@ -97,6 +97,7 @@ const SearchBox = (props) => {
                             onChange={handleInputChange}
                             style={errorBox}
                             ref={inputRef}
+                            value={inputValue}
                         />
                         <Button variant="outline-primary" id="button-submit" type="submit">
                             <SearchIcon />

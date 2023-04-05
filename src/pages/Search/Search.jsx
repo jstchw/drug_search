@@ -12,11 +12,16 @@ const Search = () => {
     const [isLoading, setIsLoading] = React.useState(false)
     const [searchError, setSearchError] = React.useState(false)
 
-    React.useEffect(() => {
-        console.log('searchError changed: ', searchError)
-    }, [searchError])
+    const [currentSearchTerm, setCurrentSearchTerm] = React.useState('')
 
-    const handleSearch = async (searchTerm, searchType) => {
+    const resetSearch = () => {
+        setSearchResults(null)
+        setIsLoading(false)
+        setSearchError(false)
+        setCurrentSearchTerm('')
+    }
+
+    const handleSearch = async (searchType, searchTerm) => {
         setSearchError(false)
         if(searchTerm) {
             setIsLoading(true)
@@ -25,6 +30,7 @@ const Search = () => {
             setIsLoading(false)
             if(searchResults.result) {
                 setSearchResults(searchResults)
+                setCurrentSearchTerm(searchTerm)
             } else {
                 setSearchError(true)
             }
@@ -34,7 +40,7 @@ const Search = () => {
 
     return (
         <div className="min-vh-100 d-flex flex-column">
-            <Header />
+            <Header onLogoClick={resetSearch}/>
             <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
                 <Row className="w-100 justify-content-center">
                     <Col xs="auto" className="text-center">
@@ -46,7 +52,10 @@ const Search = () => {
                         {isLoading ? (
                             <LoadingPlaceholder />
                         ) : (
-                            searchResults && <SearchResultObject searchResults={searchResults} />
+                            searchResults && <SearchResultObject
+                                searchResults={searchResults}
+                                searchTerm={currentSearchTerm}
+                            />
                         )}
                     </Col>
                 </Row>

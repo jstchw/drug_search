@@ -26,11 +26,26 @@ const SearchBox = (props) => {
     const currentSearchPlaceholder = useSearchPlaceholder(3000)
 
     const errorBox = props.searchError ? {borderColor: 'red'} : {}
+    const [errorAnimation, setErrorAnimation] = React.useState(0)
+    const inputRef = React.useRef(null)
+
+    React.useEffect(() => {
+       if (props.searchError) {
+           inputRef.current.classList.add('shake')
+           const timeout = setTimeout(() => {
+               inputRef.current.classList.remove('shake')
+           }, 300)
+              return () => clearTimeout(timeout)
+       }
+    }, [errorAnimation, props.searchError])
 
     const handleSearch = async (e) => {
         e.preventDefault()
         if (searchTerm) {
             props.onSearch(searchTerm, searchType)
+            if (props.searchError) {
+                setErrorAnimation((prevCount) => prevCount + 1)
+            }
         }
     }
 
@@ -76,11 +91,12 @@ const SearchBox = (props) => {
                             </Button>
                         </OverlayTrigger>
                         <Form.Control
-                            className="search-box"
+                            className={`search-box ${props.searchError && errorAnimation ? 'shake' : ''}`}
                             type="text"
                             placeholder={currentSearchPlaceholder}
                             onChange={handleInputChange}
                             style={errorBox}
+                            ref={inputRef}
                         />
                         <Button variant="outline-primary" id="button-submit" type="submit">
                             <SearchIcon />

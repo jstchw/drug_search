@@ -12,17 +12,22 @@ const Search = () => {
     const [isLoading, setIsLoading] = React.useState(false)
     const [searchError, setSearchError] = React.useState(false)
 
+    React.useEffect(() => {
+        console.log('searchError changed: ', searchError)
+    }, [searchError])
+
     const handleSearch = async (searchTerm, searchType) => {
+        setSearchError(false)
         if(searchTerm) {
             setIsLoading(true)
             setSearchResults(null)
             const searchResults = await getDrugEventsSearch(searchTerm, searchType)
+            setIsLoading(false)
             if(searchResults.result) {
                 setSearchResults(searchResults)
             } else {
                 setSearchError(true)
             }
-            setIsLoading(false)
         }
     }
 

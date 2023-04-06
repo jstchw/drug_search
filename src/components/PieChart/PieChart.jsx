@@ -2,19 +2,17 @@ import React from "react";
 import Chart from "react-apexcharts";
 
 const processDataForChart = (termCountDict, totalCount) => {
-    const thresh = 0.7 * totalCount
     const sortedTerms = Object.entries(termCountDict).sort((a, b) => b[1] - a[1])
 
     let popularTerms = {}
     let otherTermsCount = 0
-    let currentCount = 0
+    const maxTerms = 10
 
-    for (const [term, count] of sortedTerms) {
-        currentCount += count
-        if (currentCount <= thresh) {
-            popularTerms[term] = count
+    for (const [index, [term, count]] of sortedTerms.entries()) {
+        if (index < maxTerms) {
+            popularTerms[term] = count;
         } else {
-            otherTermsCount += count
+            break;
         }
     }
 

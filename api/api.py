@@ -1,9 +1,8 @@
-import time
-from flask import Flask
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
 
 
-@app.route('/api/time')
-def get_current_time():
-    return {'time': time.time()}
+@app.route("/search")
+def search():

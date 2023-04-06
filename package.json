@@ -9,7 +9,9 @@
     "apexcharts": "^3.37.1",
     "bootstrap": "^5.2.3",
     "concurrently": "^7.6.0",
+    "dictionary-en": "^3.2.0",
     "fuse.js": "^6.6.2",
+    "nspell": "^2.1.5",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-bootstrap": "^2.7.2",
@@ -17,6 +19,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
+    "typo-js": "^1.2.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

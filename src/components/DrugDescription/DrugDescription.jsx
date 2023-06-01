@@ -4,7 +4,7 @@ import { CapsulePill as CapsulePillIcon } from "react-bootstrap-icons";
 import { Card, Placeholder } from 'react-bootstrap';
 import './DrugDescription.css';
 
-const drugDescriptionUrl = 'https://api.fda.gov/drug/drugsfda.json?search=openfda.brand_name:'
+const drugDescriptionUrl = 'http://localhost:16000/api/get_info';
 
 const DrugDescription = ({ drugName }) => {
     const [drugInfo, setDrugInfo] = useState({});
@@ -14,16 +14,14 @@ const DrugDescription = ({ drugName }) => {
         const fetchDrugInfo = async () => {
             try {
                 const response = await axios.get(
-                    `${drugDescriptionUrl}${drugName}+openfda.generic_name:${drugName}&limit=1`
+                    `${drugDescriptionUrl}?drug_name=${drugName}`
                 );
 
-                if (response.data.results && response.data.results.length > 0) {
-                    const result = response.data.results[0];
-                    console.log(result)
+                if (response.data.length > 0) {
                     const info = {
-                        drug_name: result.openfda.substance_name[0].charAt(0).toUpperCase() + result.openfda.substance_name[0].slice(1).toLowerCase(),
-                        drug_class: result.openfda.pharm_class_epc[0].replace(/\[EPC]/, ''),
-                        route: result.openfda.route[0].charAt(0).toUpperCase() + result.openfda.route[0].slice(1).toLowerCase(),
+                        drug_name: response.data[0].name,
+                        drug_class: response.data[0].classification,
+                        half_life: response.data[0].half_life,
                     };
                     setDrugInfo(info);
                 } else {
@@ -56,13 +54,13 @@ const DrugDescription = ({ drugName }) => {
                 <p>{drugInfo.error}</p>
             ) : (
                 <Card.Body className="text-md-start">
-                    <p>Administration:&nbsp;
+                    <p>Half-Life:&nbsp;
                         {isLoading ? (
                             <Placeholder as="span" animation="glow">
                                 <Placeholder xs={4} />
                             </Placeholder>
                         ) : (
-                            drugInfo.route
+                            drugInfo.half_life
                         )}
                     </p>
                     <p>Drug Class:&nbsp;

@@ -10,7 +10,6 @@ const Header = (props) => {
             <Container>
                 <Navbar.Brand as={NavLink} to="/" onClick={props.onLogoClick}><SearchIcon />DrugSearch</Navbar.Brand>
                 <HeaderLink to="/dashboard">Dashboard</HeaderLink>
-                <HeaderLink to="/account">My account</HeaderLink>
                 <HeaderLink to="/settings">Settings</HeaderLink>
             </Container>
         </Navbar>

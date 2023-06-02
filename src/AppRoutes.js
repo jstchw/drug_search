@@ -10,7 +10,6 @@ const AppRoutes = () => {
             <Routes>
                 <Route exact path="/" element={<Search/>} />
                 <Route path="/dashboard" element={<Dashboard/>} />
-                <Route path="/account" element={<Account/>} />
                 <Route path="/settings" element={<Settings/>} />
             </Routes>
         </BrowserRouter>

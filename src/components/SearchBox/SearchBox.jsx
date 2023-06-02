@@ -2,8 +2,11 @@ import React from 'react';
 import {Button, Form, InputGroup, OverlayTrigger, Popover} from 'react-bootstrap';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
+import Fuse from 'fuse.js'
+import { Dropdown } from 'react-bootstrap'
 import './SearchBox.css'
 
+// Search types that can be selected in the popover
 const searchTypes = [
     {
         value: 'patient.drug.openfda.generic_name',
@@ -17,6 +20,12 @@ const searchTypes = [
     },
 ]
 
+// Options used in the Fuse.js search library
+const fuseOptions = {
+    keys : ['name'],
+    threshold: 0.3,
+}
+
 const SearchBox = (props) => {
     const [inputValue, setInputValue] = React.useState('')
 
@@ -29,6 +38,10 @@ const SearchBox = (props) => {
     const [errorAnimation, setErrorAnimation] = React.useState(0)
     const inputRef = React.useRef(null)
 
+    const [fuse, setFuse] = React.useState(null)
+    const [suggestions, setSuggestions] = React.useState([])
+    const [dropdownOpen, setDropdownOpen] = React.useState(false)
+
     React.useEffect(() => {
        if (props.searchError) {
            inputRef.current.classList.add('shake')
@@ -38,6 +51,19 @@ const SearchBox = (props) => {
               return () => clearTimeout(timeout)
        }
     }, [errorAnimation, props.searchError])
+
+    React.useEffect(() => {
+        async function fetchSuggestions(e) {
+            try {
+                const response = await fetch('http://localhost:16000/api/get_suggestions')
+                const data = await response.json()
+                setFuse(new Fuse(data, fuseOptions))
+            } catch (error) {
+                console.error('Error fetching suggestions:', error)
+            }
+        }
+        fetchSuggestions()
+    }, [])
 
     const handleSearch = async (e) => {
         e.preventDefault()
@@ -51,7 +77,23 @@ const SearchBox = (props) => {
 
     const handleInputChange = (e) => {
         props.setSearchError(false)
-        setInputValue(e.target.value)
+        const inputValue = e.target.value
+        setInputValue(inputValue)
+
+        if (fuse && inputValue.length >= 3) {
+            const suggestion = fuse.search(inputValue)
+            console.log(suggestion)
+            setSuggestions(suggestion.slice(0, 5))
+
+            if (suggestion.length > 0) {
+                setDropdownOpen(true)
+            } else {
+                setDropdownOpen(false)
+            }
+        } else {
+            setSuggestions([])
+            setDropdownOpen(false)
+        }
     }
 
     const handleSearchTypeChange = (index) => {
@@ -90,15 +132,24 @@ const SearchBox = (props) => {
                                 <FilterLeftIcon />
                             </Button>
                         </OverlayTrigger>
-                        <Form.Control
-                            className={`search-box ${props.searchError && errorAnimation ? 'shake' : ''}`}
-                            type="text"
-                            placeholder={currentSearchPlaceholder}
-                            onChange={handleInputChange}
-                            style={errorBox}
-                            ref={inputRef}
-                            value={inputValue}
-                        />
+                        <Dropdown show={dropdownOpen}>
+                            <Form.Control
+                                className={`search-box ${props.searchError && errorAnimation ? 'shake' : ''}`}
+                                type="text"
+                                placeholder={currentSearchPlaceholder}
+                                onChange={handleInputChange}
+                                style={errorBox}
+                                ref={inputRef}
+                                value={inputValue}
+                            />
+                            <Dropdown.Menu className="search-suggestions">
+                                {suggestions.map((suggestion, index) => (
+                                    <Dropdown.Item key={index}>
+                                        {suggestion.item}
+                                    </Dropdown.Item>
+                                ))}
+                            </Dropdown.Menu>
+                        </Dropdown>
                         <Button variant="outline-primary" id="button-submit" type="submit">
                             <SearchIcon />
                         </Button>

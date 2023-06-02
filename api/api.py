@@ -3,7 +3,6 @@ from flask_cors import CORS
 from lxml import etree as ET
 import sys
 import csv
-import re
 
 app = Flask(__name__)
 CORS(app)
@@ -54,6 +53,12 @@ def get_info():
                 break
             element.clear()
     return jsonify(results)
+
+@app.route('/api/get_suggestions', methods=['GET'])
+def get_suggestions():
+    with open('data/db_vocab.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        return jsonify([row['Common name'] for row in reader])
 
 
 if __name__ == '__main__':

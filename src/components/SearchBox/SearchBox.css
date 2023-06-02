@@ -21,3 +21,14 @@ body {
 .shake {
     animation: shake 0.3s cubic-bezier(.36, .07, .19, .97) both;
 }
+
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-top: none;
+    z-index: 100;
+}

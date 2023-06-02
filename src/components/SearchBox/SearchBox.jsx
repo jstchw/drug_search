@@ -65,13 +65,17 @@ const SearchBox = (props) => {
         fetchSuggestions()
     }, [])
 
-    const handleSearch = async (e) => {
-        e.preventDefault()
-        if (inputValue) {
-            props.onSearch(searchType, inputValue)
+    const handleSearch = async (e, newSearchValue) => {
+        if (e) e.preventDefault()
+
+        const valueToSearch = newSearchValue || inputValue
+
+        if (valueToSearch) {
+            props.onSearch(searchType, valueToSearch)
             if (props.searchError) {
                 setErrorAnimation((prevCount) => prevCount + 1)
             }
+            setDropdownOpen(false)
         }
     }
 
@@ -144,7 +148,13 @@ const SearchBox = (props) => {
                             />
                             <Dropdown.Menu className="search-suggestions">
                                 {suggestions.map((suggestion, index) => (
-                                    <Dropdown.Item key={index}>
+                                    <Dropdown.Item
+                                        key={index}
+                                        onClick={() => {
+                                            setInputValue(suggestion.item)
+                                            handleSearch(null, suggestion.item)
+                                        }}
+                                    >
                                         {suggestion.item}
                                     </Dropdown.Item>
                                 ))}

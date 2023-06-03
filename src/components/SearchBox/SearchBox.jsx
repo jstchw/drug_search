@@ -146,6 +146,9 @@ const SearchBox = (props) => {
                                 ref={inputRef}
                                 value={inputValue}
                                 autoComplete={'off'}
+                                autoCorrect={'off'}
+                                autoCapitalize={'off'}
+                                spellCheck={'false'}
                             />
                             <Dropdown.Menu className="search-suggestions">
                                 {suggestions.map((suggestion, index) => (

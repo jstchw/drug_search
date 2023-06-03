@@ -7,17 +7,17 @@ import DrugDescription from "../DrugDescription/DrugDescription";
 
 const SearchResultObject = ({ searchResults, searchTerm }) => {
     const { termCountDict, totalCount } = searchResults.result
+    const [retrievedTerm, setRetrievedTerm] = React.useState(null)
 
-    console.log('SearchResultObject re-rendered', searchTerm)
     return (
         <div>
-            <Container className="m-5">
-                {searchResults && <h1>{searchTerm}</h1>}
+            <Container className="m-4">
+                {searchResults && <h1>{retrievedTerm}</h1>}
             </Container>
             <Container className="m-5">
                 <Row>
                     <Col className="drug-desc-col">
-                        <DrugDescription drugName={searchTerm} />
+                        <DrugDescription drugName={searchTerm} onRetrieved={setRetrievedTerm}/>
                     </Col>
                     <Col>
                         <p>Adverse effects for all groups</p>

@@ -145,6 +145,7 @@ const SearchBox = (props) => {
                                 style={errorBox}
                                 ref={inputRef}
                                 value={inputValue}
+                                autoComplete={'off'}
                             />
                             <Dropdown.Menu className="search-suggestions">
                                 {suggestions.map((suggestion, index) => (

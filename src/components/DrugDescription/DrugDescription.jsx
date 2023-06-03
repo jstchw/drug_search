@@ -6,7 +6,7 @@ import './DrugDescription.css';
 
 const drugDescriptionUrl = 'http://localhost:16000/api';
 
-const DrugDescription = ({ drugName }) => {
+const DrugDescription = ({ drugName, onRetrieved }) => {
 
     const [drugInfo, setDrugInfo] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -26,6 +26,7 @@ const DrugDescription = ({ drugName }) => {
                     drug_class: response.data[0].classification
                 };
                 setDrugInfo(info);
+                onRetrieved(info.drug_name);
             } else {
                 setDrugInfo({ error: 'No information found.' });
             }

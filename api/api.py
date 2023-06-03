@@ -1,8 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from lxml import etree as ET
 import sys
 import csv
+from rdkit import Chem
+from rdkit.Chem import Draw
+import io
 
 app = Flask(__name__)
 CORS(app)
@@ -32,8 +35,23 @@ def search_csv(column_name, search_term):
         for row in reader:
             if row[column_name].lower() == search_term.lower():
                 return row['DrugBank ID']
-        return None
+        return None, 404
 
+
+@app.route('/api/get_molecule', methods=['GET'])
+def get_molecule():
+    drug_name = request.args.get('drug_name')
+    drug_id = search_csv('Common name', drug_name)
+    suppl = Chem.SDMolSupplier('data/molecules.sdf')
+
+    for mol in suppl:
+        if mol is not None and mol.GetProp('DRUGBANK_ID') == drug_id:
+            img = Draw.MolToImage(mol)
+            img_bytes = io.BytesIO()
+            img.save(img_bytes, format='PNG')
+            img_bytes = img_bytes.getvalue()
+            return send_file(io.BytesIO(img_bytes), mimetype='image/png')
+    return "No molecule found", 404
 
 
 

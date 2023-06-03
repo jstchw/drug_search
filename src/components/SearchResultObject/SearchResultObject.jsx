@@ -12,6 +12,9 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
     return (
         <div>
             <Container className="m-5">
+                {searchResults && <h1>{searchTerm}</h1>}
+            </Container>
+            <Container className="m-5">
                 <Row>
                     <Col className="drug-desc-col">
                         <DrugDescription drugName={searchTerm} />

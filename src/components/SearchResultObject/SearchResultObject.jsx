@@ -1,6 +1,6 @@
 import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
-import PieChart from "../PieChart/PieChart";
+import Histogram from "../PieChart/Histogram";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 
@@ -20,8 +20,7 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
                         <DrugDescription drugName={searchTerm} onRetrieved={setRetrievedTerm}/>
                     </Col>
                     <Col>
-                        <p>Adverse effects for all groups</p>
-                        {searchResults && <PieChart termCountDict={termCountDict} totalCount={totalCount} />}
+                        {searchResults && <Histogram termCountDict={termCountDict} totalCount={totalCount} />}
                     </Col>
                 </Row>
             </Container>

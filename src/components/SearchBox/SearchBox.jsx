@@ -110,7 +110,6 @@ const SearchBox = (props) => {
 
         if (fuse && inputValue.length >= 3) {
             const suggestion = fuse.search(inputValue)
-            console.log(suggestion)
             setSuggestions(suggestion.slice(0, 5))
 
             if (suggestion.length > 0) {

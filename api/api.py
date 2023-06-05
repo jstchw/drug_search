@@ -30,7 +30,7 @@ def process_element(element, drug_id):
 
 
 def search_csv(column_name, search_term):
-    with open('data/db_vocab.csv', 'r') as file:
+    with open('data/suggestion_db.csv', 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
             if row[column_name].lower() == search_term.lower():
@@ -74,7 +74,7 @@ def get_info():
 
 @app.route('/api/get_suggestions', methods=['GET'])
 def get_suggestions():
-    with open('data/db_vocab.csv', 'r') as file:
+    with open('data/suggestion_db.csv', 'r') as file:
         reader = csv.DictReader(file)
         return jsonify([row['Common name'] for row in reader])
 

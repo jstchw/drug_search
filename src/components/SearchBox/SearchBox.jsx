@@ -29,18 +29,24 @@ const fuseOptions = {
 const SearchBox = (props) => {
     const [inputValue, setInputValue] = React.useState('')
 
+    // Search type selection (popover)
     const [selectedSearchTypeIndex, setSelectedSearchTypeIndex] = React.useState(0);
     const [searchType, setSearchType] = React.useState(searchTypes[selectedSearchTypeIndex].value)
 
+    // Timeout for the placeholder animation
     const currentSearchPlaceholder = useSearchPlaceholder(3000)
 
+    // When the searched element doesn't exist in FDA's database
     const errorBox = props.searchError ? {borderColor: 'red'} : {}
     const [errorAnimation, setErrorAnimation] = React.useState(0)
     const inputRef = React.useRef(null)
 
+    // Elements for the suggestion mechanism
     const [fuse, setFuse] = React.useState(null)
     const [suggestions, setSuggestions] = React.useState([])
     const [dropdownOpen, setDropdownOpen] = React.useState(false)
+    // This ref is attached to div wrapping the dropdown menu since bootstrap doesn't support refs
+    const dropdownRef = React.useRef(null)
 
     React.useEffect(() => {
        if (props.searchError) {
@@ -64,6 +70,24 @@ const SearchBox = (props) => {
         }
         fetchSuggestions()
     }, [])
+
+
+    React.useEffect(() => {
+        if (dropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside)
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [dropdownOpen])
+
+    const handleClickOutside = (e) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+            setDropdownOpen(false)
+        }
+    }
 
     const handleSearch = async (e, newSearchValue) => {
         if (e) e.preventDefault()
@@ -127,7 +151,7 @@ const SearchBox = (props) => {
 
 
     return (
-        <div>
+        <div className={'d-flex justify-content-center'}>
             <Form onSubmit={handleSearch}>
                 <Form.Group controlId="searchTerm">
                     <InputGroup>
@@ -136,34 +160,36 @@ const SearchBox = (props) => {
                                 <FilterLeftIcon />
                             </Button>
                         </OverlayTrigger>
-                        <Dropdown show={dropdownOpen}>
-                            <Form.Control
-                                className={`search-box ${props.searchError && errorAnimation ? 'shake' : ''}`}
-                                type="text"
-                                placeholder={currentSearchPlaceholder}
-                                onChange={handleInputChange}
-                                style={errorBox}
-                                ref={inputRef}
-                                value={inputValue}
-                                autoComplete={'off'}
-                                autoCorrect={'off'}
-                                autoCapitalize={'off'}
-                                spellCheck={'false'}
-                            />
-                            <Dropdown.Menu className="search-suggestions">
-                                {suggestions.map((suggestion, index) => (
-                                    <Dropdown.Item
-                                        key={index}
-                                        onClick={() => {
-                                            setInputValue(suggestion.item)
-                                            handleSearch(null, suggestion.item)
-                                        }}
-                                    >
-                                        {suggestion.item}
-                                    </Dropdown.Item>
-                                ))}
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <div ref={dropdownRef}>
+                            <Dropdown show={dropdownOpen}>
+                                <Form.Control
+                                    className={`search-box ${props.searchError && errorAnimation ? 'shake' : ''} rounded-0`}
+                                    type="text"
+                                    placeholder={currentSearchPlaceholder}
+                                    onChange={handleInputChange}
+                                    style={errorBox}
+                                    ref={inputRef}
+                                    value={inputValue}
+                                    autoComplete={'off'}
+                                    autoCorrect={'off'}
+                                    autoCapitalize={'off'}
+                                    spellCheck={'false'}
+                                />
+                                <Dropdown.Menu className="search-suggestions">
+                                    {suggestions.map((suggestion, index) => (
+                                        <Dropdown.Item
+                                            key={index}
+                                            onClick={() => {
+                                                setInputValue(suggestion.item)
+                                                handleSearch(null, suggestion.item)
+                                            }}
+                                        >
+                                            {suggestion.item}
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
                         <Button variant="outline-primary" id="button-submit" type="submit">
                             <SearchIcon />
                         </Button>

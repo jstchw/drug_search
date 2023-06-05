@@ -11,7 +11,7 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
 
     return (
         <div>
-            <Container className="m-4">
+            <Container className="mt-4">
                 {searchResults && <h1>{retrievedTerm}</h1>}
             </Container>
             <Container className="m-5">

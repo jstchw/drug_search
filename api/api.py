@@ -23,11 +23,13 @@ def process_element(element, drug_id):
             'name': drug_name,
             'half_life': half_life.text if half_life is not None else None,
             'classification': classification.text if classification is not None else None,
-            'products': list(set(products)),
             'groups': [group.text for group in element.findall('db:groups/db:group', ns)],
-            'brands': [name.text for name in element.findall('db:international-brands/db:international-brand', ns)],
+            # Find brand XPath: /drugbank/drug/international-brands/international-brand/name
+            'brands': [brand.find('db:name', ns).text for brand in element.findall('db:international-brands/db:international-brand', ns)],
             'iupac': element.find('db:calculated-properties/db:property[db:kind="IUPAC Name"]/db:value', ns).text,
             'formula': element.find('db:calculated-properties/db:property[db:kind="Molecular Formula"]/db:value', ns).text,
+            'indication': element.find('db:indication', ns).text,
+            'description': element.find('db:state', ns).text,
 
         }
     return None

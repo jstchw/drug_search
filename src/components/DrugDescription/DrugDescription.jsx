@@ -27,13 +27,14 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
                     groups: response.data[0].groups,
                     iupac: response.data[0].iupac,
                     formula: toSubscript(response.data[0].formula),
-                    products: response.data[0].products,
                     brands: response.data[0].brands,
                     half_life: response.data[0].half_life,
+                    indication: response.data[0].indication,
                 };
                 setDrugInfo(info);
                 // Pass information to parent component to display name and groups
-                onRetrieved([info.drug_name, info.groups, info.products, info.brands, info.half_life])
+                onRetrieved({drug_name: info.drug_name, groups: info.groups, brands: info.brands,
+                    half_life: info.half_life, indication: info.indication})
             } else {
                 setDrugInfo({ error: 'No information found.' });
             }

@@ -3,7 +3,6 @@ import {Col, Container, Row, Badge, Placeholder, Accordion} from "react-bootstra
 import Histogram from "../Histogram/Histogram";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
-import AccordionBody from "react-bootstrap/AccordionBody";
 
 
 const SearchResultObject = ({ searchResults, searchTerm }) => {
@@ -40,8 +39,8 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
             <Container className="my-4">
                 {retrievedTermArr ? (
                     <>
-                        {retrievedTermArr && <h1>{retrievedTermArr[0]}</h1>}
-                        {retrievedTermArr && <h3>{processDrugGroups(retrievedTermArr[1])}</h3>}
+                        {retrievedTermArr && <h1>{retrievedTermArr.drug_name}</h1>}
+                        {retrievedTermArr && <h3>{processDrugGroups(retrievedTermArr.groups)}</h3>}
                     </>
                 ) : (
                     <>
@@ -67,14 +66,27 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
                     <Col>
                         <Accordion>
                             <Accordion.Item eventKey={'0'}>
-                                <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
+                                <Accordion.Header><Badge>Indication</Badge></Accordion.Header>
                                 <Accordion.Body>
                                     {retrievedTermArr ? (
-                                        retrievedTermArr[4]
+                                        retrievedTermArr.indication.split(/(?<=\.)/)[0]
                                     ) : (
                                         <Placeholder animation="glow">
                                             <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
                                             <Placeholder xs={6} /> <Placeholder xs={8} />
+                                        </Placeholder>
+                                    )}
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey={'1'}>
+                                <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
+                                <Accordion.Body>
+                                    {retrievedTermArr ? (
+                                        retrievedTermArr.half_life
+                                    ) : (
+                                        <Placeholder animation="glow">
+                                            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+                                            <Placeholder xs={6} />
                                         </Placeholder>
                                     )}
                                 </Accordion.Body>

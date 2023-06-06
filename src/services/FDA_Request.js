@@ -34,3 +34,22 @@ export const getDrugEventsSearch = async (searchTerm, searchType) => {
         return {error: error.message}
     }
 }
+
+export const getEventsOverTime = async (searchTerm, searchType) => {
+    const fromDate = `20040101`
+    const toDate = formatDate(new Date())
+    const count = 'receivedate'
+    // url to be used: https://api.fda.gov/drug/event.json?search=receivedate:[20040101+TO+20230605]+AND+patient.drug.medicinalproduct:ASPIRIN&count=receivedate
+    const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
+    try {
+        const response = await fetch(url)
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}: ${response.statusText}`)
+        }
+        const data = await response.json()
+        console.log(data)
+        return {result: data}
+    } catch (error) {
+        return {error: error.message}
+    }
+}

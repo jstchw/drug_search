@@ -7,19 +7,17 @@ const processDataForChart = (termCountDict) => {
 
     let popularTerms = {}
     const maxTerms = 10
-    let topCount = 0
+    const totalSum = sortedTerms.reduce((sum, term) => sum + term[1], 0);
 
     for (let [term, count] of sortedTerms.slice(0, maxTerms)) {
         popularTerms[term] = count;
-        topCount += count;
     }
 
-    console.log(popularTerms)
+
 
     popularTerms = Object.entries(popularTerms).map(([term, count]) => ({
         x: term,
-        y: count,
-        //y: (count / topCount) * 100
+        y: ((count / totalSum) * 100).toPrecision(3),
     }))
 
     //console.log(popularTerms)
@@ -37,7 +35,7 @@ const Histogram = ({ termCountDict, totalCount, type }) => {
         }]
     }
 
-    const options = {
+    const optionsAllGroups = {
         labels: chartData.labels,
         legend: {
             show: true,
@@ -54,14 +52,25 @@ const Histogram = ({ termCountDict, totalCount, type }) => {
         },
         title : {
             text: 'Adverse effects for all groups',
+        },
+        yaxis: {
+            labels: {
+                formatter: function (value) {
+                    return value + "%";
+                }
+            }
         }
+    }
+
+    const optionsReportsOverTime = {
+
     }
 
     return (
         <Chart
-            options={options}
+            options={optionsAllGroups}
             series={chartData.series}
-            type={options.chart.type}
+            type={optionsAllGroups.chart.type}
         />
     )
 }

@@ -27,7 +27,7 @@ const processDataForChart = (termCountDict) => {
 }
 
 
-const Histogram = ({ termCountDict, totalCount }) => {
+const Histogram = ({ termCountDict, totalCount, type }) => {
     const processedData = processDataForChart(termCountDict)
 
     const chartData = {
@@ -45,6 +45,7 @@ const Histogram = ({ termCountDict, totalCount }) => {
         },
         chart: {
             type: 'bar',
+            width: '100%'
         },
         plotOptions: {
             bar: {
@@ -53,8 +54,6 @@ const Histogram = ({ termCountDict, totalCount }) => {
         },
         title : {
             text: 'Adverse effects for all groups',
-        },
-        theme: {
         }
     }
 

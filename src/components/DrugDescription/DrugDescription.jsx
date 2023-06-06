@@ -23,10 +23,12 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
             if (response.data.length > 0) {
                 const info = {
                     drug_name: response.data[0].name,
-                    drug_class: response.data[0].classification
+                    drug_class: response.data[0].classification,
+                    groups: response.data[0].groups,
                 };
                 setDrugInfo(info);
-                onRetrieved(info.drug_name);
+                // Pass information to parent component to display name and groups
+                onRetrieved([info.drug_name, info.groups]);
             } else {
                 setDrugInfo({ error: 'No information found.' });
             }
@@ -64,7 +66,7 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
             <Card.Header><CapsulePillIcon className="drug-badge mx-1" />
                 <span>General Knowledge</span>
             </Card.Header>
-            <Card.Img src={moleculeUrl} alt={drugName} className="molecule" style={{ backgroundColor: 'transparent'}} />
+            {moleculeUrl && <Card.Img src={moleculeUrl} alt={drugName} className="molecule" style={{ backgroundColor: 'transparent'}} />}
 
             {drugInfo.error ? (
                 <p>{drugInfo.error}</p>

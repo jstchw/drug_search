@@ -23,7 +23,8 @@ def process_element(element, drug_id):
             'name': drug_name,
             'half_life': half_life.text if half_life is not None else None,
             'classification': classification.text if classification is not None else None,
-            'products': list(set(products))
+            'products': list(set(products)),
+            'groups': [group.text for group in element.findall('db:groups/db:group', ns)]
         }
     return None
 

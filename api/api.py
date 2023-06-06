@@ -24,7 +24,11 @@ def process_element(element, drug_id):
             'half_life': half_life.text if half_life is not None else None,
             'classification': classification.text if classification is not None else None,
             'products': list(set(products)),
-            'groups': [group.text for group in element.findall('db:groups/db:group', ns)]
+            'groups': [group.text for group in element.findall('db:groups/db:group', ns)],
+            'brands': [name.text for name in element.findall('db:international-brands/db:international-brand', ns)],
+            'iupac': element.find('db:calculated-properties/db:property[db:kind="IUPAC Name"]/db:value', ns).text,
+            'formula': element.find('db:calculated-properties/db:property[db:kind="Molecular Formula"]/db:value', ns).text,
+
         }
     return None
 

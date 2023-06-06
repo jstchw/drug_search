@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CapsulePill as CapsulePillIcon } from "react-bootstrap-icons";
-import { Card, Placeholder } from 'react-bootstrap';
+import { Card, Placeholder, Badge } from 'react-bootstrap';
 import './DrugDescription.css';
 
 const drugDescriptionUrl = 'http://localhost:16000/api';
@@ -9,7 +9,7 @@ const drugDescriptionUrl = 'http://localhost:16000/api';
 const DrugDescription = ({ drugName, onRetrieved }) => {
 
     const [drugInfo, setDrugInfo] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [moleculeUrl, setMoleculeUrl] = useState(null);
 
@@ -25,10 +25,15 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
                     drug_name: response.data[0].name,
                     drug_class: response.data[0].classification,
                     groups: response.data[0].groups,
+                    iupac: response.data[0].iupac,
+                    formula: toSubscript(response.data[0].formula),
+                    products: response.data[0].products,
+                    brands: response.data[0].brands,
+                    half_life: response.data[0].half_life,
                 };
                 setDrugInfo(info);
                 // Pass information to parent component to display name and groups
-                onRetrieved([info.drug_name, info.groups]);
+                onRetrieved([info.drug_name, info.groups, info.products, info.brands, info.half_life])
             } else {
                 setDrugInfo({ error: 'No information found.' });
             }
@@ -52,46 +57,69 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
         }
     }
 
+    function toSubscript(str) {
+        return str.replace(/\d/g, digit => '₀₁₂₃₄₅₆₇₈₉'[digit]);
+    }
+
+
     useEffect(() => {
-        if (drugName) {
-            setIsLoading(true);
-            fetchDrugMolecule();
-            fetchDrugInfo();
-            setIsLoading(false);
+        const fetchAllData = async () => {
+            if (drugName) {
+                setIsLoading(true);
+                console.log(isLoading)
+                await fetchDrugMolecule();
+                await fetchDrugInfo();
+                setIsLoading(false);
+            }
         }
+
+        fetchAllData()
     }, [drugName]);
 
     return (
         <Card>
-            <Card.Header><CapsulePillIcon className="drug-badge mx-1" />
+            <Card.Header>
+                <CapsulePillIcon className="drug-badge mx-1" />
                 <span>General Knowledge</span>
             </Card.Header>
+
             {moleculeUrl && <Card.Img src={moleculeUrl} alt={drugName} className="molecule" style={{ backgroundColor: 'transparent'}} />}
 
-            {drugInfo.error ? (
-                <p>{drugInfo.error}</p>
-            ) : (
-                <Card.Body className="text-md-start">
-                    {/*<p>Half-Life:&nbsp;*/}
-                    {/*    {isLoading ? (*/}
-                    {/*        <Placeholder as="span" animation="glow">*/}
-                    {/*            <Placeholder xs={4} />*/}
-                    {/*        </Placeholder>*/}
-                    {/*    ) : (*/}
-                    {/*        drugInfo.half_life*/}
-                    {/*    )}*/}
-                    {/*</p>*/}
-                    <p>Drug Class:&nbsp;
-                        {isLoading ? (
-                            <Placeholder as="span" animation="glow">
+            <Card.Body className="text-md-start">
+                <p><Badge>IUPAC</Badge>&nbsp;
+                    {isLoading ? (
+                        <>
+                            <Placeholder as='span' animation="glow">
                                 <Placeholder xs={4} />
                             </Placeholder>
-                        ) : (
-                            drugInfo.drug_class
-                        )}
-                    </p>
-                </Card.Body>
-            )}
+                        </>
+                    ) : (
+                        drugInfo.iupac
+                    )}
+                </p>
+                <p><Badge>Class</Badge>&nbsp;
+                    {isLoading ? (
+                        <>
+                            <Placeholder as='span' animation="glow">
+                                <Placeholder xs={4} />
+                            </Placeholder>
+                        </>
+                    ) : (
+                        drugInfo.drug_class
+                    )}
+                </p>
+                <p><Badge>Formula</Badge>&nbsp;
+                    {isLoading ? (
+                        <>
+                            <Placeholder as='span' animation="glow">
+                                <Placeholder xs={4} />
+                            </Placeholder>
+                        </>
+                    ) : (
+                        drugInfo.formula
+                    )}
+                </p>
+            </Card.Body>
         </Card>
     );
 };

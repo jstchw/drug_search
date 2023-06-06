@@ -1,6 +1,6 @@
-.drug-desc-col {
-    max-width: 300px;
-    width: auto;
+.main-drug-container {
+    width: 40vw;
+    min-width: 700px;
 }
 
 .testing {

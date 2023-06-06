@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Form, InputGroup, OverlayTrigger, Popover} from 'react-bootstrap';
+import {Button, Form, InputGroup, OverlayTrigger, Placeholder, Popover, Spinner} from 'react-bootstrap';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
 import Fuse from 'fuse.js'
@@ -190,7 +190,21 @@ const SearchBox = (props) => {
                             </Dropdown>
                         </div>
                         <Button variant="outline-primary" id="button-submit" type="submit">
-                            <SearchIcon />
+                            {props.loadingSpinner ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <SearchIcon />
+                                </>
+                            )}
                         </Button>
                     </InputGroup>
                 </Form.Group>

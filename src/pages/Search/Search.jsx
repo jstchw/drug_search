@@ -43,20 +43,19 @@ const Search = () => {
             <Header onLogoClick={resetSearch}/>
             <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
                 <Row className="w-100 justify-content-center">
-                    <Col xs="auto" className="text-center">
+                    <Col xs="auto" className="text-center my-5">
                         <SearchBox
                             onSearch={handleSearch}
                             searchError={searchError}
                             setSearchError={setSearchError}
+                            loadingSpinner={isLoading}
                         />
-                        {isLoading ? (
-                            <LoadingPlaceholder />
-                        ) : (
-                            searchResults && <SearchResultObject
+                        {searchResults &&
+                            <SearchResultObject
                                 searchResults={searchResults}
                                 searchTerm={currentSearchTerm}
                             />
-                        )}
+                        }
                     </Col>
                 </Row>
             </Container>

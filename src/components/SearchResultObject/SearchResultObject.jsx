@@ -1,8 +1,9 @@
 import React from "react";
-import {Col, Container, Row, Badge} from "react-bootstrap";
+import {Col, Container, Row, Badge, Placeholder, Accordion} from "react-bootstrap";
 import Histogram from "../Histogram/Histogram";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
+import AccordionBody from "react-bootstrap/AccordionBody";
 
 
 const SearchResultObject = ({ searchResults, searchTerm }) => {
@@ -37,18 +38,52 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
     return (
         <div>
             <Container className="my-4">
-                {retrievedTermArr && <h1>{retrievedTermArr[0]}</h1>}
-                {retrievedTermArr && <h3>{processDrugGroups(retrievedTermArr[1])}</h3>}
+                {retrievedTermArr ? (
+                    <>
+                        {retrievedTermArr && <h1>{retrievedTermArr[0]}</h1>}
+                        {retrievedTermArr && <h3>{processDrugGroups(retrievedTermArr[1])}</h3>}
+                    </>
+                ) : (
+                    <>
+                        <Placeholder as={'h1'} animation="glow">
+                            <Placeholder xs={6} />
+                        </Placeholder>
+                        <Placeholder as={'h3'} animation="glow">
+                            <Placeholder xs={3} />
+                        </Placeholder>
+                    </>
+                )}
             </Container>
-            <Container className="">
-                <Row className={'alert alert-secondary'}>
-                    <span>The provided information is indicative and shouldn't be used for inference.</span>
+            <Container className={'main-drug-container'}>
+                <Row>
+                    <Col className={'alert alert-secondary mx-2'}>
+                        <span>The provided information is indicative and shouldn't be used for inference.</span>
+                    </Col>
                 </Row>
                 <Row>
-                    <Col className="testing">
+                    <Col>
                         <DrugDescription drugName={searchTerm} onRetrieved={setRetrievedTermArr}/>
                     </Col>
-                    <Col className={'testing'}>
+                    <Col>
+                        <Accordion>
+                            <Accordion.Item eventKey={'0'}>
+                                <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
+                                <Accordion.Body>
+                                    {retrievedTermArr ? (
+                                        retrievedTermArr[4]
+                                    ) : (
+                                        <Placeholder animation="glow">
+                                            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+                                            <Placeholder xs={6} /> <Placeholder xs={8} />
+                                        </Placeholder>
+                                    )}
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className={'mt-3'}>
                         {searchResults && <Histogram termCountDict={termCountDict} totalCount={totalCount} type={'all_groups'} />}
                     </Col>
                 </Row>

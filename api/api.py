@@ -10,6 +10,7 @@ import io
 app = Flask(__name__)
 CORS(app)
 
+
 def process_element(element, drug_id):
     ns = {'db': 'http://www.drugbank.ca'}
     drug_tag = element.find('db:drugbank-id', ns)
@@ -67,16 +68,14 @@ def get_molecule():
 def get_info():
     drug_name = request.args.get('drug_name')
     drug_id = search_csv('Common name', drug_name)
-    context = ET.iterparse('data/drugs.xml', events=('end', ))
     results = []
 
-    for event, element in context:
+    for element in root.findall('{http://www.drugbank.ca}drug'):
         if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
             drug = process_element(element, drug_id)
             if drug:
                 results.append(drug)
                 break
-            element.clear()
     return jsonify(results)
 
 @app.route('/api/get_suggestions', methods=['GET'])
@@ -85,6 +84,14 @@ def get_suggestions():
         reader = csv.DictReader(file)
         return jsonify([row['Common name'] for row in reader])
 
+
+def on_startup():
+    global root
+    tree = ET.parse('data/drugs.xml')
+    root = tree.getroot()
+
+
+on_startup()
 
 if __name__ == '__main__':
     app.run(debug=True)

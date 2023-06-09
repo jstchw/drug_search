@@ -1,6 +1,6 @@
 import React from "react";
 import {Col, Container, Row, Badge, Placeholder, Accordion} from "react-bootstrap";
-import Histogram from "../Histogram/Histogram";
+import ADEAllGroups from "../Charts/ADEAllGroups/ADEAllGroups";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 
@@ -96,7 +96,7 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
                 </Row>
                 <Row>
                     <Col className={'mt-3'}>
-                        {searchResults && <Histogram termCountDict={termCountDict} totalCount={totalCount} type={'all_groups'} />}
+                        {searchResults && <ADEAllGroups termCountDict={termCountDict} totalCount={totalCount} type={'all_groups'} />}
                     </Col>
                 </Row>
             </Container>

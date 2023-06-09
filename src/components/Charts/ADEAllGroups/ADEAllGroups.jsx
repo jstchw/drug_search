@@ -2,12 +2,11 @@ import React from "react";
 import Chart from "react-apexcharts";
 
 // This function sorts terms by popularity and crops the rest
-const processDataForChart = (termCountDict) => {
+const processDataForChart = (termCountDict, totalCount) => {
     const sortedTerms = Object.entries(termCountDict).sort((a, b) => b[1] - a[1])
 
     let popularTerms = {}
     const maxTerms = 10
-    const totalSum = sortedTerms.reduce((sum, term) => sum + term[1], 0);
 
     for (let [term, count] of sortedTerms.slice(0, maxTerms)) {
         popularTerms[term] = count;
@@ -17,16 +16,15 @@ const processDataForChart = (termCountDict) => {
 
     popularTerms = Object.entries(popularTerms).map(([term, count]) => ({
         x: term,
-        y: ((count / totalSum) * 100).toPrecision(3),
+        y: ((count / totalCount) * 100).toPrecision(3),
     }))
 
-    //console.log(popularTerms)
     return popularTerms;
 }
 
 
-const Histogram = ({ termCountDict, totalCount, type }) => {
-    const processedData = processDataForChart(termCountDict)
+const ADEAllGroups = ({ termCountDict, totalCount, type }) => {
+    const processedData = processDataForChart(termCountDict, totalCount)
 
     const chartData = {
         labels: processedData.map((x) => x.x),
@@ -75,4 +73,4 @@ const Histogram = ({ termCountDict, totalCount, type }) => {
     )
 }
 
-export default Histogram;
+export default ADEAllGroups;

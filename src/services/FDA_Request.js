@@ -39,8 +39,7 @@ export const getEventsOverTime = async (searchTerm, searchType) => {
     const fromDate = `20040101`
     const toDate = formatDate(new Date())
     const count = 'receivedate'
-    // url to be used: https://api.fda.gov/drug/event.json?search=receivedate:[20040101+TO+20230605]+AND+patient.drug.medicinalproduct:ASPIRIN&count=receivedate
-    const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
+    const url = `${BASE_URL}?search=receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
     try {
         const response = await fetch(url)
         if (!response.ok) {

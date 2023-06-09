@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { CapsulePill as CapsulePillIcon } from "react-bootstrap-icons";
+import { Capsule as CapsuleIcon } from "react-bootstrap-icons";
 import { Card, Placeholder, Badge } from 'react-bootstrap';
 import './DrugDescription.css';
 
@@ -12,6 +12,20 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [moleculeUrl, setMoleculeUrl] = useState(null);
+
+    // Prevents the app from crashing if something is not available
+    const handleRetrieved = (info) => {
+        const data = Object.entries(info).reduce(
+            (acc, [key, value]) => {
+                if (value !== null) {
+                    acc[key] = value;
+                } else {
+                    acc[key] = 'N/A';
+                }
+                return acc;
+            }, {})
+        onRetrieved(data);
+    }
 
     const fetchDrugInfo = async () => {
         try {
@@ -33,8 +47,7 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
                 };
                 setDrugInfo(info);
                 // Pass information to parent component to display name and groups
-                onRetrieved({drug_name: info.drug_name, groups: info.groups, brands: info.brands,
-                    half_life: info.half_life, indication: info.indication})
+                handleRetrieved(info)
             } else {
                 setDrugInfo({ error: 'No information found.' });
             }
@@ -58,6 +71,7 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
         }
     }
 
+    // Very weird function to convert the formula numbers to subscript
     function toSubscript(str) {
         return str.replace(/\d/g, digit => '₀₁₂₃₄₅₆₇₈₉'[digit]);
     }
@@ -80,8 +94,8 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
     return (
         <Card>
             <Card.Header>
-                <CapsulePillIcon className="drug-badge mx-1" />
-                <span>General Knowledge</span>
+                <CapsuleIcon className="drug-badge mx-1" />
+                <span>Molecule</span>
             </Card.Header>
 
             {moleculeUrl && <Card.Img src={moleculeUrl} alt={drugName} className="molecule" style={{ backgroundColor: 'transparent'}} />}

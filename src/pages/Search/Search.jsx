@@ -3,19 +3,21 @@ import { Container, Row, Col } from 'react-bootstrap';
 import Header from '../../components/Header/Header'
 import SearchBox from '../../components/SearchBox/SearchBox'
 import SearchResultObject from "../../components/SearchResultObject/SearchResultObject";
-import LoadingPlaceholder from "../../components/SearchBox/LoadingPlaceholder";
-import { getDrugEventsSearch } from "../../services/FDA_Request";
+import {getDrugEventsSearch, getEventsOverTime} from "../../services/FDA_Request";
 import './Search.css'
 
 const Search = () => {
-    const [searchResults, setSearchResults] = React.useState(null)
+    const [eventResults, setEventResults] = React.useState(null)
+    const [eventsOverTime, setEventsOverTime] = React.useState(null)
+
+
     const [isLoading, setIsLoading] = React.useState(false)
     const [searchError, setSearchError] = React.useState(false)
 
     const [currentSearchTerm, setCurrentSearchTerm] = React.useState('')
 
     const resetSearch = () => {
-        setSearchResults(null)
+        setEventResults(null)
         setIsLoading(false)
         setSearchError(false)
         setCurrentSearchTerm('')
@@ -25,12 +27,20 @@ const Search = () => {
         setSearchError(false)
         if(searchTerm) {
             setIsLoading(true)
-            setSearchResults(null)
-            const searchResults = await getDrugEventsSearch(searchTerm, searchType)
+            setEventResults(null)
+            const eventAllGroups = await getDrugEventsSearch(searchTerm, searchType)
+            const eventsOverTime = await getEventsOverTime(searchTerm, searchType)
             setIsLoading(false)
-            if(searchResults.result) {
-                setSearchResults(searchResults)
+
+            if(eventAllGroups.result) {
+                setEventResults(eventAllGroups)
                 setCurrentSearchTerm(searchTerm)
+            } else {
+                setSearchError(true)
+            }
+
+            if(eventsOverTime.result) {
+                setEventsOverTime(eventsOverTime)
             } else {
                 setSearchError(true)
             }
@@ -50,10 +60,11 @@ const Search = () => {
                             setSearchError={setSearchError}
                             loadingSpinner={isLoading}
                         />
-                        {searchResults &&
+                        {eventResults && eventsOverTime &&
                             <SearchResultObject
-                                searchResults={searchResults}
+                                searchResults={eventResults}
                                 searchTerm={currentSearchTerm}
+                                eventsOverTime={eventsOverTime}
                             />
                         }
                     </Col>

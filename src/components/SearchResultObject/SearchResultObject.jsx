@@ -1,12 +1,13 @@
 import React from "react";
 import {Col, Container, Row, Badge, Placeholder, Accordion} from "react-bootstrap";
-import ADEAllGroups from "../Charts/ADEAllGroups/ADEAllGroups";
+import ApexChart from "../ApexChart/ApexChart";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 
 
-const SearchResultObject = ({ searchResults, searchTerm }) => {
-    const { termCountDict, totalCount } = searchResults.result
+const SearchResultObject = ( props ) => {
+    const { termCountDict, totalCount } = props.searchResults.result
+    const eventsOverTime = props.eventsOverTime.result.results
     const [retrievedTermArr, setRetrievedTermArr] = React.useState(null)
 
     const processDrugGroups = (groups) => {
@@ -61,7 +62,7 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
                 </Row>
                 <Row>
                     <Col>
-                        <DrugDescription drugName={searchTerm} onRetrieved={setRetrievedTermArr}/>
+                        <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermArr}/>
                     </Col>
                     <Col>
                         <Accordion>
@@ -96,7 +97,8 @@ const SearchResultObject = ({ searchResults, searchTerm }) => {
                 </Row>
                 <Row>
                     <Col className={'mt-3'}>
-                        {searchResults && <ADEAllGroups termCountDict={termCountDict} totalCount={totalCount} type={'all_groups'} />}
+                        {props.eventsOverTime && <ApexChart eventDict={eventsOverTime} type={'events_over_time'} />}
+                        {props.searchResults && <ApexChart eventDict={termCountDict} totalCount={totalCount} type={'all_groups'} />}
                     </Col>
                 </Row>
             </Container>

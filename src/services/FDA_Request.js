@@ -39,14 +39,13 @@ export const getEventsOverTime = async (searchTerm, searchType) => {
     const fromDate = `20040101`
     const toDate = formatDate(new Date())
     const count = 'receivedate'
-    const url = `${BASE_URL}?search=receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
+    const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
     try {
         const response = await fetch(url)
         if (!response.ok) {
             throw new Error(`Error: ${response.status}: ${response.statusText}`)
         }
         const data = await response.json()
-        console.log(data)
         return {result: data}
     } catch (error) {
         return {error: error.message}

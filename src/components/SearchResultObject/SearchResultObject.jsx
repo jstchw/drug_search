@@ -67,6 +67,12 @@ const SearchResultObject = ( props ) => {
                     <Col>
                         <Accordion>
                             <Accordion.Item eventKey={'0'}>
+                                <Accordion.Header><Badge>Cases Reported</Badge></Accordion.Header>
+                                <Accordion.Body>
+                                    {totalCount}
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey={'1'}>
                                 <Accordion.Header><Badge>Indication</Badge></Accordion.Header>
                                 <Accordion.Body>
                                     {retrievedTermArr ? (
@@ -79,7 +85,7 @@ const SearchResultObject = ( props ) => {
                                     )}
                                 </Accordion.Body>
                             </Accordion.Item>
-                            <Accordion.Item eventKey={'1'}>
+                            <Accordion.Item eventKey={'2'}>
                                 <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
                                 <Accordion.Body>
                                     {retrievedTermArr ? (

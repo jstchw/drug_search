@@ -1,5 +1,5 @@
 import React from "react";
-import Chart from "react-apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 // This function sorts terms by popularity and crops the rest
 const processDataForChart = (eventDict, totalCount, type) => {
@@ -64,11 +64,12 @@ const ApexChart = (props) => {
             },
             chart: {
                 type: 'bar',
-                width: '100%'
+                width: '100%',
             },
             plotOptions: {
                 bar: {
-                    horizontal: true
+                    horizontal: false,
+                    distributed: true,
                 }
             },
             title : {
@@ -76,18 +77,31 @@ const ApexChart = (props) => {
             },
             yaxis: {
                 labels: {
-                    formatter: function (value) {
-                        return value + "%";
-                    }
+                    show: true
+                }
+            },
+            xaxis: {
+                labels: {
+                    show: false
                 }
             },
             fill: {
-                type: 'gradient'
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    type: 'horizontal',
+                    shadeIntensity: 0.25,
+                    inverseColors: true,
+                    opacityFrom: 0.85,
+                    opacityTo: 0.85,
+                    stops: [50, 0, 100]
+                },
             },
+            colors: ['#2E93fA', '#66DA26', '#546E7A', '#E91E63', '#FF9800'],
         }
 
         return (
-            <Chart
+            <ReactApexChart
                 options={optionsAllGroups}
                 series={chartData.series}
                 type={optionsAllGroups.chart.type}
@@ -111,15 +125,16 @@ const ApexChart = (props) => {
             },
             chart: {
                 type: 'area',
-                width: '100%'
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: true
+                toolbar: {
+                    tools: {
+                        zoom: false,
+                        zoomin: false,
+                        zoomout: false
+                    }
                 }
             },
             title : {
-                text: 'Cases reported over time',
+                text: 'Reports over time',
             },
             stroke: {
                 curve: 'smooth'
@@ -130,11 +145,11 @@ const ApexChart = (props) => {
             colors: ['#2E93fA', '#66DA26', '#546E7A', '#E91E63', '#FF9800'],
             dataLabels: {
                 enabled: false
-            }
+            },
         }
 
         return (
-            <Chart
+            <ReactApexChart
                 options={optionsReportsOverTime}
                 series={chartData.series}
                 type={optionsReportsOverTime.chart.type}

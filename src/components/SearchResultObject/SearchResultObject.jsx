@@ -67,7 +67,7 @@ const SearchResultObject = ( props ) => {
                     <Col>
                         <Accordion>
                             <Accordion.Item eventKey={'0'}>
-                                <Accordion.Header><Badge>Cases Reported</Badge></Accordion.Header>
+                                <Accordion.Header><Badge>ADEs Reported</Badge></Accordion.Header>
                                 <Accordion.Body>
                                     {totalCount}
                                 </Accordion.Body>

@@ -65,6 +65,9 @@ const ApexChart = (props) => {
             chart: {
                 type: 'bar',
                 width: '100%',
+                toolbar: {
+                    show: false,
+                }
             },
             plotOptions: {
                 bar: {
@@ -74,7 +77,12 @@ const ApexChart = (props) => {
                 }
             },
             title : {
+                align: 'center',
                 text: 'Adverse effects for all groups',
+                style: {
+                    fontSize: '20px',
+                    fontWeight: 'light',
+                }
             },
             yaxis: {
                 labels: {
@@ -136,6 +144,7 @@ const ApexChart = (props) => {
             chart: {
                 type: 'area',
                 toolbar: {
+                    show: false,
                     tools: {
                         zoom: false,
                         zoomin: false,
@@ -144,7 +153,12 @@ const ApexChart = (props) => {
                 }
             },
             title : {
+                align: 'center',
                 text: 'Reports over time',
+                style: {
+                    fontSize: '20px',
+                    fontWeight: 'light',
+                }
             },
             stroke: {
                 curve: 'smooth'

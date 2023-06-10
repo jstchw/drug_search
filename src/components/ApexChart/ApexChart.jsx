@@ -1,6 +1,7 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
+
 // This function sorts terms by popularity and crops the rest
 const processDataForChart = (eventDict, totalCount, type) => {
     const maxTerms = 10
@@ -34,8 +35,6 @@ const processDataForChart = (eventDict, totalCount, type) => {
             }
         })
 
-        console.log(yearlyData)
-
         return Object.entries(yearlyData).map(([time, count]) => ({
             x: time,
             y: count
@@ -52,6 +51,7 @@ const ApexChart = (props) => {
         const chartData = {
             labels: processedData.map((x) => x.x),
             series: [{
+                name: 'Percentage',
                 data: processedData
             }]
         }
@@ -70,6 +70,7 @@ const ApexChart = (props) => {
                 bar: {
                     horizontal: false,
                     distributed: true,
+                    columnWidth: '95%'
                 }
             },
             title : {
@@ -77,7 +78,10 @@ const ApexChart = (props) => {
             },
             yaxis: {
                 labels: {
-                    show: true
+                    show: true,
+                    formatter: (value) => {
+                        return `${value}%`
+                    }
                 }
             },
             xaxis: {
@@ -89,15 +93,22 @@ const ApexChart = (props) => {
                 type: 'gradient',
                 gradient: {
                     shade: 'light',
-                    type: 'horizontal',
-                    shadeIntensity: 0.25,
+                    type: 'vertical', // Change this to 'horizontal' for horizontal gradient
+                    shadeIntensity: 0.4,
+                    gradientToColors: undefined,
                     inverseColors: true,
-                    opacityFrom: 0.85,
-                    opacityTo: 0.85,
-                    stops: [50, 0, 100]
+                    opacityFrom: 1,
+                    opacityTo: 0.5,
+                    stops: [0, 100]
                 },
             },
-            colors: ['#2E93fA', '#66DA26', '#546E7A', '#E91E63', '#FF9800'],
+            stroke: {
+                show: true,
+                width: 3, // This sets the stroke colors
+            },
+            dataLabels: {
+                enabled: false
+            },
         }
 
         return (
@@ -112,11 +123,10 @@ const ApexChart = (props) => {
     if (props.type === 'events_over_time') {
         const chartData = {
             series: [{
+                name: 'Reports',
                 data: processedData
             }]
         }
-
-        console.log(processedData)
 
         const optionsReportsOverTime = {
             legend: {
@@ -142,7 +152,6 @@ const ApexChart = (props) => {
             fill: {
                 type: 'gradient'
             },
-            colors: ['#2E93fA', '#66DA26', '#546E7A', '#E91E63', '#FF9800'],
             dataLabels: {
                 enabled: false
             },

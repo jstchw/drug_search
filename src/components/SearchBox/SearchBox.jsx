@@ -22,6 +22,11 @@ const searchTypes = [
         value: 'patient.drug.openfda.generic_name',
         index: 2,
         label: 'Generic Name'
+    },
+    {
+        value: 'patient.drug.openfda.brand_name',
+        index: 3,
+        label: 'Brand Name'
     }
 ]
 
@@ -71,12 +76,13 @@ const SearchBox = (props) => {
             }
         } else if (e.keyCode === 13) {
             e.preventDefault()
-            console.log('enter')
-            if (suggestions.length > 0) {
+            if (suggestions.length > 0 && selectedSuggestionIndex >= 0) {
                 const selectedSuggestion = suggestions[selectedSuggestionIndex];
                 setInputValue(selectedSuggestion.item);
                 setSelectedSuggestionIndex(-1);
                 handleSearch(null, selectedSuggestion.item);
+            } else {
+                handleSearch(null, inputValue);
             }
         }
     }

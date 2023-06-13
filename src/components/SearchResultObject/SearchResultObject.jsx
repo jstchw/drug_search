@@ -18,19 +18,31 @@ const SearchResultObject = ( props ) => {
             switch (group) {
                 case 'approved':
                     variant = 'success'
-                    groupDescription = 'Approved'
+                    groupDescription = 'Has been approved in at least one jurisdiction, at some point in time.'
                     break
                 case 'investigational':
                     variant = 'warning'
-                    groupDescription = 'Investigational'
+                    groupDescription = 'Undergoing evaluation in the drug approval process in at least one jurisdiction.'
                     break
                 case 'illicit':
                     variant = 'danger'
-                    groupDescription = 'Illicit'
+                    groupDescription = 'Deemed illegal in at least one jurisdiction, at some point in time.'
                     break
                 case 'vet_approved':
                     variant = 'info'
-                    groupDescription = 'Veterinary Approved'
+                    groupDescription = 'Approved for veterinary use in at least one jurisdiction, at some point in time.'
+                    break
+                case 'withdrawn':
+                    variant = 'secondary'
+                    groupDescription = 'Has been withdrawn from the market in at least one jurisdiction, at some point in time.'
+                    break
+                case 'nutraceutical':
+                    variant = 'light'
+                    groupDescription = 'Pharmaceutical-grade nutrient with potential health benefits.'
+                    break
+                case 'experimental':
+                    variant = 'dark'
+                    groupDescription = 'Shown to bind specific proteins in experimental settings.'
                     break
                 default:
                     variant = 'secondary'
@@ -40,7 +52,7 @@ const SearchResultObject = ( props ) => {
             const popover = (
                 <Popover id={`popover-${index}`}>
                     <Popover.Body>
-                        {groupDescription}
+                        <div className={'fs-6 text-center'}>{groupDescription}</div>
                     </Popover.Body>
                 </Popover>
             )

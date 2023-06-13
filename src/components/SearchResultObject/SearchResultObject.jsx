@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container, Row, Badge, Placeholder, Accordion} from "react-bootstrap";
+import {Col, Container, Row, Badge, Placeholder, Accordion, Popover, OverlayTrigger} from "react-bootstrap";
 import ApexChart from "../ApexChart/ApexChart";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
@@ -10,27 +10,46 @@ const SearchResultObject = ( props ) => {
     const eventsOverTime = props.eventsOverTime.result.results
     const [retrievedTermArr, setRetrievedTermArr] = React.useState(null)
 
+    let groupDescription = ''
+
     const processDrugGroups = (groups) => {
         return groups.map((group, index) => {
             let variant
             switch (group) {
                 case 'approved':
                     variant = 'success'
+                    groupDescription = 'Approved'
                     break
                 case 'investigational':
                     variant = 'warning'
+                    groupDescription = 'Investigational'
                     break
                 case 'illicit':
                     variant = 'danger'
+                    groupDescription = 'Illicit'
                     break
                 case 'vet_approved':
                     variant = 'info'
+                    groupDescription = 'Veterinary Approved'
                     break
                 default:
                     variant = 'secondary'
             }
             group = group.substring(0, 3).toUpperCase()
-            return <Badge className={'mx-1'} key={index} bg={variant}>{group}</Badge>
+
+            const popover = (
+                <Popover id={`popover-${index}`}>
+                    <Popover.Body>
+                        {groupDescription}
+                    </Popover.Body>
+                </Popover>
+            )
+
+            return (
+                <OverlayTrigger key={index} trigger={['hover', 'focus']} placement={'bottom'} overlay={popover}>
+                    <Badge className={'mx-1 no-pointer-badge'} key={index} bg={variant}>{group}</Badge>
+                </OverlayTrigger>
+            )
         })
 
     }

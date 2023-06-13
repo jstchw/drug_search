@@ -1,23 +1,28 @@
 import React from 'react';
-import {Button, Form, InputGroup, OverlayTrigger, Placeholder, Popover, Spinner} from 'react-bootstrap';
+import {Button, Form, InputGroup, OverlayTrigger, Popover, Spinner} from 'react-bootstrap';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
 import Fuse from 'fuse.js'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown, Container } from 'react-bootstrap'
 import './SearchBox.css'
 
 // Search types that can be selected in the popover
 const searchTypes = [
     {
-        value: 'patient.drug.openfda.generic_name',
+        value: 'patient.drug.activesubstance.activesubstancename',
         index: 0,
-        label: 'Substance Name'
+        label: 'Active substance'
     },
     {
         value: 'patient.reaction.reactionmeddrapt.exact',
         index: 1,
         label: 'Side Effect'
     },
+    {
+        value: 'patient.drug.openfda.generic_name',
+        index: 2,
+        label: 'Generic Name'
+    }
 ]
 
 // Options used in the Fuse.js search library
@@ -48,6 +53,34 @@ const SearchBox = (props) => {
     // This ref is attached to div wrapping the dropdown menu since bootstrap doesn't support refs
     const dropdownRef = React.useRef(null)
 
+    // Handling the key control of the dropdown menu
+    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = React.useState(-1)
+
+    // The function allows to browse through suggestions using arrow keys
+    const handleKeyDown = (e) => {
+        if (e.keyCode === 40) {
+            e.preventDefault()
+            setSelectedSuggestionIndex((prevIndex) => (prevIndex + 1) % suggestions.length)
+        } else if (e.keyCode === 38) {
+            e.preventDefault()
+            if (selectedSuggestionIndex <= 0) {
+                // Set the suggestion index to the last element of the array
+                setSelectedSuggestionIndex(suggestions.length - 1)
+            } else {
+                setSelectedSuggestionIndex((prevIndex) => (prevIndex - 1) % suggestions.length)
+            }
+        } else if (e.keyCode === 13) {
+            e.preventDefault()
+            console.log('enter')
+            if (suggestions.length > 0) {
+                const selectedSuggestion = suggestions[selectedSuggestionIndex];
+                setInputValue(selectedSuggestion.item);
+                setSelectedSuggestionIndex(-1);
+                handleSearch(null, selectedSuggestion.item);
+            }
+        }
+    }
+
     React.useEffect(() => {
        if (props.searchError) {
            inputRef.current.classList.add('shake')
@@ -64,6 +97,7 @@ const SearchBox = (props) => {
                 const response = await fetch('http://localhost:16000/api/get_suggestions')
                 const data = await response.json()
                 setFuse(new Fuse(data, fuseOptions))
+                // Reset the selected suggestion index
             } catch (error) {
                 console.error('Error fetching suggestions:', error)
             }
@@ -100,6 +134,8 @@ const SearchBox = (props) => {
                 setErrorAnimation((prevCount) => prevCount + 1)
             }
             setDropdownOpen(false)
+            // Reset the selected suggestion index
+            setSelectedSuggestionIndex(-1)
         }
     }
 
@@ -114,6 +150,7 @@ const SearchBox = (props) => {
 
             if (suggestion.length > 0) {
                 setDropdownOpen(true)
+                setSelectedSuggestionIndex(-1)
             } else {
                 setDropdownOpen(false)
             }
@@ -132,18 +169,20 @@ const SearchBox = (props) => {
         <Popover id="popover-basic" className="searchbox-popover">
             <Popover.Header as="h3">Filters</Popover.Header>
             <Popover.Body>
-                {searchTypes.map((searchType) => (
-                    <React.Fragment key={searchType.index}>
-                        <p
-                            className={`search-type-option${selectedSearchTypeIndex === searchType.index ? ' selected' : ''}`}
-                            onClick={() =>
-                                handleSearchTypeChange(searchType.index)
-                            }
-                        >
-                            {searchType.label}
-                        </p>
-                    </React.Fragment>
-                ))}
+                <Container className={'text-center'}>
+                    {searchTypes.map((searchType) => (
+                        <React.Fragment key={searchType.index}>
+                            <p
+                                className={`search-type-option${selectedSearchTypeIndex === searchType.index ? ' selected' : ''}`}
+                                onClick={() =>
+                                    handleSearchTypeChange(searchType.index)
+                                }
+                            >
+                                {searchType.label}
+                            </p>
+                        </React.Fragment>
+                    ))}
+                </Container>
             </Popover.Body>
         </Popover>
     );
@@ -166,6 +205,7 @@ const SearchBox = (props) => {
                                     type="text"
                                     placeholder={currentSearchPlaceholder}
                                     onChange={handleInputChange}
+                                    onKeyDown={handleKeyDown}
                                     style={errorBox}
                                     ref={inputRef}
                                     value={inputValue}
@@ -182,6 +222,7 @@ const SearchBox = (props) => {
                                                 setInputValue(suggestion.item)
                                                 handleSearch(null, suggestion.item)
                                             }}
+                                            active={index === selectedSuggestionIndex}
                                         >
                                             {suggestion.item}
                                         </Dropdown.Item>

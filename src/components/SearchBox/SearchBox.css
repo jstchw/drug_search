@@ -4,10 +4,12 @@ body {
 
 .search-type-option {
     cursor: pointer;
+    font-family: monospace;
 }
 
 .search-type-option.selected {
     font-weight: bold;
+    font-family: monospace;
     color: #007bff;
 }
 

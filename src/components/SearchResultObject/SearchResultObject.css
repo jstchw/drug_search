@@ -6,3 +6,7 @@
 .testing {
     border: 1px solid black;
 }
+
+.no-pointer-badge {
+    cursor: default !important;
+}

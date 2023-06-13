@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container, Row, Badge, Placeholder, Accordion, Popover, OverlayTrigger} from "react-bootstrap";
+import {Col, Container, Row, Badge, Placeholder, Accordion, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import ApexChart from "../ApexChart/ApexChart";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
@@ -87,9 +87,9 @@ const SearchResultObject = ( props ) => {
             </Container>
             <Container className={'main-drug-container'}>
                 <Row>
-                    <Col className={'alert alert-secondary mx-2'}>
+                    <Alert variant={"secondary"}>
                         <span>The provided information is indicative and shouldn't be used for inference.</span>
-                    </Col>
+                    </Alert>
                 </Row>
                 <Row>
                     <Col>
@@ -135,6 +135,9 @@ const SearchResultObject = ( props ) => {
                 <Row>
                     <Col className={'mt-3'}>
                         {props.eventsOverTime && <ApexChart eventDict={eventsOverTime} type={'events_over_time'} />}
+                        <Alert variant={'warning'}>
+                            <span>Correlation does not imply causation.</span>
+                        </Alert>
                         {props.searchResults && <ApexChart eventDict={termCountDict} totalCount={totalCount} type={'all_groups'} />}
                     </Col>
                 </Row>

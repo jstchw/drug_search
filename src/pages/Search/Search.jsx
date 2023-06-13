@@ -27,7 +27,6 @@ const Search = () => {
         setSearchError(false)
         if(searchTerm) {
             setIsLoading(true)
-            setEventResults(null)
             const eventAllGroups = await getDrugEventsSearch(searchTerm, searchType)
             const eventsOverTime = await getEventsOverTime(searchTerm, searchType)
             setIsLoading(false)

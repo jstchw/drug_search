@@ -5,6 +5,7 @@ import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstra
 import Fuse from 'fuse.js'
 import { Dropdown, Container } from 'react-bootstrap'
 import './SearchBox.css'
+import search from "../../pages/Search/Search";
 
 // Search types that can be selected in the popover
 const searchTypes = [
@@ -150,19 +151,23 @@ const SearchBox = (props) => {
         const inputValue = e.target.value
         setInputValue(inputValue)
 
-        if (fuse && inputValue.length >= 3) {
-            const suggestion = fuse.search(inputValue)
-            setSuggestions(suggestion.slice(0, 5))
+        if(searchType === 'patient.drug.activesubstance.activesubstancename' ||
+            searchType === 'patient.drug.openfda.generic_name') {
 
-            if (suggestion.length > 0) {
-                setDropdownOpen(true)
-                setSelectedSuggestionIndex(-1)
+            if (fuse && inputValue.length >= 3) {
+                const suggestion = fuse.search(inputValue)
+                setSuggestions(suggestion.slice(0, 5))
+
+                if (suggestion.length > 0) {
+                    setDropdownOpen(true)
+                    setSelectedSuggestionIndex(-1)
+                } else {
+                    setDropdownOpen(false)
+                }
             } else {
+                setSuggestions([])
                 setDropdownOpen(false)
             }
-        } else {
-            setSuggestions([])
-            setDropdownOpen(false)
         }
     }
 

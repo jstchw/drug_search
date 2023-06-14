@@ -23,7 +23,6 @@ export const getDrugEventsSearch = async (searchTerm, searchType) => {
     const count = 'patient.reaction.reactionmeddrapt.exact'
 
     const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
-    console.log(url)
     try {
         const response = await fetch(url)
         if (!response.ok) {

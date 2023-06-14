@@ -1,14 +1,15 @@
 import React from "react";
 import {Col, Container, Row, Badge, Placeholder, Accordion, Popover, OverlayTrigger, Alert} from "react-bootstrap";
-import ApexChart from "../ApexChart/ApexChart";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
+import DrugAccordion from "../DrugAccordion/DrugAccordion";
+import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
 
 
 const SearchResultObject = ( props ) => {
     const { termCountDict, totalCount } = props.searchResults.result
     const eventsOverTime = props.eventsOverTime.result.results
-    const [retrievedTermArr, setRetrievedTermArr] = React.useState(null)
+    const [retrievedTermArr, setRetrievedTermArr] = React.useState('')
 
     let groupDescription = ''
 
@@ -96,49 +97,13 @@ const SearchResultObject = ( props ) => {
                         <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermArr}/>
                     </Col>
                     <Col>
-                        <Accordion>
-                            <Accordion.Item eventKey={'0'}>
-                                <Accordion.Header><Badge>ADEs Reported</Badge></Accordion.Header>
-                                <Accordion.Body>
-                                    {totalCount}
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Accordion.Item eventKey={'1'}>
-                                <Accordion.Header><Badge>Indication</Badge></Accordion.Header>
-                                <Accordion.Body>
-                                    {retrievedTermArr ? (
-                                        retrievedTermArr.indication.split(/(?<=\.)/)[0]
-                                    ) : (
-                                        <Placeholder animation="glow">
-                                            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
-                                            <Placeholder xs={6} /> <Placeholder xs={8} />
-                                        </Placeholder>
-                                    )}
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Accordion.Item eventKey={'2'}>
-                                <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
-                                <Accordion.Body>
-                                    {retrievedTermArr ? (
-                                        retrievedTermArr.half_life
-                                    ) : (
-                                        <Placeholder animation="glow">
-                                            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
-                                            <Placeholder xs={6} />
-                                        </Placeholder>
-                                    )}
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
+                        <DrugAccordion retrievedTermArr={retrievedTermArr} totalCount={totalCount}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col className={'mt-3'}>
-                        {props.eventsOverTime && <ApexChart eventDict={eventsOverTime} type={'events_over_time'} />}
-                        <Alert variant={'warning'}>
-                            <span>Correlation does not imply causation.</span>
-                        </Alert>
-                        {props.searchResults && <ApexChart eventDict={termCountDict} totalCount={totalCount} type={'all_groups'} />}
+                        <ChartDisplayObject eventsOverTime={eventsOverTime} termCountDict={termCountDict}
+                                            totalCount={totalCount} searchResults={termCountDict}/>
                     </Col>
                 </Row>
             </Container>

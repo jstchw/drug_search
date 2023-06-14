@@ -1,35 +1,12 @@
 import React from 'react';
-import {Button, Form, InputGroup, OverlayTrigger, Popover, Spinner} from 'react-bootstrap';
+import {Button, Form, InputGroup, Spinner} from 'react-bootstrap';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
 import Fuse from 'fuse.js'
-import { Dropdown, Container } from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 import './SearchBox.css'
-import search from "../../pages/Search/Search";
-
-// Search types that can be selected in the popover
-const searchTypes = [
-    {
-        value: 'patient.drug.activesubstance.activesubstancename',
-        index: 0,
-        label: 'Active substance'
-    },
-    {
-        value: 'patient.reaction.reactionmeddrapt.exact',
-        index: 1,
-        label: 'Side Effect'
-    },
-    {
-        value: 'patient.drug.openfda.generic_name',
-        index: 2,
-        label: 'Generic Name'
-    },
-    {
-        value: 'patient.drug.openfda.brand_name',
-        index: 3,
-        label: 'Brand Name'
-    }
-]
+import OptionModal from "../OptionModal/OptionModal";
+import {searchTypes} from "../OptionModal/OptionModal";
 
 // Options used in the Fuse.js search library
 const fuseOptions = {
@@ -40,9 +17,13 @@ const fuseOptions = {
 const SearchBox = (props) => {
     const [inputValue, setInputValue] = React.useState('')
 
-    // Search type selection (popover)
+    // Search type selection
     const [selectedSearchTypeIndex, setSelectedSearchTypeIndex] = React.useState(0);
     const [searchType, setSearchType] = React.useState(searchTypes[selectedSearchTypeIndex].value)
+    const [showOptionModal, setShowOptionModal] = React.useState(false)
+
+    const handleCloseOptionModal = () => setShowOptionModal(false)
+    const handleShowOptionModal = () => setShowOptionModal(true)
 
     // Timeout for the placeholder animation
     const currentSearchPlaceholder = useSearchPlaceholder(3000)
@@ -151,6 +132,7 @@ const SearchBox = (props) => {
         const inputValue = e.target.value
         setInputValue(inputValue)
 
+        // Suggestions should only work when a substance name or a generic name is searched for
         if(searchType === 'patient.drug.activesubstance.activesubstancename' ||
             searchType === 'patient.drug.openfda.generic_name') {
 
@@ -171,44 +153,19 @@ const SearchBox = (props) => {
         }
     }
 
-    const handleSearchTypeChange = (index) => {
-        setSearchType(searchTypes[index].value)
-        setSelectedSearchTypeIndex(index)
-    }
-
-    const popover = (
-        <Popover id="popover-basic" className="searchbox-popover">
-            <Popover.Header as="h3">Filters</Popover.Header>
-            <Popover.Body>
-                <Container className={'text-center'}>
-                    {searchTypes.map((searchType) => (
-                        <React.Fragment key={searchType.index}>
-                            <p
-                                className={`search-type-option${selectedSearchTypeIndex === searchType.index ? ' selected' : ''}`}
-                                onClick={() =>
-                                    handleSearchTypeChange(searchType.index)
-                                }
-                            >
-                                {searchType.label}
-                            </p>
-                        </React.Fragment>
-                    ))}
-                </Container>
-            </Popover.Body>
-        </Popover>
-    );
-
 
     return (
         <div className={'d-flex justify-content-center'}>
             <Form onSubmit={handleSearch}>
                 <Form.Group controlId="searchTerm">
                     <InputGroup>
-                        <OverlayTrigger trigger="click" placement="left" overlay={popover} rootClose={true}>
-                            <Button variant="outline-secondary" id="button-filters">
-                                <FilterLeftIcon />
-                            </Button>
-                        </OverlayTrigger>
+                        <Button variant="outline-secondary" id="button-filters" onClick={handleShowOptionModal}>
+                            <FilterLeftIcon />
+                        </Button>
+                        <OptionModal show={showOptionModal} handleClose={handleCloseOptionModal}
+                                     selectedSearchTypeIndex={selectedSearchTypeIndex} setSearchType={setSearchType}
+                                     setSelectedSearchTypeIndex={setSelectedSearchTypeIndex}/>
+
                         <div ref={dropdownRef}>
                             <Dropdown show={dropdownOpen}>
                                 <Form.Control

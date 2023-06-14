@@ -126,9 +126,7 @@ const ApexChart = (props) => {
                 type={optionsAllGroups.chart.type}
             />
         )
-    }
-
-    if (props.type === 'events_over_time') {
+    } else if (props.type === 'events_over_time') {
         const chartData = {
             series: [{
                 name: 'Reports',

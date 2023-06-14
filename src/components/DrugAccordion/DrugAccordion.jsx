@@ -38,6 +38,27 @@ const DrugAccordion = (props) => {
                     )}
                 </Accordion.Body>
             </Accordion.Item>
+            <Accordion.Item eventKey={'3'}>
+                <Accordion.Header><Badge>Brands</Badge></Accordion.Header>
+                <Accordion.Body>
+                    {props.retrievedTermArr ? (
+                        // Format the brand list, so it is separated by commas and whitespaces
+                        props.retrievedTermArr.brands.map((brand, index) => {
+                            return (
+                                <span key={index}>
+                                    {brand}
+                                    {index !== props.retrievedTermArr.brands.length - 1 ? ', ' : ''}
+                                </span>
+                            )
+                        })
+                    ) : (
+                        <Placeholder animation="glow">
+                            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+                            <Placeholder xs={6} />
+                        </Placeholder>
+                    )}
+                </Accordion.Body>
+            </Accordion.Item>
         </Accordion>
     );
 }

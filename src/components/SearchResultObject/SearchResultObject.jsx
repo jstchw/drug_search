@@ -1,5 +1,5 @@
 import React from "react";
-import {Col, Container, Row, Badge, Placeholder, Accordion, Popover, OverlayTrigger, Alert} from "react-bootstrap";
+import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";

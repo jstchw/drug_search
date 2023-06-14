@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Form, Dropdown} from 'react-bootstrap';
+import {Modal, Form, Badge} from 'react-bootstrap';
 
 // Search types that can be selected in the popover
 export const searchTypes = [
@@ -9,19 +9,32 @@ export const searchTypes = [
         label: 'Active substance'
     },
     {
-        value: 'patient.reaction.reactionmeddrapt.exact',
+        value: 'patient.drug.openfda.brand_name',
         index: 1,
+        label: 'Brand Name'
+    },
+    {
+        value: 'patient.reaction.reactionmeddrapt.exact',
+        index: 2,
         label: 'Side Effect'
     },
+]
+
+export const searchSex = [
     {
-        value: 'patient.drug.openfda.generic_name',
-        index: 2,
-        label: 'Generic Name'
+        value: 'all',
+        index: 0,
+        label: 'All'
     },
     {
-        value: 'patient.drug.openfda.brand_name',
-        index: 3,
-        label: 'Brand Name'
+        value: 'male',
+        index: 1,
+        label: 'Male'
+    },
+    {
+        value: 'female',
+        index: 2,
+        label: 'Female'
     }
 ]
 
@@ -41,44 +54,34 @@ const OptionModal = (props) => {
                     <Modal.Title>Options</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Search by:
-                    <Dropdown drop={'start'}>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            Filters
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                            {searchTypes.map((searchType, index) => (
-                                <Dropdown.Item
-                                    key={index}
-                                    active={props.selectedSearchTypeIndex === searchType.index}
-                                    onClick={() => handleSearchTypeChange(searchType.index)}
-                                >
-                                    {searchType.label}
-                                </Dropdown.Item>
-                            ))}
-                        </Dropdown.Menu>
-                    </Dropdown>
-
                     <Form>
                         <Form.Group className="mb-3">
-                            <Form.Label>Search by</Form.Label>
-                            <Form.Select>
-                                {/* Add your options here */}
+                            <Form.Label><Badge>Search by</Badge></Form.Label>
+                            <Form.Select
+                                onChange={(e) => handleSearchTypeChange(e.target.value)}
+                                value={props.selectedSearchTypeIndex}
+                            >
+                                {searchTypes.map((searchType, index) => (
+                                    <option
+                                        key={index}
+                                        value={searchType.index}
+                                    >
+                                        {searchType.label}
+                                    </option>
+                                ))}
                             </Form.Select>
                         </Form.Group>
-
                         <Form.Group className="mb-3">
-                            <Form.Label>Age range</Form.Label>
+                            <Form.Label><Badge>Sex</Badge></Form.Label>
                             <Form.Select>
-                                {/* Add your options here */}
-                            </Form.Select>
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Gender</Form.Label>
-                            <Form.Select>
-                                {/* Add your options here */}
+                                {searchSex.map((searchType, index) => (
+                                    <option
+                                        key={index}
+                                        value={searchType.index}
+                                    >
+                                        {searchType.label}
+                                    </option>
+                                ))}
                             </Form.Select>
                         </Form.Group>
                     </Form>

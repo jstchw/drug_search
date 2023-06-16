@@ -1,5 +1,5 @@
-import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, {useEffect} from 'react';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import Header from '../../components/Header/Header'
 import SearchBox from '../../components/SearchBox/SearchBox'
 import SearchResultObject from "../../components/SearchResultObject/SearchResultObject";
@@ -15,6 +15,10 @@ const Search = () => {
     const [searchError, setSearchError] = React.useState(false)
 
     const [currentSearchTerm, setCurrentSearchTerm] = React.useState('')
+    const [mainSearchTerm, setMainSearchTerm] = React.useState('')
+    const [additionalSearchTerm, setAdditionalSearchTerm] = React.useState('')
+
+    const [showAdditionalSearch, setShowAdditionalSearch] = React.useState(false)
 
     const resetSearch = () => {
         setEventResults(null)
@@ -23,12 +27,26 @@ const Search = () => {
         setCurrentSearchTerm('')
     }
 
-    const handleSearch = async (searchType, searchTerm) => {
+    useEffect(() => {
+        if(!showAdditionalSearch) {
+            setAdditionalSearchTerm(null)
+        }
+    }, [showAdditionalSearch])
+
+    const handleSearch = async (searchType, singleSearchTerm) => {
         setSearchError(false)
-        if(searchTerm) {
+        if(singleSearchTerm) {
             setIsLoading(true)
+            const searchTerm = (additionalSearchTerm) ? [mainSearchTerm, additionalSearchTerm] : singleSearchTerm
+
+            if (mainSearchTerm === additionalSearchTerm) {
+                setSearchError(true)
+                setIsLoading(false)
+                return
+            }
             const eventAllGroups = await getDrugEventsSearch(searchTerm, searchType)
             const eventsOverTime = await getEventsOverTime(searchTerm, searchType)
+
             setIsLoading(false)
 
             if(eventAllGroups.result) {
@@ -46,24 +64,54 @@ const Search = () => {
         }
     }
 
-
     return (
         <div className="min-vh-100 d-flex flex-column">
             <Header onLogoClick={resetSearch}/>
             <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
                 <Row className="w-100 justify-content-center">
                     <Col xs="auto" className="text-center my-5">
-                        <SearchBox
-                            onSearch={handleSearch}
-                            searchError={searchError}
-                            setSearchError={setSearchError}
-                            loadingSpinner={isLoading}
-                        />
+                        <Row className={'mb-4'}>
+                            <SearchBox
+                                onSearch={handleSearch}
+                                searchError={searchError}
+                                setSearchError={setSearchError}
+                                loadingSpinner={isLoading}
+                                isMainSearch={true}
+                                showAdditionalSearch={showAdditionalSearch}
+                                onInputChange={setMainSearchTerm}
+                            />
+                        </Row>
+
+                        {(showAdditionalSearch) ? (
+                            <Button variant={'primary'} onClick={() => setShowAdditionalSearch(prevState => !prevState)}>
+                                -
+                            </Button>
+                        ) : (
+                            <Button variant={'outline-primary'}
+                                    onClick={() => {
+                                        setAdditionalSearchTerm(null)
+                                        setShowAdditionalSearch(prevState => !prevState)
+                                    }}>
+                                +
+                            </Button>
+                        )}
+
+                        {showAdditionalSearch &&
+                            <Row className={'mt-4'}>
+                                <SearchBox
+                                    onSearch={handleSearch}
+                                    isMainSearch={false}
+                                    showAdditionalSearch={showAdditionalSearch}
+                                    onInputChange={setAdditionalSearchTerm}
+                                />
+                            </Row>
+                        }
                         {eventResults && eventsOverTime &&
                             <SearchResultObject
                                 searchResults={eventResults}
                                 searchTerm={currentSearchTerm}
                                 eventsOverTime={eventsOverTime}
+                                showAdditionalSearch={showAdditionalSearch}
                             />
                         }
                     </Col>

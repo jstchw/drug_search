@@ -7,7 +7,6 @@ import './DrugDescription.css';
 const drugDescriptionUrl = 'http://localhost:16000/api';
 
 const DrugDescription = ({ drugName, onRetrieved }) => {
-
     const [drugInfo, setDrugInfo] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
@@ -21,7 +20,6 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
 
 
     useEffect(() => {
-
         // Prevents the app from crashing if something is not available
         const handleRetrieved = (info) => {
             const data = Object.entries(info).reduce(
@@ -92,7 +90,7 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
     }, [drugName, onRetrieved]);
 
     return (
-        <Card>
+        <Card className={'drug-description-card'}>
             <Card.Header>
                 <CapsuleIcon className="drug-badge mx-1" />
                 <span>Molecule</span>

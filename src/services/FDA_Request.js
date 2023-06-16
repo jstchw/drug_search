@@ -21,8 +21,12 @@ export const getDrugEventsSearch = async (searchTerm, searchType) => {
     const fromDate = `20040101`
     const toDate = formatDate(new Date())
     const count = 'patient.reaction.reactionmeddrapt.exact'
-
-    const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
+    let url = ''
+    if(Array.isArray(searchTerm)) {
+        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm[0])}"+AND+${searchType}:"${encodeURIComponent(searchTerm[1])}"&count=${count}`
+    } else {
+        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
+    }
     try {
         const response = await fetch(url)
         if (!response.ok) {
@@ -39,7 +43,12 @@ export const getEventsOverTime = async (searchTerm, searchType) => {
     const fromDate = `20040101`
     const toDate = formatDate(new Date())
     const count = 'receivedate'
-    const url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
+    let url
+    if(Array.isArray(searchTerm)) {
+        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm[0])}"+AND+${searchType}:"${encodeURIComponent(searchTerm[1])}"&count=${count}`
+    } else {
+        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
+    }
     try {
         const response = await fetch(url)
         if (!response.ok) {

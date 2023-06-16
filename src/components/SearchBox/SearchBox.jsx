@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Button, Form, InputGroup, Spinner} from 'react-bootstrap';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
@@ -43,6 +43,13 @@ const SearchBox = (props) => {
     // Handling the key control of the dropdown menu
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = React.useState(-1)
 
+    // Clearing the input value when the additional search is closed
+    useEffect(() => {
+        if(!props.showAdditionalSearch && !props.isMainSearch) {
+            setInputValue('')
+        }
+    }, [props.showAdditionalSearch, props.isMainSearch])
+
     // The function allows to browse through suggestions using arrow keys
     const handleKeyDown = (e) => {
         if (e.keyCode === 40) {
@@ -79,6 +86,7 @@ const SearchBox = (props) => {
        }
     }, [errorAnimation, props.searchError])
 
+    // Controlling the suggestions
     React.useEffect(() => {
         async function fetchSuggestions(e) {
             try {
@@ -94,6 +102,7 @@ const SearchBox = (props) => {
     }, [])
 
 
+    // Handling clicking outside the dropdown menu
     React.useEffect(() => {
         if (dropdownOpen) {
             document.addEventListener('mousedown', handleClickOutside)
@@ -117,7 +126,9 @@ const SearchBox = (props) => {
         const valueToSearch = newSearchValue || inputValue
 
         if (valueToSearch) {
+
             props.onSearch(searchType, valueToSearch)
+
             if (props.searchError) {
                 setErrorAnimation((prevCount) => prevCount + 1)
             }
@@ -127,25 +138,33 @@ const SearchBox = (props) => {
         }
     }
 
+    const { onInputChange } = props
+
+    useEffect(() => {
+        onInputChange(inputValue)
+    }, [inputValue, onInputChange])
+
     const handleInputChange = (e) => {
-        props.setSearchError(false)
-        const inputValue = e.target.value
-        setInputValue(inputValue)
+        if(props.isMainSearch) props.setSearchError(false)
+        setInputValue(e.target.value)
 
         // Suggestions should only work when a substance name or a generic name is searched for
         if(searchType === 'patient.drug.activesubstance.activesubstancename' ||
             searchType === 'patient.drug.openfda.generic_name') {
 
-            if (fuse && inputValue.length >= 3) {
-                const suggestion = fuse.search(inputValue)
-                setSuggestions(suggestion.slice(0, 5))
+            if (fuse && inputValue.length >= 3 && inputValue.length <= 20) {
+                const timeout = setTimeout(() => {
+                    const suggestion = fuse.search(inputValue)
+                    setSuggestions(suggestion.slice(0, 5))
 
-                if (suggestion.length > 0) {
-                    setDropdownOpen(true)
-                    setSelectedSuggestionIndex(-1)
-                } else {
-                    setDropdownOpen(false)
-                }
+                    if (suggestion.length > 0) {
+                        setDropdownOpen(true)
+                        setSelectedSuggestionIndex(-1)
+                    } else {
+                        setDropdownOpen(false)
+                    }
+                }, 300)
+                return () => clearTimeout(timeout)
             } else {
                 setSuggestions([])
                 setDropdownOpen(false)
@@ -159,9 +178,9 @@ const SearchBox = (props) => {
             <Form onSubmit={handleSearch}>
                 <Form.Group controlId="searchTerm">
                     <InputGroup>
-                        <Button variant="outline-secondary" id="button-filters" onClick={handleShowOptionModal}>
+                        {props.isMainSearch && <Button variant="outline-secondary" id="button-filters" onClick={handleShowOptionModal}>
                             <FilterLeftIcon />
-                        </Button>
+                        </Button>}
                         <OptionModal show={showOptionModal} handleClose={handleCloseOptionModal}
                                      selectedSearchTypeIndex={selectedSearchTypeIndex} setSearchType={setSearchType}
                                      setSelectedSearchTypeIndex={setSelectedSearchTypeIndex}/>
@@ -188,7 +207,9 @@ const SearchBox = (props) => {
                                             key={index}
                                             onClick={() => {
                                                 setInputValue(suggestion.item)
-                                                handleSearch(null, suggestion.item)
+                                                props.onInputChange(suggestion.item)
+                                                setDropdownOpen(false)
+                                                !props.showAdditionalSearch && handleSearch(null, suggestion.item)
                                             }}
                                             active={index === selectedSuggestionIndex}
                                         >
@@ -198,7 +219,7 @@ const SearchBox = (props) => {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                        <Button variant="outline-primary" id="button-submit" type="submit">
+                        {props.isMainSearch && <Button variant="outline-primary" id="button-submit" type="submit">
                             {props.loadingSpinner ? (
                                 <>
                                     <Spinner
@@ -214,7 +235,7 @@ const SearchBox = (props) => {
                                     <SearchIcon />
                                 </>
                             )}
-                        </Button>
+                        </Button>}
                     </InputGroup>
                 </Form.Group>
             </Form>

@@ -98,32 +98,43 @@ const SearchResultObject = (props) => {
                         <span>The provided information is indicative and shouldn't be used for inference.</span>
                     </Alert>
                 </Row>
-                <Row>
-                    {props.searchTerm !== undefined && (
-                        Array.isArray(props.searchTerm)
-                        ? props.searchTerm.map((term, index) => (
-                            <Col key={index}>
-                                <DrugDescription drugName={term} onRetrieved={setRetrievedTermDataArr}
-                                                 showAdditionalSearch={props.showAdditionalSearch}/>
-                            </Col>
-                        ))
-                        : (
+                {props.searchTerm !== undefined && (
+                    Array.isArray(props.searchTerm) ? (
+                        <>
+                            <Row>
+                                {props.searchTerm.map((term, index) => (
+                                    <Col key={index}>
+                                        <DrugDescription drugName={term} onRetrieved={setRetrievedTermDataArr}
+                                                         showAdditionalSearch={props.showAdditionalSearch}/>
+                                    </Col>
+                                ))}
+                            </Row>
+                            <Row>
+                                {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 &&
+                                    retrievedTermDataArr.map((term, index) => (
+                                        <Col key={index}>
+                                            <DrugAccordion retrievedTermArr={term} totalCount={totalCount}/>
+                                        </Col>
+                                    ))
+                                }
+                            </Row>
+                        </>
+                    ) : (
+                        <Row>
                             <Col>
                                 <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermDataArr}
                                                  showAdditionalSearch={props.showAdditionalSearch}/>
                             </Col>
-                        )
-                    )}
-                </Row>
-                <Row>
-                    {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 && (
-                        retrievedTermDataArr.map((term, index) => (
-                            <Col key={index}>
-                                <DrugAccordion retrievedTermArr={term} totalCount={totalCount}/>
-                            </Col>
-                        )))
-                    }
-                </Row>
+                            {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 && (
+                                <Col>
+                                    <DrugAccordion retrievedTermArr={retrievedTermDataArr[0]} totalCount={totalCount}/>
+                                </Col>
+                            )}
+                        </Row>
+                    )
+                )}
+
+
                 <Row>
                     <Col className={'mt-3'}>
                         <ChartDisplayObject eventsOverTime={eventsOverTime} termCountDict={termCountDict}

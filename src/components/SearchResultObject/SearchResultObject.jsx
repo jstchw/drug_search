@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
@@ -9,23 +9,10 @@ import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
 const SearchResultObject = (props) => {
     const { termCountDict, totalCount } = props.searchResults.result
     const eventsOverTime = props.eventsOverTime.result.results
-    const [retrievedTermData, setRetrievedTermData] = React.useState('')
-    const [prevTermData, setPrevTermData] = React.useState('')
     const [retrievedTermDataArr, setRetrievedTermDataArr] = React.useState([])
 
     let groupDescription
 
-    // This is the hardest thing I've ever done in my life
-    useEffect(() => {
-        if(props.showAdditionalSearch) {
-            if(retrievedTermData && prevTermData) {
-                setRetrievedTermDataArr([prevTermData, retrievedTermData])
-            }
-            setPrevTermData(retrievedTermData)
-        } else if (retrievedTermData && !props.showAdditionalSearch) {
-            setRetrievedTermDataArr([retrievedTermData])
-        }
-    }, [retrievedTermData])
 
     const processDrugGroups = (groups) => {
         return groups.map((group, index) => {
@@ -112,21 +99,30 @@ const SearchResultObject = (props) => {
                     </Alert>
                 </Row>
                 <Row>
-                    {Array.isArray(props.searchTerm)
+                    {props.searchTerm !== undefined && (
+                        Array.isArray(props.searchTerm)
                         ? props.searchTerm.map((term, index) => (
                             <Col key={index}>
-                                <DrugDescription drugName={term} onRetrieved={setRetrievedTermData}/>
+                                <DrugDescription drugName={term} onRetrieved={setRetrievedTermDataArr}
+                                                 showAdditionalSearch={props.showAdditionalSearch}/>
                             </Col>
                         ))
                         : (
                             <Col>
-                                <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermData}/>
+                                <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermDataArr}
+                                                 showAdditionalSearch={props.showAdditionalSearch}/>
                             </Col>
                         )
+                    )}
+                </Row>
+                <Row>
+                    {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 && (
+                        retrievedTermDataArr.map((term, index) => (
+                            <Col key={index}>
+                                <DrugAccordion retrievedTermArr={term} totalCount={totalCount}/>
+                            </Col>
+                        )))
                     }
-                    <Col>
-                        <DrugAccordion retrievedTermArr={retrievedTermData} totalCount={totalCount}/>
-                    </Col>
                 </Row>
                 <Row>
                     <Col className={'mt-3'}>

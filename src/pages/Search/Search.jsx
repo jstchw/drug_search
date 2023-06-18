@@ -5,6 +5,7 @@ import SearchBox from '../../components/SearchBox/SearchBox'
 import SearchResultObject from "../../components/SearchResultObject/SearchResultObject";
 import {getDrugEventsSearch, getEventsOverTime} from "../../services/FDA_Request";
 import './Search.css'
+import { LoadingContext } from "../../contexts/LoadingContext";
 
 const Search = () => {
     const [eventResults, setEventResults] = React.useState(null)
@@ -34,6 +35,7 @@ const Search = () => {
     }, [showAdditionalSearch])
 
     const handleSearch = async (searchType, singleSearchTerm) => {
+        setEventResults(null)
         setSearchError(false)
         if(singleSearchTerm) {
             setIsLoading(true)
@@ -65,59 +67,61 @@ const Search = () => {
     }
 
     return (
-        <div className="min-vh-100 d-flex flex-column">
-            <Header onLogoClick={resetSearch}/>
-            <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
-                <Row className="w-100 justify-content-center">
-                    <Col xs="auto" className="text-center my-5">
-                        <Row className={'mb-4'}>
-                            <SearchBox
-                                onSearch={handleSearch}
-                                searchError={searchError}
-                                setSearchError={setSearchError}
-                                loadingSpinner={isLoading}
-                                isMainSearch={true}
-                                showAdditionalSearch={showAdditionalSearch}
-                                onInputChange={setMainSearchTerm}
-                            />
-                        </Row>
-
-                        {(showAdditionalSearch) ? (
-                            <Button variant={'primary'} onClick={() => setShowAdditionalSearch(prevState => !prevState)}>
-                                -
-                            </Button>
-                        ) : (
-                            <Button variant={'outline-primary'}
-                                    onClick={() => {
-                                        setAdditionalSearchTerm(null)
-                                        setShowAdditionalSearch(prevState => !prevState)
-                                    }}>
-                                +
-                            </Button>
-                        )}
-
-                        {showAdditionalSearch &&
-                            <Row className={'mt-4'}>
+        <LoadingContext.Provider value={{isLoading, setIsLoading}}>
+            <div className="min-vh-100 d-flex flex-column">
+                <Header onLogoClick={resetSearch}/>
+                <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
+                    <Row className="w-100 justify-content-center">
+                        <Col xs="auto" className="text-center my-5">
+                            <Row className={'mb-4'}>
                                 <SearchBox
                                     onSearch={handleSearch}
-                                    isMainSearch={false}
+                                    searchError={searchError}
+                                    setSearchError={setSearchError}
+                                    loadingSpinner={isLoading}
+                                    isMainSearch={true}
                                     showAdditionalSearch={showAdditionalSearch}
-                                    onInputChange={setAdditionalSearchTerm}
+                                    onInputChange={setMainSearchTerm}
                                 />
                             </Row>
-                        }
-                        {eventResults && eventsOverTime &&
-                            <SearchResultObject
-                                searchResults={eventResults}
-                                searchTerm={currentSearchTerm}
-                                eventsOverTime={eventsOverTime}
-                                showAdditionalSearch={showAdditionalSearch}
-                            />
-                        }
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+
+                            {(showAdditionalSearch) ? (
+                                <Button variant={'primary'} onClick={() => setShowAdditionalSearch(prevState => !prevState)}>
+                                    -
+                                </Button>
+                            ) : (
+                                <Button variant={'outline-primary'}
+                                        onClick={() => {
+                                            setAdditionalSearchTerm(null)
+                                            setShowAdditionalSearch(prevState => !prevState)
+                                        }}>
+                                    +
+                                </Button>
+                            )}
+
+                            {showAdditionalSearch &&
+                                <Row className={'mt-4'}>
+                                    <SearchBox
+                                        onSearch={handleSearch}
+                                        isMainSearch={false}
+                                        showAdditionalSearch={showAdditionalSearch}
+                                        onInputChange={setAdditionalSearchTerm}
+                                    />
+                                </Row>
+                            }
+                            {eventResults && eventsOverTime &&
+                                <SearchResultObject
+                                    searchResults={eventResults}
+                                    searchTerm={currentSearchTerm}
+                                    eventsOverTime={eventsOverTime}
+                                    showAdditionalSearch={showAdditionalSearch}
+                                />
+                            }
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+        </LoadingContext.Provider>
     );
 }
 

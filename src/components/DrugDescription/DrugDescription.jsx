@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Capsule as CapsuleIcon } from "react-bootstrap-icons";
+import {Capsule as CapsuleIcon} from "react-bootstrap-icons";
 import { Card, Placeholder, Badge } from 'react-bootstrap';
 import './DrugDescription.css';
 
 const drugDescriptionUrl = 'http://localhost:16000/api';
 
-const DrugDescription = ({ drugName, onRetrieved }) => {
+const DrugDescription = ({ drugName, onRetrieved, showAdditionalSearch }) => {
     const [drugInfo, setDrugInfo] = useState({});
-    const [isLoading, setIsLoading] = useState(false);
 
     const [moleculeUrl, setMoleculeUrl] = useState(null);
+
+    const prevDrugNameRef = React.useRef();
+
+    const [dualSearch, setDualSearch] = useState(showAdditionalSearch);
 
 
     // Very weird function to convert the formula numbers to subscript
@@ -18,21 +21,35 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
         return str.replace(/\d/g, digit => '₀₁₂₃₄₅₆₇₈₉'[digit]);
     }
 
+    const handleRetrieved = (info) => {
+        const data = Object.entries(info).reduce(
+            (acc, [key, value]) => {
+                if (value !== null) {
+                    acc[key] = value;
+                } else {
+                    acc[key] = 'N/A';
+                }
+                return acc;
+            }, {})
+
+        if(showAdditionalSearch) {
+            setDualSearch(true)
+            onRetrieved(prev => [...prev, data])
+        } else {
+            setDualSearch(false)
+            onRetrieved([data])
+        }
+    }
+
 
     useEffect(() => {
-        // Prevents the app from crashing if something is not available
-        const handleRetrieved = (info) => {
-            const data = Object.entries(info).reduce(
-                (acc, [key, value]) => {
-                    if (value !== null) {
-                        acc[key] = value;
-                    } else {
-                        acc[key] = 'N/A';
-                    }
-                    return acc;
-                }, {})
-            onRetrieved(data);
+        if(drugInfo.drug_name) {
+            handleRetrieved(drugInfo)
         }
+    }, [drugInfo])
+
+
+    useEffect(() => {
 
         const fetchDrugInfo = async () => {
             try {
@@ -51,10 +68,8 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
                         brands: response.data[0].brands,
                         half_life: response.data[0].half_life,
                         indication: response.data[0].indication,
-                    };
-                    setDrugInfo(info);
-                    // Pass information to parent component to display name and groups
-                    handleRetrieved(info)
+                    }
+                    setDrugInfo({...info})
                 } else {
                     setDrugInfo({ error: 'No information found.' });
                 }
@@ -78,40 +93,46 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
             }
         }
         const fetchAllData = async () => {
-            if (drugName) {
-                setIsLoading(true);
-                await fetchDrugMolecule();
-                await fetchDrugInfo();
-                setIsLoading(false);
+            if (drugName && drugName !== prevDrugNameRef.current) {
+                try {
+                    await Promise.all([fetchDrugMolecule(), fetchDrugInfo()])
+                } catch (error) {
+                    console.error('Error fetching all data:', error)
+                }
             }
         }
 
         fetchAllData()
-    }, [drugName, onRetrieved]);
+        prevDrugNameRef.current = drugName;
+    }, [drugName])
 
     return (
-        <Card className={'drug-description-card'}>
+        <Card className={'drug-description-card mb-4'}>
             <Card.Header>
                 <CapsuleIcon className="drug-badge mx-1" />
-                <span>Molecule</span>
+                {dualSearch ? (
+                    <span>{drugInfo.drug_name}</span>
+                ) : (
+                    <span>Molecule</span>
+                )}
             </Card.Header>
 
             {moleculeUrl && <Card.Img src={moleculeUrl} alt={drugName} className="molecule" style={{ backgroundColor: 'transparent'}} />}
 
             <Card.Body className="text-md-start">
                 <p><Badge>IUPAC</Badge>&nbsp;
-                    {isLoading ? (
+                    {!drugInfo ? (
                         <>
                             <Placeholder as='span' animation="glow">
                                 <Placeholder xs={4} />
                             </Placeholder>
                         </>
                     ) : (
-                        drugInfo.iupac
+                        <span className={'iupac'}>{drugInfo.iupac}</span>
                     )}
                 </p>
                 <p><Badge>Class</Badge>&nbsp;
-                    {isLoading ? (
+                    {!drugInfo ? (
                         <>
                             <Placeholder as='span' animation="glow">
                                 <Placeholder xs={4} />
@@ -122,7 +143,7 @@ const DrugDescription = ({ drugName, onRetrieved }) => {
                     )}
                 </p>
                 <p><Badge>Formula</Badge>&nbsp;
-                    {isLoading ? (
+                    {!drugInfo ? (
                         <>
                             <Placeholder as='span' animation="glow">
                                 <Placeholder xs={4} />

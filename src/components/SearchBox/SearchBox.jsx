@@ -2,11 +2,11 @@ import React, {useEffect} from 'react';
 import {Button, Form, InputGroup, Spinner} from 'react-bootstrap';
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
-import Fuse from 'fuse.js'
 import { Dropdown } from 'react-bootstrap'
 import './SearchBox.css'
 import OptionModal from "../OptionModal/OptionModal";
 import {searchTypes} from "../OptionModal/OptionModal";
+import { useSuggestions } from "../../hooks/useSuggestions";
 
 // Options used in the Fuse.js search library
 const fuseOptions = {
@@ -34,7 +34,6 @@ const SearchBox = (props) => {
     const inputRef = React.useRef(null)
 
     // Elements for the suggestion mechanism
-    const [fuse, setFuse] = React.useState(null)
     const [suggestions, setSuggestions] = React.useState([])
     const [dropdownOpen, setDropdownOpen] = React.useState(false)
     // This ref is attached to div wrapping the dropdown menu since bootstrap doesn't support refs
@@ -86,20 +85,7 @@ const SearchBox = (props) => {
        }
     }, [errorAnimation, props.searchError])
 
-    // Controlling the suggestions
-    React.useEffect(() => {
-        async function fetchSuggestions(e) {
-            try {
-                const response = await fetch('http://localhost:16000/api/get_suggestions')
-                const data = await response.json()
-                setFuse(new Fuse(data, fuseOptions))
-                // Reset the selected suggestion index
-            } catch (error) {
-                console.error('Error fetching suggestions:', error)
-            }
-        }
-        fetchSuggestions()
-    }, [])
+    const fuse = useSuggestions('http://localhost:16000/api/get_suggestions', fuseOptions)
 
 
     // Handling clicking outside the dropdown menu

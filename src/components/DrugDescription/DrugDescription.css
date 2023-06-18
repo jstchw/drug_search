@@ -1,3 +1,9 @@
 .drug-badge {
     color: gray;
 }
+
+.iupac {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}

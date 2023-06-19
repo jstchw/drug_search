@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
+import { LoadingContext } from "../../contexts/LoadingContext";
 
 
 const SearchResultObject = (props) => {
@@ -11,8 +12,14 @@ const SearchResultObject = (props) => {
     const eventsOverTime = props.eventsOverTime.result.results
     const [retrievedTermDataArr, setRetrievedTermDataArr] = React.useState([])
 
+    const { isLoading } = React.useContext(LoadingContext)
+
     let groupDescription
 
+    // Refreshes the array before each search so nothing gets messed up
+    useEffect(() => {
+        setRetrievedTermDataArr([])
+    }, [isLoading])
 
     const processDrugGroups = (groups) => {
         return groups.map((group, index) => {
@@ -98,41 +105,35 @@ const SearchResultObject = (props) => {
                         <span>The provided information is indicative and shouldn't be used for inference.</span>
                     </Alert>
                 </Row>
-                {props.searchTerm !== undefined && (
-                    Array.isArray(props.searchTerm) ? (
-                        <>
-                            <Row>
-                                {props.searchTerm.map((term, index) => (
-                                    <Col key={index}>
-                                        <DrugDescription drugName={term} onRetrieved={setRetrievedTermDataArr}
-                                                         showAdditionalSearch={props.showAdditionalSearch}/>
-                                    </Col>
-                                ))}
-                            </Row>
-                            <Row>
-                                {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 &&
-                                    retrievedTermDataArr.map((term, index) => (
-                                        <Col key={index}>
-                                            <DrugAccordion retrievedTermArr={term} totalCount={totalCount}/>
-                                        </Col>
-                                    ))
-                                }
-                            </Row>
-                        </>
-                    ) : (
-                        <Row>
-                            <Col>
-                                <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermDataArr}
-                                                 showAdditionalSearch={props.showAdditionalSearch}/>
-                            </Col>
-                            {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 && (
-                                <Col>
-                                    <DrugAccordion retrievedTermArr={retrievedTermDataArr[0]} totalCount={totalCount}/>
+                <Row>
+                    {props.searchTerm !== undefined && (
+                        Array.isArray(props.searchTerm) ? (
+                            props.searchTerm.map((term, index) => (
+                                <Col key={index}>
+                                    <DrugDescription drugName={term} onRetrieved={setRetrievedTermDataArr}
+                                                     showAdditionalSearch={props.showAdditionalSearch}/>
+                                    {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 &&
+                                        <DrugAccordion retrievedTermArr={retrievedTermDataArr[index]} totalCount={totalCount}/>
+                                    }
                                 </Col>
-                            )}
-                        </Row>
-                    )
-                )}
+                            ))
+                        ) : (
+                            <>
+                                <Col>
+                                    <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermDataArr}
+                                                     showAdditionalSearch={props.showAdditionalSearch}/>
+                                </Col>
+                                {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 &&
+                                    <Col>
+                                        <DrugAccordion retrievedTermArr={retrievedTermDataArr[0]} totalCount={totalCount}/>
+                                    </Col>
+                                }
+                            </>
+                        )
+                    )}
+                </Row>
+
+
 
 
                 <Row>

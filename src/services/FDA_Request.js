@@ -51,8 +51,6 @@ const processDrugEvents = (data) => {
 }
 
 export const getDrugEventsSearch = async (searchTerm, searchOptions) => {
-
-
     const url = generatePath(searchTerm, searchOptions, 'reaction')
     try {
         const response = await fetch(url)

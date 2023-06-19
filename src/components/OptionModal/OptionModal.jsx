@@ -26,20 +26,14 @@ export const searchTypes = [
 
 export const searchSex = [
     {
-        value: undefined,
-        index: 0,
-        label: 'All',
-        type: 'sex'
-    },
-    {
         value: 'patient.patientsex:1',
-        index: 1,
+        index: 0,
         label: 'Male',
         type: 'sex'
     },
     {
         value: 'patient.patientsex:2',
-        index: 2,
+        index: 1,
         label: 'Female',
         type: 'sex'
     }
@@ -59,19 +53,42 @@ export const searchAgeRange = [
 ]
 
 const OptionModal = (props) => {
+    const [isSexDisabled, setIsSexDisabled] = React.useState(true)
+    const [lastSelectedSex, setLastSelectedSex] = React.useState(searchSex[0].value)
+
     const [isAgeDisabled, setIsAgeDisabled] = React.useState(true)
     const [ageRange, setAgeRange] = React.useState([searchAgeRange[0].value, searchAgeRange[1].value])
+    const [lastSelectedAge, setLastSelectedAge] = React.useState([searchAgeRange[0].value, searchAgeRange[1].value])
 
     // Clear the age range when the age is disabled
     useEffect(() => {
-        if (isAgeDisabled) {
-            setAgeRange([searchAgeRange[0].value, searchAgeRange[1].value])
+        if(isAgeDisabled) {
             props.setSearchOptions({
                 ...props.searchOptions,
                 age: undefined
+            });
+        } else {
+            props.setSearchOptions({
+                ...props.searchOptions,
+                age: lastSelectedAge
+            });
+        }
+    }, [isAgeDisabled]);
+
+
+    useEffect(() => {
+        if(isSexDisabled) {
+            props.setSearchOptions({
+                ...props.searchOptions,
+                sex: undefined
+            })
+        } else {
+            props.setSearchOptions({
+                ...props.searchOptions,
+                sex: lastSelectedSex
             })
         }
-    }, [isAgeDisabled])
+    }, [isSexDisabled])
 
 
     const handleOptionsChange = (index, type, value) => {
@@ -90,6 +107,7 @@ const OptionModal = (props) => {
 
                 break
             case 'sex':
+                setLastSelectedSex(searchSex[index].value)
                 props.setSearchOptions({
                     ...props.searchOptions,
                     [type]: searchSex[index].value
@@ -101,14 +119,16 @@ const OptionModal = (props) => {
                 })
                 break
             case 'age':
-                console.log(ageRange)
                 const newAgeRange = [...ageRange]
                 newAgeRange[index] = value
                 setAgeRange(newAgeRange)
-                props.setSearchOptions({
-                    ...props.searchOptions,
-                    [type]: newAgeRange
-                })
+                if(!isAgeDisabled) {
+                    setLastSelectedAge(newAgeRange)
+                    props.setSearchOptions({
+                        ...props.searchOptions,
+                        [type]: newAgeRange
+                    })
+                }
                 break
         }
     }
@@ -156,9 +176,9 @@ const OptionModal = (props) => {
                                 <ToggleButton
                                     type="checkbox"
                                     variant="outline-primary"
-                                    checked={true}
+                                    checked={!isSexDisabled}
                                     value="1"
-                                    disabled={true}
+                                    onClick={(e) => setIsSexDisabled(!isSexDisabled)}
                                 >
                                     Sex
                                 </ToggleButton>
@@ -167,6 +187,7 @@ const OptionModal = (props) => {
                                 <Form.Select
                                     onChange={e => {handleOptionsChange(e.target.value, 'sex')}}
                                     value={props.selectedSearchOptionIndex.sex}
+                                    disabled={isSexDisabled}
                                 >
                                     {searchSex.map((sex, index) => (
                                             <option

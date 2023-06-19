@@ -24,7 +24,7 @@ const SearchBox = (props) => {
     const [searchOptions, setSearchOptions] = React.useState({
         searchBy: searchTypes[selectedSearchOptionIndex.searchBy].value,
         sex: searchSex[selectedSearchOptionIndex.sex].value,
-        age: [searchAgeRange[0].value, searchAgeRange[1].value]
+        age: searchAgeRange[-1]
     })
 
     const [showOptionModal, setShowOptionModal] = React.useState(false)

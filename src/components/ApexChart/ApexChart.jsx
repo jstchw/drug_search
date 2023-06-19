@@ -104,12 +104,12 @@ const ApexChart = (props) => {
                 type: 'gradient',
                 gradient: {
                     shade: 'light',
-                    type: 'vertical', // Change this to 'horizontal' for horizontal gradient
-                    shadeIntensity: 0.4,
+                    type: 'horizontal', // Change this to 'horizontal' for horizontal gradient
+                    shadeIntensity: 0.25,
                     gradientToColors: undefined,
                     inverseColors: true,
                     opacityFrom: 1,
-                    opacityTo: 0.5,
+                    opacityTo: 0.75,
                     stops: [0, 100]
                 },
             },

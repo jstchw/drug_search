@@ -8,7 +8,9 @@ const Header = (props) => {
         // Navbar containing the links to all the pages of the webapp
         <Navbar bg="dark" variant="dark" sticky={'top'} className="header-full-width">
             <Container>
-                <Navbar.Brand as={NavLink} to="/" onClick={props.onLogoClick}><SearchIcon />DrugSearch</Navbar.Brand>
+                <Navbar.Brand as={NavLink} to="/" onClick={e => window.location.href = '/'}>
+                    <SearchIcon />DrugSearch
+                </Navbar.Brand>
                 <HeaderLink to="/dashboard">Dashboard</HeaderLink>
                 <HeaderLink to="/settings">Settings</HeaderLink>
             </Container>

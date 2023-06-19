@@ -21,13 +21,6 @@ const Search = () => {
 
     const [showAdditionalSearch, setShowAdditionalSearch] = React.useState(false)
 
-    const resetSearch = () => {
-        setEventResults(null)
-        setIsLoading(false)
-        setSearchError(false)
-        setCurrentSearchTerm('')
-    }
-
     useEffect(() => {
         if(!showAdditionalSearch) {
             setAdditionalSearchTerm(null)
@@ -69,7 +62,7 @@ const Search = () => {
     return (
         <LoadingContext.Provider value={{isLoading, setIsLoading}}>
             <div className="min-vh-100 d-flex flex-column">
-                <Header onLogoClick={resetSearch}/>
+                <Header />
                 <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
                     <Row className="w-100 justify-content-center">
                         <Col xs="auto" className="text-center my-5">

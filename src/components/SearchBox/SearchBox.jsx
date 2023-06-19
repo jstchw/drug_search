@@ -68,9 +68,14 @@ const SearchBox = (props) => {
                 const selectedSuggestion = suggestions[selectedSuggestionIndex];
                 setInputValue(selectedSuggestion.item);
                 setSelectedSuggestionIndex(-1);
-                handleSearch(null, selectedSuggestion.item);
+                setDropdownOpen(false);
+                if (!props.showAdditionalSearch) {
+                    handleSearch(null, selectedSuggestion.item)
+                }
             } else {
-                handleSearch(null, inputValue);
+                if (!props.showAdditionalSearch) {
+                    handleSearch(null, inputValue)
+                }
             }
         }
     }

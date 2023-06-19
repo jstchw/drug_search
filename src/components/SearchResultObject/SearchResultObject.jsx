@@ -106,6 +106,9 @@ const SearchResultObject = (props) => {
                     </Alert>
                 </Row>
                 <Row>
+                    {/* props.searchTerm is the wrapping array for a drug object. */ }
+                    {/* retrievedTermDataArr is the data about the drug name submitted from the props.searchTerm */}
+                    
                     {props.searchTerm !== undefined && (
                         Array.isArray(props.searchTerm) ? (
                             props.searchTerm.map((term, index) => (

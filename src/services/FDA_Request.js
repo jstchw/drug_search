@@ -1,5 +1,38 @@
 const BASE_URL = 'https://api.fda.gov/drug/event.json'
 
+
+const generatePath = (searchTerm, searchOptions, countType) => {
+    const fromDate = `20040101`
+    const toDate = formatDate(new Date())
+    const whatToCount = {
+        reaction: 'patient.reaction.reactionmeddrapt.exact',
+        receiveDate: 'receivedate',
+    }
+
+    let searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
+
+    if (searchTerm) {
+        if (Array.isArray(searchTerm)) {
+            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(searchTerm[0])}"`)
+            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(searchTerm[1])}"`)
+        } else {
+            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(searchTerm)}"`)
+        }
+    }
+
+    if (searchOptions.sex) {
+        searchParts.push(searchOptions.sex)
+    }
+
+    if (searchOptions.age && searchOptions.age[0] && searchOptions.age[1]) {
+        searchParts.push(`patient.patientonsetage:[${searchOptions.age[0]}+TO+${searchOptions.age[1]}]`)
+    }
+
+    return `${BASE_URL}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`
+}
+
+
+
 const formatDate = (date) => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
@@ -17,16 +50,10 @@ const processDrugEvents = (data) => {
     return { totalCount, termCountDict }
 }
 
-export const getDrugEventsSearch = async (searchTerm, searchType) => {
-    const fromDate = `20040101`
-    const toDate = formatDate(new Date())
-    const count = 'patient.reaction.reactionmeddrapt.exact'
-    let url = ''
-    if(Array.isArray(searchTerm)) {
-        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm[0])}"+AND+${searchType}:"${encodeURIComponent(searchTerm[1])}"&count=${count}`
-    } else {
-        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
-    }
+export const getDrugEventsSearch = async (searchTerm, searchOptions) => {
+
+
+    const url = generatePath(searchTerm, searchOptions, 'reaction')
     try {
         const response = await fetch(url)
         if (!response.ok) {
@@ -39,16 +66,9 @@ export const getDrugEventsSearch = async (searchTerm, searchType) => {
     }
 }
 
-export const getEventsOverTime = async (searchTerm, searchType) => {
-    const fromDate = `20040101`
-    const toDate = formatDate(new Date())
-    const count = 'receivedate'
-    let url
-    if(Array.isArray(searchTerm)) {
-        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm[0])}"+AND+${searchType}:"${encodeURIComponent(searchTerm[1])}"&count=${count}`
-    } else {
-        url = `${BASE_URL}?search=(receivedate:[${fromDate}+TO+${toDate}])+AND+${searchType}:"${encodeURIComponent(searchTerm)}"&count=${count}`
-    }
+export const getEventsOverTime = async (searchTerm, searchOptions) => {
+    const url = generatePath(searchTerm, searchOptions, 'receiveDate')
+
     try {
         const response = await fetch(url)
         if (!response.ok) {

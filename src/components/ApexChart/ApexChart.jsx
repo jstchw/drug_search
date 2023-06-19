@@ -59,8 +59,7 @@ const ApexChart = (props) => {
         const optionsAllGroups = {
             labels: chartData.labels,
             legend: {
-                show: true,
-                position: 'bottom',
+                show: false,
             },
             chart: {
                 type: 'bar',
@@ -71,9 +70,9 @@ const ApexChart = (props) => {
             },
             plotOptions: {
                 bar: {
-                    horizontal: false,
+                    horizontal: true,
                     distributed: true,
-                    columnWidth: '95%'
+                    barHeight: '95%',
                 }
             },
             title : {
@@ -87,8 +86,12 @@ const ApexChart = (props) => {
             yaxis: {
                 labels: {
                     show: true,
+                    style: {
+                        fontSize: '14px',
+                    },
                     formatter: (value) => {
-                        return `${value}%`
+                        value = String(value)
+                        return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
                     }
                 }
             },
@@ -115,8 +118,18 @@ const ApexChart = (props) => {
                 width: 3, // This sets the stroke colors
             },
             dataLabels: {
-                enabled: false
+                enabled: true,
+                formatter: (value) => {
+                    return `${value}%`
+                }
             },
+            tooltip: {
+                y: {
+                    formatter: (value) => {
+                        return `${value}%`
+                    }
+                }
+            }
         }
 
         return (

@@ -34,7 +34,7 @@ const Search = () => {
         }
     }, [showAdditionalSearch])
 
-    const handleSearch = async (searchType, singleSearchTerm) => {
+    const handleSearch = async (searchOptions, singleSearchTerm) => {
         setEventResults(null)
         setSearchError(false)
         if(singleSearchTerm) {
@@ -46,8 +46,8 @@ const Search = () => {
                 setIsLoading(false)
                 return
             }
-            const eventAllGroups = await getDrugEventsSearch(searchTerm, searchType)
-            const eventsOverTime = await getEventsOverTime(searchTerm, searchType)
+            const eventAllGroups = await getDrugEventsSearch(searchTerm, searchOptions)
+            const eventsOverTime = await getEventsOverTime(searchTerm, searchOptions)
 
             setIsLoading(false)
 

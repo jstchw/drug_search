@@ -1,50 +1,116 @@
-import React from 'react';
-import {Modal, Form, Badge} from 'react-bootstrap';
+import React, {useEffect} from 'react';
+import {Modal, Form, Badge, InputGroup, ToggleButton, Container} from 'react-bootstrap';
+
 
 // Search types that can be selected in the popover
 export const searchTypes = [
     {
         value: 'patient.drug.activesubstance.activesubstancename',
         index: 0,
-        label: 'Active substance'
+        label: 'Active substance',
+        type: 'searchBy'
     },
     {
         value: 'patient.drug.openfda.brand_name',
         index: 1,
-        label: 'Brand Name'
+        label: 'Brand Name',
+        type: 'searchBy'
     },
     {
         value: 'patient.reaction.reactionmeddrapt.exact',
         index: 2,
-        label: 'Side Effect'
+        label: 'Side Effect',
+        type: 'searchBy'
     },
 ]
 
 export const searchSex = [
     {
-        value: 'all',
+        value: undefined,
         index: 0,
-        label: 'All'
+        label: 'All',
+        type: 'sex'
     },
     {
-        value: 'male',
+        value: 'patient.patientsex:1',
         index: 1,
-        label: 'Male'
+        label: 'Male',
+        type: 'sex'
     },
     {
-        value: 'female',
+        value: 'patient.patientsex:2',
         index: 2,
-        label: 'Female'
+        label: 'Female',
+        type: 'sex'
     }
 ]
 
-
+export const searchAgeRange = [
+    {
+        value: '',
+        index: 0,
+        type: 'age',
+    },
+    {
+        value: '',
+        index: 1,
+        type: 'age',
+    }
+]
 
 const OptionModal = (props) => {
+    const [isAgeDisabled, setIsAgeDisabled] = React.useState(true)
+    const [ageRange, setAgeRange] = React.useState([searchAgeRange[0].value, searchAgeRange[1].value])
 
-    const handleSearchTypeChange = (index) => {
-        props.setSearchType(searchTypes[index].value)
-        props.setSelectedSearchTypeIndex(index)
+    // Clear the age range when the age is disabled
+    useEffect(() => {
+        if (isAgeDisabled) {
+            setAgeRange([searchAgeRange[0].value, searchAgeRange[1].value])
+            props.setSearchOptions({
+                ...props.searchOptions,
+                age: undefined
+            })
+        }
+    }, [isAgeDisabled])
+
+
+    const handleOptionsChange = (index, type, value) => {
+        switch (type) {
+            case 'searchBy':
+                props.setSearchOptions({
+                    ...props.searchOptions,
+                    [type]: searchTypes[index].value
+                })
+
+                props.setSelectedSearchOptionIndex({
+                    ...props.selectedSearchOptionIndex,
+                    [type]: index
+                })
+
+
+                break
+            case 'sex':
+                props.setSearchOptions({
+                    ...props.searchOptions,
+                    [type]: searchSex[index].value
+                })
+
+                props.setSelectedSearchOptionIndex({
+                    ...props.selectedSearchOptionIndex,
+                    [type]: index
+                })
+                break
+            case 'age':
+                console.log(ageRange)
+                const newAgeRange = [...ageRange]
+                newAgeRange[index] = value
+                setAgeRange(newAgeRange)
+                props.setSearchOptions({
+                    ...props.searchOptions,
+                    [type]: newAgeRange
+                })
+                break
+        }
     }
 
     return (
@@ -55,34 +121,95 @@ const OptionModal = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label><Badge>Search by</Badge></Form.Label>
-                            <Form.Select
-                                onChange={(e) => handleSearchTypeChange(e.target.value)}
-                                value={props.selectedSearchTypeIndex}
-                            >
-                                {searchTypes.map((searchType, index) => (
-                                    <option
-                                        key={index}
-                                        value={searchType.index}
-                                    >
-                                        {searchType.label}
-                                    </option>
-                                ))}
-                            </Form.Select>
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <div className={'d-flex align-items-center'}>
+                                <ToggleButton
+                                    type="checkbox"
+                                    variant="outline-primary"
+                                    checked={true}
+                                    value="1"
+                                    disabled={true}
+                                >
+                                    Search by
+                                </ToggleButton>
+                            </div>
+                            <InputGroup className={'flex-grow-1 mx-3'} style={{width: 'auto'}}>
+                                <Form.Select
+                                    onChange={(e) => handleOptionsChange(e.target.value, 'searchBy')}
+                                    value={props.selectedSearchOptionIndex.searchBy}
+                                    style={{width: 'auto'}}
+                                >
+                                    {searchTypes.map((searchType, index) => (
+                                        <option
+                                            key={index}
+                                            value={searchType.index}
+                                        >
+                                            {searchType.label}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </InputGroup>
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label><Badge>Sex</Badge></Form.Label>
-                            <Form.Select>
-                                {searchSex.map((searchType, index) => (
-                                    <option
-                                        key={index}
-                                        value={searchType.index}
-                                    >
-                                        {searchType.label}
-                                    </option>
+
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <div className={'d-flex align-items-center'}>
+                                <ToggleButton
+                                    type="checkbox"
+                                    variant="outline-primary"
+                                    checked={true}
+                                    value="1"
+                                    disabled={true}
+                                >
+                                    Sex
+                                </ToggleButton>
+                            </div>
+                            <InputGroup className={'mx-3 flex-grow-1'}>
+                                <Form.Select
+                                    onChange={e => {handleOptionsChange(e.target.value, 'sex')}}
+                                    value={props.selectedSearchOptionIndex.sex}
+                                >
+                                    {searchSex.map((sex, index) => (
+                                            <option
+                                                key={index}
+                                                value={sex.index}
+                                            >
+                                                {sex.label}
+                                            </option>
                                 ))}
-                            </Form.Select>
+                                </Form.Select>
+                            </InputGroup>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <div className={'d-flex align-items-center'}>
+                                <ToggleButton
+                                    type="checkbox"
+                                    variant="outline-primary"
+                                    checked={!isAgeDisabled}
+                                    value="1"
+                                    onClick={(e) => setIsAgeDisabled(!isAgeDisabled)}
+                                >
+                                Age
+                                </ToggleButton>
+                            </div>
+
+                            <InputGroup className={'mx-3 flex-grow-1'}>
+                                <Form.Control
+                                    type="number"
+                                    placeholder="Min"
+                                    value={ageRange[0]}
+                                    onChange={(e) => handleOptionsChange(0, 'age', e.target.value)}
+                                    disabled={isAgeDisabled}
+                                />
+                                <InputGroup.Text>-</InputGroup.Text>
+                                <Form.Control
+                                    type="number"
+                                    placeholder="Max"
+                                    value={ageRange[1]}
+                                    onChange={(e) => handleOptionsChange(1, 'age', e.target.value)}
+                                    disabled={isAgeDisabled}
+                                />
+                            </InputGroup>
                         </Form.Group>
                     </Form>
                 </Modal.Body>

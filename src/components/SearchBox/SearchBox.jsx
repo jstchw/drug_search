@@ -4,8 +4,7 @@ import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
 import { Dropdown } from 'react-bootstrap'
 import './SearchBox.css'
-import OptionModal from "../OptionModal/OptionModal";
-import {searchTypes} from "../OptionModal/OptionModal";
+import OptionModal, {searchAgeRange, searchTypes, searchSex} from "../OptionModal/OptionModal";
 import { useSuggestions } from "../../hooks/useSuggestions";
 
 // Options used in the Fuse.js search library
@@ -17,9 +16,17 @@ const fuseOptions = {
 const SearchBox = (props) => {
     const [inputValue, setInputValue] = React.useState('')
 
-    // Search type selection
-    const [selectedSearchTypeIndex, setSelectedSearchTypeIndex] = React.useState(0);
-    const [searchType, setSearchType] = React.useState(searchTypes[selectedSearchTypeIndex].value)
+    const [selectedSearchOptionIndex, setSelectedSearchOptionIndex] = React.useState({
+        searchBy: 0,
+        sex: 0,
+    })
+
+    const [searchOptions, setSearchOptions] = React.useState({
+        searchBy: searchTypes[selectedSearchOptionIndex.searchBy].value,
+        sex: searchSex[selectedSearchOptionIndex.sex].value,
+        age: [searchAgeRange[0].value, searchAgeRange[1].value]
+    })
+
     const [showOptionModal, setShowOptionModal] = React.useState(false)
 
     const handleCloseOptionModal = () => setShowOptionModal(false)
@@ -117,8 +124,8 @@ const SearchBox = (props) => {
         const valueToSearch = newSearchValue || inputValue
 
         if (valueToSearch) {
-
-            props.onSearch(searchType, valueToSearch)
+            console.log(searchOptions)
+            props.onSearch(searchOptions, valueToSearch)
 
             if (props.searchError) {
                 setErrorAnimation((prevCount) => prevCount + 1)
@@ -140,8 +147,8 @@ const SearchBox = (props) => {
         setInputValue(e.target.value)
 
         // Suggestions should only work when a substance name or a generic name is searched for
-        if(searchType === 'patient.drug.activesubstance.activesubstancename' ||
-            searchType === 'patient.drug.openfda.generic_name') {
+        if(searchOptions.searchBy === 'patient.drug.activesubstance.activesubstancename' ||
+            searchOptions.searchBy === 'patient.drug.openfda.generic_name') {
 
             if (fuse && inputValue.length >= 3 && inputValue.length <= 20) {
                 const timeout = setTimeout(() => {
@@ -173,8 +180,10 @@ const SearchBox = (props) => {
                             <FilterLeftIcon />
                         </Button>}
                         <OptionModal show={showOptionModal} handleClose={handleCloseOptionModal}
-                                     selectedSearchTypeIndex={selectedSearchTypeIndex} setSearchType={setSearchType}
-                                     setSelectedSearchTypeIndex={setSelectedSearchTypeIndex}/>
+                                     searchOptions={searchOptions} setSearchOptions={setSearchOptions}
+                                     selectedSearchOptionIndex={selectedSearchOptionIndex}
+                                     setSelectedSearchOptionIndex={setSelectedSearchOptionIndex}
+                        />
 
                         <div ref={dropdownRef}>
                             <Dropdown show={dropdownOpen}>

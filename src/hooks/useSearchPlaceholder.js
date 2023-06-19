@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 const placeholders = [
     'Acetaminophen',
     'Adderall',
-    'Alprazolam&Modafinil',
+    'Alprazolam',
     'Headache',
     'Nausea',
 ]

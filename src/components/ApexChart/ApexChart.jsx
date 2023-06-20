@@ -77,7 +77,7 @@ const ApexChart = (props) => {
             },
             title : {
                 align: 'center',
-                text: 'Adverse effects for all groups',
+                text: 'Adverse effects for the searched group',
                 style: {
                     fontSize: '20px',
                     fontWeight: 'light',

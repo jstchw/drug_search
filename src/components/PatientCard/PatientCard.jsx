@@ -7,7 +7,7 @@ const processSearchOptions = (searchOptions, setSearchOptions) => {
 
     let newSearchOptions = {...searchOptions}
 
-    if(searchOptions.age[0] && searchOptions.age[1]) {
+    if(searchOptions.age && searchOptions.age[0] && searchOptions.age[1]) {
         console.log(searchOptions.age)
         newSearchOptions = {
             ...newSearchOptions,

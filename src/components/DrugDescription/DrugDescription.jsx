@@ -69,7 +69,7 @@ const DrugDescription = ({ drugName, onRetrieved, showAdditionalSearch }) => {
                         half_life: response.data[0].half_life,
                         indication: response.data[0].indication,
                     }
-                    setDrugInfo({...info})
+                    setDrugInfo(info)
                 } else {
                     setDrugInfo({ error: 'No information found.' });
                 }

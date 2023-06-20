@@ -1,18 +1,14 @@
-import { Container, Navbar } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
-import HeaderLink from './HeaderLink'
+import { Container, Navbar, Badge } from 'react-bootstrap';
 import { Search as SearchIcon } from 'react-bootstrap-icons';
 
-const Header = (props) => {
+const Header = () => {
     return (
         // Navbar containing the links to all the pages of the webapp
-        <Navbar bg="dark" variant="dark" sticky={'top'} className="header-full-width">
-            <Container>
-                <Navbar.Brand as={NavLink} to="/" onClick={e => window.location.href = '/'}>
-                    <SearchIcon />DrugSearch
-                </Navbar.Brand>
-                <HeaderLink to="/dashboard">Dashboard</HeaderLink>
-                <HeaderLink to="/settings">Settings</HeaderLink>
+        <Navbar className="header-full-width">
+            <Container className={'d-flex justify-content-center'}>
+                <Badge className={'p-2'} style={{cursor: "pointer"}} onClick={e => window.location.href = '/'}>
+                    <span className={'fs-5'}><SearchIcon/>DrugSearch</span>
+                </Badge>
             </Container>
         </Navbar>
     );

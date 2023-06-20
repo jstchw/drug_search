@@ -1,25 +1,17 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
-import { LoadingContext } from "../../contexts/LoadingContext";
-
+import PatientCard from "../PatientCard/PatientCard";
 
 const SearchResultObject = (props) => {
     const { termCountDict, totalCount } = props.searchResults.result
     const eventsOverTime = props.eventsOverTime.result.results
     const [retrievedTermDataArr, setRetrievedTermDataArr] = React.useState([])
 
-    const { isLoading } = React.useContext(LoadingContext)
-
     let groupDescription
-
-    // Refreshes the array before each search so nothing gets messed up
-    useEffect(() => {
-        setRetrievedTermDataArr([])
-    }, [isLoading])
 
     const processDrugGroups = (groups) => {
         return groups.map((group, index) => {
@@ -108,7 +100,7 @@ const SearchResultObject = (props) => {
                 <Row>
                     {/* props.searchTerm is the wrapping array for a drug object. */ }
                     {/* retrievedTermDataArr is the data about the drug name submitted from the props.searchTerm */}
-                    
+
                     {props.searchTerm !== undefined && (
                         Array.isArray(props.searchTerm) ? (
                             props.searchTerm.map((term, index) => (
@@ -128,12 +120,14 @@ const SearchResultObject = (props) => {
                                 </Col>
                                 {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 &&
                                     <Col>
-                                        <DrugAccordion retrievedTermArr={retrievedTermDataArr[0]} totalCount={totalCount}/>
+                                            <DrugAccordion retrievedTermArr={retrievedTermDataArr[0]} totalCount={totalCount}/>
+                                            <PatientCard searchOptions={props.searchOptions} />
                                     </Col>
                                 }
                             </>
                         )
                     )}
+
                 </Row>
 
 

@@ -51,6 +51,7 @@ const processDrugEvents = (data) => {
 }
 
 export const getDrugEventsSearch = async (searchTerm, searchOptions) => {
+    console.log(`searchTerm: ${searchTerm}`)
     const url = generatePath(searchTerm, searchOptions, 'reaction')
     try {
         const response = await fetch(url)
@@ -66,7 +67,6 @@ export const getDrugEventsSearch = async (searchTerm, searchOptions) => {
 
 export const getEventsOverTime = async (searchTerm, searchOptions) => {
     const url = generatePath(searchTerm, searchOptions, 'receiveDate')
-
     try {
         const response = await fetch(url)
         if (!response.ok) {

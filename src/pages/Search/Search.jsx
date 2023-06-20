@@ -6,6 +6,7 @@ import SearchResultObject from "../../components/SearchResultObject/SearchResult
 import {getDrugEventsSearch, getEventsOverTime} from "../../services/FDA_Request";
 import './Search.css'
 import { LoadingContext } from "../../contexts/LoadingContext";
+import { searchAgeRange, searchTypes, searchSex } from "../../components/OptionModal/OptionModal";
 
 const Search = () => {
     const [eventResults, setEventResults] = React.useState(null)
@@ -21,6 +22,17 @@ const Search = () => {
 
     const [showAdditionalSearch, setShowAdditionalSearch] = React.useState(false)
 
+    const [selectedSearchOptionIndex, setSelectedSearchOptionIndex] = React.useState({
+        searchBy: 0,
+        sex: 0,
+    })
+
+    const [searchOptions, setSearchOptions] = React.useState({
+        searchBy: searchTypes[selectedSearchOptionIndex.searchBy].value,
+        sex: searchSex[selectedSearchOptionIndex.sex].value,
+        age: searchAgeRange[-1]
+    })
+
     useEffect(() => {
         if(!showAdditionalSearch) {
             setAdditionalSearchTerm(null)
@@ -30,6 +42,7 @@ const Search = () => {
     const handleSearch = async (searchOptions, singleSearchTerm) => {
         setEventResults(null)
         setSearchError(false)
+
         if(singleSearchTerm) {
             setIsLoading(true)
             const searchTerm = (additionalSearchTerm) ? [mainSearchTerm, additionalSearchTerm] : singleSearchTerm
@@ -60,12 +73,12 @@ const Search = () => {
     }
 
     return (
-        <LoadingContext.Provider value={{isLoading, setIsLoading}}>
+        <LoadingContext.Provider value={{isLoading}}>
             <div className="min-vh-100 d-flex flex-column">
                 <Header />
                 <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
-                    <Row className="w-100 justify-content-center">
-                        <Col xs="auto" className="text-center my-5">
+                    <Row className="w-100 mx-auto">
+                        <Col xs="auto" className="text-center my-5 mx-auto">
                             <Row className={'mb-4'}>
                                 <SearchBox
                                     onSearch={handleSearch}
@@ -75,6 +88,10 @@ const Search = () => {
                                     isMainSearch={true}
                                     showAdditionalSearch={showAdditionalSearch}
                                     onInputChange={setMainSearchTerm}
+                                    searchOptions={searchOptions}
+                                    setSearchOptions={setSearchOptions}
+                                    selectedSearchOptionIndex={selectedSearchOptionIndex}
+                                    setSelectedSearchOptionIndex={setSelectedSearchOptionIndex}
                                 />
                             </Row>
 
@@ -99,6 +116,10 @@ const Search = () => {
                                         isMainSearch={false}
                                         showAdditionalSearch={showAdditionalSearch}
                                         onInputChange={setAdditionalSearchTerm}
+                                        searchOptions={searchOptions}
+                                        setSearchOptions={setSearchOptions}
+                                        selectedSearchOptionIndex={selectedSearchOptionIndex}
+                                        setSelectedSearchOptionIndex={setSelectedSearchOptionIndex}
                                     />
                                 </Row>
                             }
@@ -108,6 +129,7 @@ const Search = () => {
                                     searchTerm={currentSearchTerm}
                                     eventsOverTime={eventsOverTime}
                                     showAdditionalSearch={showAdditionalSearch}
+                                    searchOptions={searchOptions}
                                 />
                             }
                         </Col>

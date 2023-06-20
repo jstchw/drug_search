@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Modal, Form, Badge, InputGroup, ToggleButton, Container} from 'react-bootstrap';
+import {Modal, Form, InputGroup, ToggleButton} from 'react-bootstrap';
 
 
 // Search types that can be selected in the popover

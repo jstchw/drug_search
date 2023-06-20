@@ -4,7 +4,7 @@ import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
 import { Dropdown } from 'react-bootstrap'
 import './SearchBox.css'
-import OptionModal, {searchAgeRange, searchTypes, searchSex} from "../OptionModal/OptionModal";
+import OptionModal from "../OptionModal/OptionModal";
 import { useSuggestions } from "../../hooks/useSuggestions";
 
 // Options used in the Fuse.js search library
@@ -16,24 +16,13 @@ const fuseOptions = {
 const SearchBox = (props) => {
     const [inputValue, setInputValue] = React.useState('')
 
-    const [selectedSearchOptionIndex, setSelectedSearchOptionIndex] = React.useState({
-        searchBy: 0,
-        sex: 0,
-    })
-
-    const [searchOptions, setSearchOptions] = React.useState({
-        searchBy: searchTypes[selectedSearchOptionIndex.searchBy].value,
-        sex: searchSex[selectedSearchOptionIndex.sex].value,
-        age: searchAgeRange[-1]
-    })
-
     const [showOptionModal, setShowOptionModal] = React.useState(false)
 
     const handleCloseOptionModal = () => setShowOptionModal(false)
     const handleShowOptionModal = () => setShowOptionModal(true)
 
     // Timeout for the placeholder animation
-    const currentSearchPlaceholder = useSearchPlaceholder(3000)
+    //const currentSearchPlaceholder = useSearchPlaceholder(3000)
 
     // When the searched element doesn't exist in FDA's database
     const errorBox = props.searchError ? {borderColor: 'red'} : {}
@@ -124,8 +113,7 @@ const SearchBox = (props) => {
         const valueToSearch = newSearchValue || inputValue
 
         if (valueToSearch) {
-            console.log(searchOptions)
-            props.onSearch(searchOptions, valueToSearch)
+            props.onSearch(props.searchOptions, valueToSearch)
 
             if (props.searchError) {
                 setErrorAnimation((prevCount) => prevCount + 1)
@@ -147,8 +135,8 @@ const SearchBox = (props) => {
         setInputValue(e.target.value)
 
         // Suggestions should only work when a substance name or a generic name is searched for
-        if(searchOptions.searchBy === 'patient.drug.activesubstance.activesubstancename' ||
-            searchOptions.searchBy === 'patient.drug.openfda.generic_name') {
+        if(props.searchOptions.searchBy === 'patient.drug.activesubstance.activesubstancename' ||
+            props.searchOptions.searchBy === 'patient.drug.openfda.generic_name') {
 
             if (fuse && inputValue.length >= 3 && inputValue.length <= 20) {
                 const timeout = setTimeout(() => {
@@ -176,21 +164,29 @@ const SearchBox = (props) => {
             <Form onSubmit={handleSearch}>
                 <Form.Group controlId="searchTerm">
                     <InputGroup>
-                        {props.isMainSearch && <Button variant="outline-secondary" id="button-filters" onClick={handleShowOptionModal}>
+                        {props.isMainSearch &&
+                            <>
+                            <Button variant="outline-secondary" id="button-filters" onClick={handleShowOptionModal}>
                             <FilterLeftIcon />
-                        </Button>}
-                        <OptionModal show={showOptionModal} handleClose={handleCloseOptionModal}
-                                     searchOptions={searchOptions} setSearchOptions={setSearchOptions}
-                                     selectedSearchOptionIndex={selectedSearchOptionIndex}
-                                     setSelectedSearchOptionIndex={setSelectedSearchOptionIndex}
-                        />
+                            </Button>
+                            <OptionModal
+                                show={showOptionModal}
+                                handleClose={handleCloseOptionModal}
+                                searchOptions={props.searchOptions}
+                                setSearchOptions={props.setSearchOptions}
+                                selectedSearchOptionIndex={props.selectedSearchOptionIndex}
+                                setSelectedSearchOptionIndex={props.setSelectedSearchOptionIndex}
+                            />
+                            </>
+                        }
+
 
                         <div ref={dropdownRef}>
                             <Dropdown show={dropdownOpen}>
                                 <Form.Control
                                     className={`search-box ${props.searchError && errorAnimation ? 'shake' : ''} rounded-0`}
                                     type="text"
-                                    placeholder={currentSearchPlaceholder}
+                                    placeholder={'Search'}
                                     onChange={handleInputChange}
                                     onKeyDown={handleKeyDown}
                                     style={errorBox}
@@ -219,7 +215,8 @@ const SearchBox = (props) => {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                        {props.isMainSearch && <Button variant="outline-primary" id="button-submit" type="submit">
+                        {props.isMainSearch &&
+                            <Button variant="outline-primary" id="button-submit" type="submit">
                             {props.loadingSpinner ? (
                                 <>
                                     <Spinner

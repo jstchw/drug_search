@@ -13,10 +13,10 @@ const DrugAccordion = (props) => {
             <Accordion.Item eventKey={'1'}>
                 <Accordion.Header><Badge>Indication</Badge></Accordion.Header>
                 <Accordion.Body>
-                    {props.retrievedTermArr ? (
-                        props.retrievedTermArr.indication === 'N/A' ?
-                            props.retrievedTermArr.indication :
-                            props.retrievedTermArr.indication.split('.')[0] + '.'
+                    {props.drugInfo ? (
+                        props.drugInfo.indication === 'N/A' ?
+                            props.drugInfo.indication :
+                            props.drugInfo.indication.split('.')[0] + '.'
                     ) : (
                         <Placeholder animation="glow">
                             <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
@@ -28,8 +28,8 @@ const DrugAccordion = (props) => {
             <Accordion.Item eventKey={'2'}>
                 <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
                 <Accordion.Body>
-                    {props.retrievedTermArr ? (
-                        props.retrievedTermArr.half_life
+                    {props.drugInfo ? (
+                        props.drugInfo.half_life
                     ) : (
                         <Placeholder animation="glow">
                             <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
@@ -41,13 +41,13 @@ const DrugAccordion = (props) => {
             <Accordion.Item eventKey={'3'}>
                 <Accordion.Header><Badge>Brands</Badge></Accordion.Header>
                 <Accordion.Body>
-                    {props.retrievedTermArr ? (
+                    {props.drugInfo ? (
                         // Format the brand list, so it is separated by commas and whitespaces
-                        props.retrievedTermArr.brands.map((brand, index) => {
+                        props.drugInfo.brands.map((brand, index) => {
                             return (
                                 <span key={index}>
                                     {brand}
-                                    {index !== props.retrievedTermArr.brands.length - 1 ? ', ' : ''}
+                                    {index !== props.drugInfo.brands.length - 1 ? ', ' : ''}
                                 </span>
                             )
                         })

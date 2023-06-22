@@ -12,12 +12,9 @@ const generatePath = (searchTerm, searchOptions, countType) => {
     let searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
 
     if (searchTerm) {
-        if (Array.isArray(searchTerm)) {
-            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(searchTerm[0])}"`)
-            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(searchTerm[1])}"`)
-        } else {
-            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(searchTerm)}"`)
-        }
+        searchTerm.map((item) => {
+            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(item)}"`)
+        })
     }
 
     if (searchOptions.sex) {

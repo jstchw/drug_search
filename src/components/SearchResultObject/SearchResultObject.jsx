@@ -1,15 +1,21 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
 import PatientCard from "../PatientCard/PatientCard";
+import {searchTypes} from "../OptionModal/OptionModal";
+import useDrugInfo from "../../hooks/useDrugInfo";
 
 const SearchResultObject = (props) => {
     const { termCountDict, totalCount } = props.searchResults.result
     const eventsOverTime = props.eventsOverTime.result.results
-    const [retrievedTermDataArr, setRetrievedTermDataArr] = React.useState([])
+    const searchTypeRef = React.useRef(props.searchOptions.searchBy)
+
+    const { drugInfo, isLoading } = useDrugInfo(props.searchTerm, searchTypeRef.current)
+
+    const drugInfoRef = React.useRef(drugInfo)
 
     let groupDescription
 
@@ -67,17 +73,40 @@ const SearchResultObject = (props) => {
 
     }
 
+    const groupedByProduct = drugInfo.reduce((acc, term) => {
+        if (!acc[term.product]) {
+            acc[term.product] = [];
+        }
+        acc[term.product].push(term);
+        return acc;
+    }, {});
+
     return (
         <div>
             <Container className={'my-4'}>
                 <Row>
-                    {retrievedTermDataArr.length > 0 ? (
-                            retrievedTermDataArr.map((term, index) => (
-                                <Col key={index}>
-                                    <h1>{term.drug_name}</h1>
-                                    <h3>{processDrugGroups(term.groups)}</h3>
-                                </Col>
-                            ))
+                    {drugInfo.length > 0 ? (
+                        Object.entries(groupedByProduct).map(([product, terms], index) => (
+                            <Col key={index}>
+                                {searchTypeRef.current === searchTypes[0].value &&
+                                    <>
+                                    <h1>{terms[0].drug_name}</h1>
+                                    <h3>{processDrugGroups(terms[0].groups)}</h3>
+                                    </>
+                                }
+                                {searchTypeRef.current === searchTypes[1].value &&
+                                    <>
+                                        <h1>{product}</h1>
+                                        <Badge className={'mb-3'}>Active substance</Badge>
+                                        {terms.map((term, termIndex) => (
+                                            <React.Fragment key={termIndex}>
+                                                <h5>{term.drug_name}{processDrugGroups(term.groups)}</h5>
+                                            </React.Fragment>
+                                        ))}
+                                    </>
+                                }
+                            </Col>
+                        ))
                         ) : (
                             <>
                                 <Placeholder as={'h1'} animation="glow">
@@ -100,32 +129,24 @@ const SearchResultObject = (props) => {
                 <Row>
                     {/* props.searchTerm is the wrapping array for a drug object. */ }
                     {/* retrievedTermDataArr is the data about the drug name submitted from the props.searchTerm */}
-
-                    {props.searchTerm !== undefined && (
-                        Array.isArray(props.searchTerm) ? (
-                            props.searchTerm.map((term, index) => (
+                    {drugInfo.length > 0 && (
+                        drugInfo.map((term, index) => (
+                            drugInfo.length > 1 ? (
                                 <Col key={index}>
-                                    <DrugDescription drugName={term} onRetrieved={setRetrievedTermDataArr}
-                                                     showAdditionalSearch={props.showAdditionalSearch}/>
-                                    {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 &&
-                                        <DrugAccordion retrievedTermArr={retrievedTermDataArr[index]} totalCount={totalCount}/>
-                                    }
+                                    <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
+                                    <DrugAccordion drugInfo={term} totalCount={totalCount}/>
                                 </Col>
-                            ))
-                        ) : (
-                            <>
-                                <Col>
-                                    <DrugDescription drugName={props.searchTerm} onRetrieved={setRetrievedTermDataArr}
-                                                     showAdditionalSearch={props.showAdditionalSearch}/>
-                                </Col>
-                                {Array.isArray(retrievedTermDataArr) && retrievedTermDataArr.length > 0 &&
+                            ) : (
+                                <Row key={index}>
                                     <Col>
-                                            <DrugAccordion retrievedTermArr={retrievedTermDataArr[0]} totalCount={totalCount}/>
-                                            <PatientCard searchOptions={props.searchOptions} />
+                                        <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
                                     </Col>
-                                }
-                            </>
-                        )
+                                    <Col>
+                                        <DrugAccordion drugInfo={term} totalCount={totalCount}/>
+                                    </Col>
+                                </Row>
+                            )
+                        ))
                     )}
 
                 </Row>

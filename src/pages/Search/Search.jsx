@@ -45,7 +45,8 @@ const Search = () => {
 
         if(singleSearchTerm) {
             setIsLoading(true)
-            const searchTerm = (additionalSearchTerm) ? [mainSearchTerm, additionalSearchTerm] : singleSearchTerm
+            const searchTerm = (additionalSearchTerm) ? [mainSearchTerm, additionalSearchTerm] : [singleSearchTerm]
+
 
             if (mainSearchTerm === additionalSearchTerm) {
                 setSearchError(true)

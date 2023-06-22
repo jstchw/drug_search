@@ -9,11 +9,9 @@ const useDrugInfo = (drugName, searchType) => {
     const drugAPI = 'http://localhost:16000/api'
 
     const [drugInfo, setDrugInfo] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         const getDrugInfo = async () => {
-            setIsLoading(true)
             try {
                 const promises = drugName.map(name =>
                     axios.get(`${drugAPI}/get_info?drug_name=${name}&search_type=${searchType}`)
@@ -61,7 +59,7 @@ const useDrugInfo = (drugName, searchType) => {
         getDrugInfo()
     }, [drugName, searchType])
 
-    return { drugInfo, isLoading }
+    return drugInfo
 }
 
 export default useDrugInfo

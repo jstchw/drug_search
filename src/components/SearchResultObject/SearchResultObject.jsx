@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
@@ -13,9 +13,8 @@ const SearchResultObject = (props) => {
     const eventsOverTime = props.eventsOverTime.result.results
     const searchTypeRef = React.useRef(props.searchOptions.searchBy)
 
-    const { drugInfo, isLoading } = useDrugInfo(props.searchTerm, searchTypeRef.current)
+    const drugInfo = useDrugInfo(props.searchTerm, searchTypeRef.current)
 
-    const drugInfoRef = React.useRef(drugInfo)
 
     let groupDescription
 
@@ -121,14 +120,12 @@ const SearchResultObject = (props) => {
             </Container>
 
             <Container className={'main-drug-container'}>
-                <Row>
+                <React.Fragment>
                     <Alert variant={"secondary"}>
                         <span>The provided information is indicative and shouldn't be used for inference.</span>
                     </Alert>
-                </Row>
+                </React.Fragment>
                 <Row>
-                    {/* props.searchTerm is the wrapping array for a drug object. */ }
-                    {/* retrievedTermDataArr is the data about the drug name submitted from the props.searchTerm */}
                     {drugInfo.length > 0 && (
                         drugInfo.map((term, index) => (
                             drugInfo.length > 1 ? (
@@ -152,15 +149,13 @@ const SearchResultObject = (props) => {
 
                 <PatientCard searchOptions={props.searchOptions} totalADE={totalCount} />
 
-                <Row>
-                    <Col className={'mt-3'}>
-                        <ChartDisplayObject eventsOverTime={eventsOverTime} termCountDict={termCountDict}
-                                            totalCount={totalCount} searchResults={termCountDict}/>
-                    </Col>
-                </Row>
             </Container>
+
+            <Col className={'mt-3'}>
+                <ChartDisplayObject eventsOverTime={eventsOverTime} termCountDict={termCountDict}
+                                    totalCount={totalCount} searchResults={termCountDict}/>
+            </Col>
         </div>
     );
 }
-
 export default SearchResultObject;

@@ -1,13 +1,18 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
+const chartTypes = [
+    'searched_group',
+    'events_over_time',
+]
+
 
 // This function sorts terms by popularity and crops the rest
 const processDataForChart = (eventDict, totalCount, type) => {
     const maxTerms = 10
 
 
-    if (type === 'all_groups') {
+    if (type === chartTypes[0]) {
         let popularTerms = {}
         let sortedDict = Object.entries(eventDict).sort((a, b) => b[1] - a[1])
 
@@ -23,7 +28,7 @@ const processDataForChart = (eventDict, totalCount, type) => {
         return popularTerms;
 
     }
-    if (type === 'events_over_time') {
+    if (type === chartTypes[1]) {
 
         let yearlyData = {}
         eventDict.forEach(entry => {
@@ -47,7 +52,7 @@ const ApexChart = (props) => {
 
     const processedData = processDataForChart(props.eventDict, props.totalCount, props.type)
 
-    if (props.type === 'all_groups') {
+    if (props.type === chartTypes[0]) {
         const chartData = {
             labels: processedData.map((x) => x.x),
             series: [{
@@ -56,7 +61,7 @@ const ApexChart = (props) => {
             }]
         }
 
-        const optionsAllGroups = {
+        const optionsSearchedGroup = {
             labels: chartData.labels,
             legend: {
                 show: false,
@@ -134,12 +139,12 @@ const ApexChart = (props) => {
 
         return (
             <ReactApexChart
-                options={optionsAllGroups}
+                options={optionsSearchedGroup}
                 series={chartData.series}
-                type={optionsAllGroups.chart.type}
+                type={optionsSearchedGroup.chart.type}
             />
         )
-    } else if (props.type === 'events_over_time') {
+    } else if (props.type === chartTypes[1]) {
         const chartData = {
             series: [{
                 name: 'Reports',

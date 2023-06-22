@@ -10,3 +10,7 @@
 .no-pointer-badge {
     cursor: default !important;
 }
+
+.full-width {
+    width: 100%;
+}

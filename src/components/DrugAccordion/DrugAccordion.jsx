@@ -5,12 +5,6 @@ const DrugAccordion = (props) => {
     return (
         <Accordion>
             <Accordion.Item eventKey={'0'}>
-                <Accordion.Header><Badge>ADEs Reported</Badge></Accordion.Header>
-                <Accordion.Body>
-                    {parseInt(props.totalCount).toLocaleString('en')}
-                </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey={'1'}>
                 <Accordion.Header><Badge>Indication</Badge></Accordion.Header>
                 <Accordion.Body>
                     {props.drugInfo ? (
@@ -25,7 +19,7 @@ const DrugAccordion = (props) => {
                     )}
                 </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item eventKey={'2'}>
+            <Accordion.Item eventKey={'1'}>
                 <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
                 <Accordion.Body>
                     {props.drugInfo ? (
@@ -38,7 +32,7 @@ const DrugAccordion = (props) => {
                     )}
                 </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item eventKey={'3'}>
+            <Accordion.Item eventKey={'2'}>
                 <Accordion.Header><Badge>Brands</Badge></Accordion.Header>
                 <Accordion.Body>
                     {props.drugInfo ? (

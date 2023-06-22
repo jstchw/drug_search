@@ -1,5 +1,5 @@
-import React, {useEffect, useRef} from 'react';
-import { Card, Badge } from 'react-bootstrap';
+import React, {useEffect, useRef, useState} from 'react';
+import {Toast, ToastContainer, Badge, Row, Col} from 'react-bootstrap';
 import { searchSex } from "../OptionModal/OptionModal";
 
 
@@ -8,7 +8,6 @@ const processSearchOptions = (searchOptions, setSearchOptions) => {
     let newSearchOptions = {...searchOptions}
 
     if(searchOptions.age && searchOptions.age[0] && searchOptions.age[1]) {
-        console.log(searchOptions.age)
         newSearchOptions = {
             ...newSearchOptions,
             age: searchOptions.age.join(' - ')
@@ -29,37 +28,46 @@ const PatientCard = (props) => {
     const { searchBy, ...rest } = props.searchOptions;
     const [searchOptions, setSearchOptions] = React.useState(rest)
 
+    const [show, setShow] = useState(false);
+
     useEffect(() => {
         processSearchOptions(searchOptions, setSearchOptions)
+        setShow(true)
     }, []);
 
     return (
-        <Card className={'my-3'}>
-            <Card.Header>
-                <span>Patient Card</span>
-            </Card.Header>
-            <Card.Body className={'text-md-start'}>
-                {
-                    Object.keys(searchOptions).map((key, index) => {
-                        return (
-                            <Card.Text key={index}>
-                                <Badge>
-                                    {
-                                        key.charAt(0).toUpperCase() + key.slice(1)
-                                    }
-                                </Badge>
-                                &nbsp;
-                                <span>
-                                    {
-                                        searchOptions[key]
-                                    }
-                                </span>
-                            </Card.Text>
-                        )
-                    })
-                }
-            </Card.Body>
-        </Card>
+        <ToastContainer
+            className={'patient-card m-3'}
+            position={'bottom-end'}
+            containerPosition={'fixed'}
+        >
+            <Toast show={show} delay={3000} style={{maxWidth: '200px'}}>
+                <Toast.Header className={'justify-content-end'} closeButton={false}>
+                    <span>Patient Card</span>
+                </Toast.Header>
+                <Toast.Body>
+                    <Col className={'fs-5 d-flex justify-content-start align-items-center'}>
+                        <Badge>ADEs</Badge>
+                        &nbsp;
+                        {parseInt(props.totalADE).toLocaleString('en')}
+                    </Col>
+                    {Object.keys(searchOptions).map((key, index) => {
+                        if (searchOptions[key]) {
+                            return (
+                                <React.Fragment key={index}>
+                                    <Col className={'fs-5 d-flex justify-content-start align-items-center'}>
+                                        <Badge>{key.charAt(0).toUpperCase() + key.slice(1)}</Badge>
+                                        &nbsp;
+                                        {searchOptions[key]}
+                                    </Col>
+                                </React.Fragment>
+                            )
+                        }
+                        return null; // Return null if condition is not met
+                    })}
+                </Toast.Body>
+            </Toast>
+        </ToastContainer>
     )
 }
 

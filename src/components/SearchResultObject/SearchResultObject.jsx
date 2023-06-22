@@ -137,22 +137,20 @@ const SearchResultObject = (props) => {
                                     <DrugAccordion drugInfo={term} totalCount={totalCount}/>
                                 </Col>
                             ) : (
-                                <Row key={index}>
+                                <React.Fragment key={index}>
                                     <Col>
                                         <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
                                     </Col>
                                     <Col>
                                         <DrugAccordion drugInfo={term} totalCount={totalCount}/>
                                     </Col>
-                                </Row>
+                                </React.Fragment>
                             )
                         ))
                     )}
-
                 </Row>
 
-
-
+                <PatientCard searchOptions={props.searchOptions} totalADE={totalCount} />
 
                 <Row>
                     <Col className={'mt-3'}>

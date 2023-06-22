@@ -12,11 +12,10 @@ const options = {
     fontStyle: "normal",
     fontWeight: "normal",
     padding: 1,
-    rotations: 1,
-    rotationAngles: [0, 90],
-    scale: "sqrt",
-    spiral: "rectangular",
-    transitionDuration: 1000
+    rotations: 0,
+    scale: "log",
+    spiral: "archimedean",
+    transitionDuration: 1000,
 };
 
 const WordCloudChart = (props) => {

@@ -22,7 +22,7 @@ const SearchBox = (props) => {
     const handleShowOptionModal = () => setShowOptionModal(true)
 
     // Timeout for the placeholder animation
-    //const currentSearchPlaceholder = useSearchPlaceholder(3000)
+    const currentSearchPlaceholder = useSearchPlaceholder(3000, props.searchOptions.searchBy)
 
     // When the searched element doesn't exist in FDA's database
     const errorBox = props.searchError ? {borderColor: 'red'} : {}
@@ -186,7 +186,7 @@ const SearchBox = (props) => {
                                 <Form.Control
                                     className={`search-box ${props.searchError && errorAnimation ? 'shake' : ''} rounded-0`}
                                     type="text"
-                                    placeholder={'Search'}
+                                    placeholder={currentSearchPlaceholder}
                                     onChange={handleInputChange}
                                     onKeyDown={handleKeyDown}
                                     style={errorBox}

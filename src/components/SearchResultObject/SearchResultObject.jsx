@@ -8,12 +8,21 @@ import PatientCard from "../PatientCard/PatientCard";
 import {searchTypes} from "../OptionModal/OptionModal";
 import useDrugInfo from "../../hooks/useDrugInfo";
 
+const getUniqueObjects = (array) => {
+    return array.filter((obj, index, self) =>
+        index === self.findIndex((otherObj) => obj.drug_name === otherObj.drug_name)
+    );
+}
+
+
 const SearchResultObject = (props) => {
     const { termCountDict, totalCount } = props.searchResults.result
     const eventsOverTime = props.eventsOverTime.result.results
     const searchTypeRef = React.useRef(props.searchOptions.searchBy)
 
     const drugInfo = useDrugInfo(props.searchTerm, searchTypeRef.current)
+
+    const uniqueDrugInfo = getUniqueObjects(drugInfo)
 
 
     let groupDescription
@@ -127,8 +136,8 @@ const SearchResultObject = (props) => {
                 </React.Fragment>
                 <Row>
                     {drugInfo.length > 0 && (
-                        drugInfo.map((term, index) => (
-                            drugInfo.length > 1 ? (
+                        uniqueDrugInfo.map((term, index) => (
+                            uniqueDrugInfo.length > 1 ? (
                                 <Col key={index}>
                                     <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
                                     <DrugAccordion drugInfo={term} totalCount={totalCount}/>

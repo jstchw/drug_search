@@ -52,6 +52,13 @@ export const searchAgeRange = [
     }
 ]
 
+export const searchCountry = {
+    value: 'occurcountry.exact',
+    index: 0,
+    label: 'Country',
+    type: 'country'
+}
+
 const OptionModal = (props) => {
     const [isSexDisabled, setIsSexDisabled] = React.useState(true)
     const [lastSelectedSex, setLastSelectedSex] = React.useState(searchSex[0].value)
@@ -231,6 +238,22 @@ const OptionModal = (props) => {
                                     disabled={isAgeDisabled}
                                 />
                             </InputGroup>
+                        </Form.Group>
+                        <Form.Group>
+                            <div className={'d-flex align-items-center'}>
+                                <ToggleButton
+                                    type="checkbox"
+                                    variant="outline-primary"
+                                    value="1"
+                                >
+                                    Country
+                                </ToggleButton>
+                                <InputGroup className={'mx-3 flex-grow-1'}>
+                                    <Form.Select>
+
+                                    </Form.Select>
+                                </InputGroup>
+                            </div>
                         </Form.Group>
                     </Form>
                 </Modal.Body>

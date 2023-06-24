@@ -7,7 +7,7 @@ const generatePath = (searchTerm, searchOptions, countType) => {
     const whatToCount = {
         reaction: 'patient.reaction.reactionmeddrapt.exact',
         receiveDate: 'receivedate',
-        drug: 'patient.drug.activesubstance.activesubstancename.exact'
+        drug: 'patient.drug.activesubstance.activesubstancename'
     }
 
     let searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
@@ -25,7 +25,7 @@ const generatePath = (searchTerm, searchOptions, countType) => {
     if (searchOptions.age && searchOptions.age[0] && searchOptions.age[1]) {
         searchParts.push(`patient.patientonsetage:[${searchOptions.age[0]}+TO+${searchOptions.age[1]}]`)
     }
-    
+
     return `${BASE_URL}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`
 }
 

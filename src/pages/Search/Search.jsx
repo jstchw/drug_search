@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Header from '../../components/Header/Header'
 import SearchBox from '../../components/SearchBox/SearchBox'
 import SearchResultObject from "../../components/SearchResultObject/SearchResultObject";
-import {getDrugEventsSearch, getEventsOverTime} from "../../services/FDA_Request";
+import {getDrugsFromEvents, getEventsFromDrugs, getEventsOverTime} from "../../services/FDA_Request";
 import './Search.css'
 import { searchAgeRange, searchTypes, searchSex } from "../../components/OptionModal/OptionModal";
 
@@ -40,6 +40,9 @@ const Search = () => {
     }, [showAdditionalSearch])
 
     const handleSearch = async (searchOptions, singleSearchTerm) => {
+
+        let events
+
         setEventResults(null)
         setSearchError(false)
 
@@ -53,13 +56,20 @@ const Search = () => {
                 setIsLoading(false)
                 return
             }
-            const eventAllGroups = await getDrugEventsSearch(searchTerm, searchOptions)
+
+            // Search for an ADE and get drugs
+            if (searchOptions.searchBy === searchTypes[2].value) {
+                events = await getDrugsFromEvents(searchTerm, searchOptions)
+            } else {
+                events = await getEventsFromDrugs(searchTerm, searchOptions)
+            }
+
             const eventsOverTime = await getEventsOverTime(searchTerm, searchOptions)
 
             setIsLoading(false)
 
-            if(eventAllGroups.result) {
-                setEventResults(eventAllGroups)
+            if(events.result) {
+                setEventResults(events)
                 setCurrentSearchTerm(searchTerm)
             } else {
                 setSearchError(true)

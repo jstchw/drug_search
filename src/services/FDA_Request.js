@@ -7,6 +7,7 @@ const generatePath = (searchTerm, searchOptions, countType) => {
     const whatToCount = {
         reaction: 'patient.reaction.reactionmeddrapt.exact',
         receiveDate: 'receivedate',
+        drug: 'patient.drug.activesubstance.activesubstancename.exact'
     }
 
     let searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
@@ -24,7 +25,7 @@ const generatePath = (searchTerm, searchOptions, countType) => {
     if (searchOptions.age && searchOptions.age[0] && searchOptions.age[1]) {
         searchParts.push(`patient.patientonsetage:[${searchOptions.age[0]}+TO+${searchOptions.age[1]}]`)
     }
-
+    
     return `${BASE_URL}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`
 }
 
@@ -47,7 +48,7 @@ const processDrugEvents = (data) => {
     return { totalCount, termCountDict }
 }
 
-export const getDrugEventsSearch = async (searchTerm, searchOptions) => {
+export const getEventsFromDrugs = async (searchTerm, searchOptions) => {
     const url = generatePath(searchTerm, searchOptions, 'reaction')
     try {
         const response = await fetch(url)
@@ -70,6 +71,20 @@ export const getEventsOverTime = async (searchTerm, searchOptions) => {
         }
         const data = await response.json()
         return {result: data}
+    } catch (error) {
+        return {error: error.message}
+    }
+}
+
+export const getDrugsFromEvents = async (searchTerm, searchOptions) => {
+    const url = generatePath(searchTerm, searchOptions, 'drug')
+    try {
+        const response = await fetch(url)
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}: ${response.statusText}`)
+        }
+        const data = await response.json()
+        return {result: processDrugEvents(data)}
     } catch (error) {
         return {error: error.message}
     }

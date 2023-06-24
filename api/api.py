@@ -32,19 +32,17 @@ def process_element(element, drug_id=None, drug_name=None, drug_brand=None):
             product_name = drug_tag.text
 
     return {
-        'name': element.find('db:name', ns).text,
-        'half_life': element.find('db:half-life', ns).text,
-        'classification': element.find('db:classification/db:class', ns).text,
-        'groups': [group.text for group in element.findall('db:groups/db:group', ns)],
-        # Find brand XPath: /drugbank/drug/international-brands/international-brand/name
-        'brands': [brand.find('db:name', ns).text for brand in element.findall('db:international-brands/db:international-brand', ns)],
-        'iupac': element.find('db:calculated-properties/db:property[db:kind="IUPAC Name"]/db:value', ns).text,
-        'formula': element.find('db:calculated-properties/db:property[db:kind="Molecular Formula"]/db:value', ns).text,
-        'indication': element.find('db:indication', ns).text,
-        'description': element.find('db:state', ns).text,
+        'name': ((temp := element.find('db:name', ns)) is not None and temp.text) or None,
+        'half_life': ((temp := element.find('db:half-life', ns)) is not None and temp.text) or None,
+        'classification': ((temp := element.find('db:classification/db:class', ns)) is not None and temp.text) or None,
+        'groups': ((temp := element.findall('db:groups/db:group', ns)) is not None and [group.text for group in temp]) or None,
+        'brands': ((temp := element.findall('db:international-brands/db:international-brand', ns)) is not None and [brand.find('db:name', ns).text for brand in temp]) or None,
+        'iupac': ((temp := element.find('db:calculated-properties/db:property[db:kind="IUPAC Name"]/db:value', ns)) is not None and temp.text) or None,
+        'formula': ((temp := element.find('db:calculated-properties/db:property[db:kind="Molecular Formula"]/db:value', ns)) is not None and temp.text) or None,
+        'indication': ((temp := element.find('db:indication', ns)) is not None and temp.text) or None,
+        'description': ((temp := element.find('db:state', ns)) is not None and temp.text) or None,
         'product': product_name,
     }
-    return None
 
 
 
@@ -84,6 +82,7 @@ def get_info():
 
     if search_type == 'patient.drug.activesubstance.activesubstancename':
         drug_id = search_csv('Common name', drug_name)
+        print(drug_id, file=sys.stderr)
         for element in root.findall('{http://www.drugbank.ca}drug'):
                 if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
                      drug = process_element(element=element, drug_id=drug_id)
@@ -92,17 +91,17 @@ def get_info():
                          break
     elif search_type == 'patient.drug.openfda.brand_name':
         for element in root.findall('{http://www.drugbank.ca}drug'):
-                    if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
-                        products_element = element.find('{http://www.drugbank.ca}products')
-                        if products_element is not None:
-                            for product_element in products_element.findall('{http://www.drugbank.ca}product'):
-                                name_element = product_element.find('{http://www.drugbank.ca}name')
-                                if name_element is not None and name_element.text.lower() == drug_name.lower():
-                                    drug = process_element(element=element, drug_name=name_element.text,
-                                                           drug_brand=drug_name.lower())
-                                    if drug:
-                                        results.append(drug)
-                                        break
+            if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
+                products_element = element.find('{http://www.drugbank.ca}products')
+                if products_element is not None:
+                    for product_element in products_element.findall('{http://www.drugbank.ca}product'):
+                        name_element = product_element.find('{http://www.drugbank.ca}name')
+                        if name_element is not None and name_element.text.lower() == drug_name.lower():
+                            drug = process_element(element=element, drug_name=name_element.text,
+                                                   drug_brand=drug_name.lower())
+                            if drug:
+                                results.append(drug)
+                                break
     return jsonify(results)
 
 @app.route('/api/get_suggestions', methods=['GET'])

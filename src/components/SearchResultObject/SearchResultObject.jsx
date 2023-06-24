@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
@@ -98,8 +98,8 @@ const SearchResultObject = (props) => {
                             <Col key={index}>
                                 {searchTypeRef.current === searchTypes[0].value &&
                                     <>
-                                    <h1>{terms[0].drug_name}</h1>
-                                    <h3>{processDrugGroups(terms[0].groups)}</h3>
+                                        <h1>{terms[0].drug_name}</h1>
+                                        {terms[0].groups && <h3>{processDrugGroups(terms[0].groups)}</h3>}
                                     </>
                                 }
                                 {searchTypeRef.current === searchTypes[1].value &&
@@ -111,6 +111,11 @@ const SearchResultObject = (props) => {
                                                 <h5>{term.drug_name}{processDrugGroups(term.groups)}</h5>
                                             </React.Fragment>
                                         ))}
+                                    </>
+                                }
+                                {searchTypeRef.current === searchTypes[2].value &&
+                                    <>
+                                        <h1>{terms[0].ADE}</h1>
                                     </>
                                 }
                             </Col>
@@ -135,8 +140,10 @@ const SearchResultObject = (props) => {
                     </Alert>
                 </React.Fragment>
                 <Row>
-                    {drugInfo.length > 0 && (
-                        uniqueDrugInfo.map((term, index) => (
+                    {
+                        (uniqueDrugInfo.length > 0 && uniqueDrugInfo
+                            .every((term) => term.ADE === null && term.full_info === true)) &&
+                        (uniqueDrugInfo.map((term, index) => (
                             uniqueDrugInfo.length > 1 ? (
                                 <Col key={index}>
                                     <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>

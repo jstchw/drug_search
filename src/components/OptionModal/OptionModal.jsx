@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {Modal, Form, InputGroup, ToggleButton} from 'react-bootstrap';
+import countries from '../../assets/countries.json';
 
 
 // Search types that can be selected in the popover
@@ -52,12 +53,12 @@ export const searchAgeRange = [
     }
 ]
 
-export const searchCountry = {
-    value: 'occurcountry.exact',
-    index: 0,
-    label: 'Country',
+export const searchCountry = Object.entries(countries).map(([value, label], index) => ({
+    value,
+    label,
+    index,
     type: 'country'
-}
+}))
 
 const OptionModal = (props) => {
     const [isSexDisabled, setIsSexDisabled] = React.useState(true)
@@ -66,6 +67,10 @@ const OptionModal = (props) => {
     const [isAgeDisabled, setIsAgeDisabled] = React.useState(true)
     const [ageRange, setAgeRange] = React.useState([searchAgeRange[0].value, searchAgeRange[1].value])
     const [lastSelectedAge, setLastSelectedAge] = React.useState([searchAgeRange[0].value, searchAgeRange[1].value])
+
+    const [isCountryDisabled, setIsCountryDisabled] = React.useState(true)
+    const defaultCountry = searchCountry.find(country => country.value === 'US')
+    const [lastSelectedCountry, setLastSelectedCountry] = React.useState(defaultCountry.value)
 
     // Clear the age range when the age is disabled
     useEffect(() => {
@@ -84,19 +89,22 @@ const OptionModal = (props) => {
 
 
     useEffect(() => {
-        if(isSexDisabled) {
-            props.setSearchOptions({
-                ...props.searchOptions,
-                sex: undefined
-            })
-        } else {
-            props.setSearchOptions({
-                ...props.searchOptions,
-                sex: lastSelectedSex
-            })
-        }
-    }, [isSexDisabled])
+        let newSearchOptions = { ...props.searchOptions };
 
+        if(isCountryDisabled) {
+            newSearchOptions.country = undefined;
+        } else {
+            newSearchOptions.country = lastSelectedCountry;
+        }
+
+        if(isSexDisabled) {
+            newSearchOptions.sex = undefined;
+        } else {
+            newSearchOptions.sex = lastSelectedSex;
+        }
+
+        props.setSearchOptions(newSearchOptions);
+    }, [isCountryDisabled, isSexDisabled]);
 
     const handleOptionsChange = (index, type, value) => {
         switch (type) {
@@ -136,6 +144,18 @@ const OptionModal = (props) => {
                         [type]: newAgeRange
                     })
                 }
+                break
+            case 'country':
+                setLastSelectedCountry(searchCountry[index].value)
+                props.setSearchOptions({
+                    ...props.searchOptions,
+                    [type]: searchCountry[index].value
+                })
+
+                props.setSelectedSearchOptionIndex({
+                    ...props.selectedSearchOptionIndex,
+                    [type]: index
+                })
                 break
         }
     }
@@ -203,7 +223,7 @@ const OptionModal = (props) => {
                                             >
                                                 {sex.label}
                                             </option>
-                                ))}
+                                    ))}
                                 </Form.Select>
                             </InputGroup>
                         </Form.Group>
@@ -245,12 +265,22 @@ const OptionModal = (props) => {
                                     type="checkbox"
                                     variant="outline-primary"
                                     value="1"
+                                    onClick={(e) => setIsCountryDisabled(!isCountryDisabled)}
+                                    checked={!isCountryDisabled}
                                 >
                                     Country
                                 </ToggleButton>
                                 <InputGroup className={'mx-3 flex-grow-1'}>
-                                    <Form.Select>
-
+                                    <Form.Select
+                                        disabled={isCountryDisabled}
+                                        onChange={(e) => handleOptionsChange(e.target.value, 'country')}
+                                        value={props.selectedSearchOptionIndex.country}
+                                    >
+                                        {searchCountry.map((country, index) => (
+                                            <option key={index} value={index}>
+                                                {country.label}
+                                            </option>
+                                        ))}
                                     </Form.Select>
                                 </InputGroup>
                             </div>

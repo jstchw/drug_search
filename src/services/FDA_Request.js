@@ -26,6 +26,10 @@ const generatePath = (searchTerm, searchOptions, countType) => {
         searchParts.push(`patient.patientonsetage:[${searchOptions.age[0]}+TO+${searchOptions.age[1]}]`)
     }
 
+    if (searchOptions.country) {
+        searchParts.push(`occurcountry:"${searchOptions.country}"`)
+    }
+
     return `${BASE_URL}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`
 }
 

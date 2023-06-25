@@ -5,7 +5,7 @@ import SearchBox from '../../components/SearchBox/SearchBox'
 import SearchResultObject from "../../components/SearchResultObject/SearchResultObject";
 import {getDrugsFromEvents, getEventsFromDrugs, getEventsOverTime} from "../../services/FDA_Request";
 import './Search.css'
-import { searchAgeRange, searchTypes, searchSex } from "../../components/OptionModal/OptionModal";
+import {searchAgeRange, searchTypes, searchSex, searchCountry} from "../../components/OptionModal/OptionModal";
 
 
 const Search = () => {
@@ -25,13 +25,19 @@ const Search = () => {
     const [selectedSearchOptionIndex, setSelectedSearchOptionIndex] = React.useState({
         searchBy: 0,
         sex: 0,
+        country: searchCountry.findIndex(({ value }) => value === 'US'),
     })
 
     const [searchOptions, setSearchOptions] = React.useState({
         searchBy: searchTypes[selectedSearchOptionIndex.searchBy].value,
         sex: searchSex[selectedSearchOptionIndex.sex].value,
-        age: searchAgeRange[-1]
+        age: searchAgeRange[-1],
+        country: searchCountry[selectedSearchOptionIndex.country].value,
     })
+
+
+
+    console.log(searchOptions)
 
     useEffect(() => {
         if(!showAdditionalSearch) {

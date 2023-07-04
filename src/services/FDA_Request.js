@@ -7,15 +7,14 @@ const generatePath = (searchTerm, searchOptions, countType) => {
     const whatToCount = {
         reaction: 'patient.reaction.reactionmeddrapt.exact',
         receiveDate: 'receivedate',
-        drug: 'patient.drug.activesubstance.activesubstancename'
+        drug: 'patient.drug.activesubstance.activesubstancename.exact'
     }
 
     let searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
 
     if (searchTerm) {
-        searchTerm.map((item) => {
-            searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(item)}"`)
-        })
+        // Join search terms with '+' and add to searchParts
+        searchParts.push(`${searchOptions.searchBy}:${searchTerm.join('+')}`);
     }
 
     if (searchOptions.sex) {

@@ -36,9 +36,6 @@ const Search = () => {
     })
 
 
-
-    console.log(searchOptions)
-
     useEffect(() => {
         if(!showAdditionalSearch) {
             setAdditionalSearchTerm(null)

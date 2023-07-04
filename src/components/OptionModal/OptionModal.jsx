@@ -18,7 +18,7 @@ export const searchTypes = [
         type: 'searchBy'
     },
     {
-        value: 'patient.reaction.reactionmeddrapt.exact',
+        value: 'patient.reaction.reactionmeddrapt',
         index: 2,
         label: 'Side Effect',
         type: 'searchBy'

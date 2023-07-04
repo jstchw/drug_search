@@ -115,7 +115,7 @@ const SearchResultObject = (props) => {
                                 }
                                 {searchTypeRef.current === searchTypes[2].value &&
                                     <>
-                                        <h1>{terms[0].ADE}</h1>
+                                        <h1>{terms.map(term => term.ADE).join(' & ')}</h1>
                                     </>
                                 }
                             </Col>
@@ -155,6 +155,8 @@ const SearchResultObject = (props) => {
                                         <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
                                     </Col>
                                     <Col>
+                                        {/* FIX THIS ACCORDION WHEN THERE IS NO INFORMATION - MAKE IT NOT RENDER IF THERE IS NO INFO */}
+                                        {/* RENDER SOME PARTS OF THE ACCORDION IF THERE IS LIMITED INFORMATION */}
                                         <DrugAccordion drugInfo={term} totalCount={totalCount}/>
                                     </Col>
                                 </React.Fragment>

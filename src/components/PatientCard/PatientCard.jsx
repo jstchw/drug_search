@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Toast, ToastContainer, Badge, Row, Col} from 'react-bootstrap';
+import {Toast, ToastContainer, Badge, Col} from 'react-bootstrap';
 import {searchSex, searchTypes} from "../OptionModal/OptionModal";
 
 
-const processSearchOptions = (searchOptions, setSearchOptions, totalADE, searchBy) => {
+const processSearchOptions = (searchOptions, totalADE, searchBy) => {
 
     let newSearchOptions = {...searchOptions}
 
@@ -35,7 +35,8 @@ const processSearchOptions = (searchOptions, setSearchOptions, totalADE, searchB
             ...newSearchOptions,
         }
     }
-    setSearchOptions(newSearchOptions)
+
+    return newSearchOptions;
 }
 
 const PatientCard = (props) => {
@@ -44,8 +45,12 @@ const PatientCard = (props) => {
     const [searchOptions, setSearchOptions] = React.useState(rest)
 
     useEffect(() => {
-        processSearchOptions(searchOptions, setSearchOptions, props.totalADE, searchByRef.current)
-    }, [props.searchOptions, props.totalADE, searchBy])
+        const newSearchOptions = processSearchOptions(searchOptions, props.totalADE, searchByRef.current)
+
+        if (JSON.stringify(newSearchOptions) !== JSON.stringify(searchOptions)) {
+            setSearchOptions(newSearchOptions);
+        }
+    }, [searchOptions, props.totalADE]);
 
     const [show, setShow] = useState(false);
 

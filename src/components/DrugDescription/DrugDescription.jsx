@@ -1,6 +1,6 @@
 import React from 'react';
 import {Capsule as CapsuleIcon} from "react-bootstrap-icons";
-import { Card, Placeholder, Badge } from 'react-bootstrap';
+import { Card, Badge } from 'react-bootstrap';
 import './DrugDescription.css';
 
 

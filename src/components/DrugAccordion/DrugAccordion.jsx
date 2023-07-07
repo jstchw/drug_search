@@ -1,4 +1,4 @@
-import {Accordion, Badge, Placeholder} from "react-bootstrap";
+import {Accordion, Badge} from "react-bootstrap";
 import React from "react";
 
 const DrugAccordion = (props) => {

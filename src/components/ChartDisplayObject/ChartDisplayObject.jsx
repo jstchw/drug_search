@@ -1,5 +1,5 @@
 import ApexChart from "../ApexChart/ApexChart";
-import {Alert, Col, Container} from "react-bootstrap";
+import {Alert} from "react-bootstrap";
 import React from "react";
 import WordCloudChart from "../WordCloudChart/WordCloudChart";
 
@@ -12,7 +12,7 @@ const ChartDisplayObject = (props) => {
             </Alert>
                 {props.searchResults && <ApexChart eventDict={props.termCountDict} totalCount={props.totalCount} type={'searched_group'} />}
                 <div>
-                    <WordCloudChart ADEArray={props.termCountDict}/>
+                    <WordCloudChart ADEArray={props.termCountDict} searchOptions={props.searchOptions}/>
                 </div>
         </div>
     );

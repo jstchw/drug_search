@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Toast, ToastContainer, Badge, Row, Col} from 'react-bootstrap';
-import { searchSex } from "../OptionModal/OptionModal";
+import {searchSex, searchTypes} from "../OptionModal/OptionModal";
 
 
-const processSearchOptions = (searchOptions, setSearchOptions) => {
+const processSearchOptions = (searchOptions, setSearchOptions, totalADE, searchBy) => {
 
     let newSearchOptions = {...searchOptions}
 
-    if(searchOptions.age && searchOptions.age[0] && searchOptions.age[1]) {
+    if(searchOptions.age && Array.isArray(searchOptions.age) && searchOptions.age.length === 2 && searchOptions.age[0] && searchOptions.age[1]) {
         newSearchOptions = {
             ...newSearchOptions,
             age: searchOptions.age.join(' - ')
@@ -15,25 +15,44 @@ const processSearchOptions = (searchOptions, setSearchOptions) => {
     }
     // If value from searchSex is equal to the value of searchOptions.sex then return the label
     if(searchOptions.sex) {
-        newSearchOptions = {
-            ...newSearchOptions,
-            sex: searchSex.find(sex => sex.value === searchOptions.sex).label
+        const foundSex = searchSex.find(sex => sex.value === searchOptions.sex);
+        if (foundSex) {
+            newSearchOptions = {
+                ...newSearchOptions,
+                sex: foundSex.label
+            }
         }
     }
 
+    if(searchTypes[2].value !== searchBy) {
+        newSearchOptions = {
+            ADEs: parseInt(totalADE).toLocaleString('en'),
+            ...newSearchOptions,
+        }
+    } else if(searchTypes[2].value === searchBy) {
+        newSearchOptions = {
+            ADEs: undefined,
+            ...newSearchOptions,
+        }
+    }
     setSearchOptions(newSearchOptions)
 }
 
 const PatientCard = (props) => {
     const { searchBy, ...rest } = props.searchOptions;
+    const searchByRef = useRef(searchBy)
     const [searchOptions, setSearchOptions] = React.useState(rest)
+
+    useEffect(() => {
+        processSearchOptions(searchOptions, setSearchOptions, props.totalADE, searchByRef.current)
+    }, [props.searchOptions, props.totalADE, searchBy])
 
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        processSearchOptions(searchOptions, setSearchOptions)
+        if(Object.values(searchOptions).some(value => value !== undefined))
         setShow(true)
-    }, []);
+    }, [searchOptions]);
 
     return (
         <ToastContainer
@@ -46,11 +65,6 @@ const PatientCard = (props) => {
                     <span>Patient Card</span>
                 </Toast.Header>
                 <Toast.Body>
-                    <Col className={'fs-5 d-flex justify-content-start align-items-center'}>
-                        <Badge>ADEs</Badge>
-                        &nbsp;
-                        {parseInt(props.totalADE).toLocaleString('en')}
-                    </Col>
                     {Object.keys(searchOptions).map((key, index) => {
                         if (searchOptions[key]) {
                             return (

@@ -27,39 +27,15 @@ const DrugDescription = ({ drugInfo, showAdditionalSearch }) => {
                                                 className="molecule" style={{ backgroundColor: 'transparent'}} />}
 
             <Card.Body className="text-md-start">
-                <p><Badge>IUPAC</Badge>&nbsp;
-                    {!drugInfo ? (
-                        <>
-                            <Placeholder as='span' animation="glow">
-                                <Placeholder xs={4} />
-                            </Placeholder>
-                        </>
-                    ) : (
-                        <span className={'iupac'}>{drugInfo.iupac}</span>
-                    )}
-                </p>
-                <p><Badge>Class</Badge>&nbsp;
-                    {!drugInfo ? (
-                        <>
-                            <Placeholder as='span' animation="glow">
-                                <Placeholder xs={4} />
-                            </Placeholder>
-                        </>
-                    ) : (
-                        drugInfo.drug_class
-                    )}
-                </p>
-                <p><Badge>Formula</Badge>&nbsp;
-                    {!drugInfo ? (
-                        <>
-                            <Placeholder as='span' animation="glow">
-                                <Placeholder xs={4} />
-                            </Placeholder>
-                        </>
-                    ) : (
-                        drugInfo.formula
-                    )}
-                </p>
+                {drugInfo && drugInfo.iupac &&
+                    <p><Badge>IUPAC</Badge>&nbsp;<span className={'iupac'}>{drugInfo.iupac}</span></p>
+                }
+                {drugInfo && drugInfo.drug_class &&
+                    <p><Badge>Class</Badge>&nbsp;{drugInfo.drug_class}</p>
+                }
+                {drugInfo && drugInfo.formula &&
+                    <p><Badge>Formula</Badge>&nbsp;{drugInfo.formula}</p>
+                }
             </Card.Body>
         </Card>
     );

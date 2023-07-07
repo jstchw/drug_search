@@ -23,9 +23,6 @@ const SearchResultObject = (props) => {
     const drugInfo = useDrugInfo(props.searchTerm, searchTypeRef.current)
 
     const uniqueDrugInfo = getUniqueObjects(drugInfo)
-    console.log(uniqueDrugInfo)
-
-
     let groupDescription
 
     const processDrugGroups = (groups) => {
@@ -172,7 +169,9 @@ const SearchResultObject = (props) => {
 
             <Col className={'mt-3'}>
                 <ChartDisplayObject eventsOverTime={eventsOverTime} termCountDict={termCountDict}
-                                    totalCount={totalCount} searchResults={termCountDict}/>
+                                    totalCount={totalCount} searchResults={termCountDict}
+                                    searchOptions={props.searchOptions}
+                />
             </Col>
         </div>
     );

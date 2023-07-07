@@ -88,10 +88,12 @@ const Search = () => {
 
     return (
         <div className="min-vh-100 d-flex flex-column">
-            <Header />
             <Container fluid className={'d-flex flex-grow-1 align-items-center'}>
                 <Row className="w-100 mx-auto">
-                    <Col xs="auto" className="text-center my-5 mx-auto">
+                    <Col xs="auto" className="text-center mb-5 mt-3 mx-auto">
+                        <Row className={'mb-4'}>
+                            <Header />
+                        </Row>
                         <Row className={'mb-4'}>
                             <SearchBox
                                 onSearch={handleSearch}

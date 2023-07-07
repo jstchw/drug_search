@@ -23,6 +23,7 @@ const SearchResultObject = (props) => {
     const drugInfo = useDrugInfo(props.searchTerm, searchTypeRef.current)
 
     const uniqueDrugInfo = getUniqueObjects(drugInfo)
+    console.log(uniqueDrugInfo)
 
 
     let groupDescription

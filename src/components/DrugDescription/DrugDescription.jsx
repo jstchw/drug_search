@@ -12,7 +12,7 @@ const DrugDescription = ({ drugInfo, showAdditionalSearch }) => {
         <Card className={'drug-description-card mb-4'}>
             <Card.Header>
                 <CapsuleIcon className="drug-badge mx-1" />
-                {dualSearchRef ? (
+                {dualSearchRef.current ? (
                     <>
                         <span className={'drug-name'}>{drugInfo.drug_name}</span>
                     </>

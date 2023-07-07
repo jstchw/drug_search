@@ -106,6 +106,13 @@ const OptionModal = (props) => {
         props.setSearchOptions(newSearchOptions);
     }, [isCountryDisabled, isSexDisabled]);
 
+    const sanitizeAge = (age) => {
+        const lastChar = age.slice(-1); // Get the last character
+        if(!/^[0-9]*$/.test(lastChar)) {
+            age = age.slice(0, -1); // Remove the last character if it's not a digit
+        }
+        return age;
+    }
     const handleOptionsChange = (index, type, value) => {
         switch (type) {
             case 'searchBy':
@@ -243,19 +250,31 @@ const OptionModal = (props) => {
 
                             <InputGroup className={'mx-3 flex-grow-1'}>
                                 <Form.Control
-                                    type="number"
+                                    type="text"
                                     placeholder="Min"
                                     value={ageRange[0]}
-                                    onChange={(e) => handleOptionsChange(0, 'age', e.target.value)}
+                                    onChange={(e) => {
+                                        e.target.value = sanitizeAge(e.target.value)
+                                        handleOptionsChange(0, 'age', e.target.value);
+                                    }}
                                     disabled={isAgeDisabled}
+                                    min={0}
+                                    onCopy={(e) => (e.preventDefault())}
+                                    onPaste={(e) => (e.preventDefault())}
                                 />
                                 <InputGroup.Text>-</InputGroup.Text>
                                 <Form.Control
-                                    type="number"
+                                    type="text"
                                     placeholder="Max"
                                     value={ageRange[1]}
-                                    onChange={(e) => handleOptionsChange(1, 'age', e.target.value)}
+                                    onChange={(e) => {
+                                        e.target.value = sanitizeAge(e.target.value)
+                                        handleOptionsChange(1, 'age', e.target.value);
+                                    }}
                                     disabled={isAgeDisabled}
+                                    min={0}
+                                    onCopy={(e) => (e.preventDefault())}
+                                    onPaste={(e) => (e.preventDefault())}
                                 />
                             </InputGroup>
                         </Form.Group>

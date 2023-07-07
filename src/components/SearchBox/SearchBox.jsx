@@ -109,7 +109,6 @@ const SearchBox = (props) => {
 
     const handleSearch = async (e, newSearchValue) => {
         if (e) e.preventDefault()
-        console.log('searching')
         const valueToSearch = newSearchValue || inputValue
         if (valueToSearch) {
             props.onSearch(props.searchOptions, valueToSearch)

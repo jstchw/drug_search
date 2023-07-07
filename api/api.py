@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, abort
 from flask_cors import CORS
 from lxml import etree as ET
 import sys
@@ -82,7 +82,6 @@ def get_info():
 
     if search_type == 'patient.drug.activesubstance.activesubstancename':
         drug_id = search_csv('Common name', drug_name)
-        print(drug_id, file=sys.stderr)
         for element in root.findall('{http://www.drugbank.ca}drug'):
                 if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
                      drug = process_element(element=element, drug_id=drug_id)
@@ -102,6 +101,8 @@ def get_info():
                             if drug:
                                 results.append(drug)
                                 break
+    if not results:
+        abort(404, description="No results found")
     return jsonify(results)
 
 @app.route('/api/get_suggestions', methods=['GET'])

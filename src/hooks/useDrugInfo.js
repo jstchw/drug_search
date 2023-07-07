@@ -40,16 +40,16 @@ const useDrugInfo = (drugName, searchType) => {
                     const infoPromises = responses.flatMap(response => {
                         if (response.data.length > 0) {
                             return response.data.map(async drug => ({
-                                drug_name: drug.name,
-                                drug_class: drug.classification,
-                                groups: drug.groups,
-                                iupac: drug.iupac,
-                                formula: toSubscript(drug.formula),
-                                brands: drug.brands,
-                                half_life: drug.half_life,
-                                indication: drug.indication,
-                                product: drug.product,
-                                molecule_url: await fetchDrugMolecule(drug.name),
+                                drug_name: drug.name || "",
+                                drug_class: drug.classification || "",
+                                groups: drug.groups || "",
+                                iupac: drug.iupac || "",
+                                formula: drug.formula ? toSubscript(drug.formula) : "",
+                                brands: drug.brands || "",
+                                half_life: drug.half_life || "",
+                                indication: drug.indication || "",
+                                product: drug.product || "",
+                                molecule_url: await fetchDrugMolecule(drug.name) || "",
                                 ADE: null,
                                 full_info: true,
                             }));
@@ -71,7 +71,7 @@ const useDrugInfo = (drugName, searchType) => {
             getDrugInfo()
         }
 
-    }, [drugName])
+    }, [JSON.stringify(drugName)])
 
     return drugInfo
 }

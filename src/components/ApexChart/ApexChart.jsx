@@ -22,7 +22,7 @@ const processDataForChart = (eventDict, totalCount, type) => {
 
         popularTerms = Object.entries(popularTerms).map(([term, count]) => ({
             x: term,
-            y: ((count / totalCount) * 100).toPrecision(3),
+            y: count,
         }))
 
         return popularTerms;
@@ -56,7 +56,7 @@ const ApexChart = (props) => {
         const chartData = {
             labels: processedData.map((x) => x.x),
             series: [{
-                name: 'Percentage',
+                name: 'Events',
                 data: processedData
             }]
         }
@@ -78,14 +78,6 @@ const ApexChart = (props) => {
                     horizontal: true,
                     distributed: true,
                     barHeight: '95%',
-                }
-            },
-            title : {
-                align: 'center',
-                text: 'Adverse effects for the searched group',
-                style: {
-                    fontSize: '20px',
-                    fontWeight: 'light',
                 }
             },
             yaxis: {
@@ -124,14 +116,15 @@ const ApexChart = (props) => {
             },
             dataLabels: {
                 enabled: true,
+                // Converts the value to a percentage
                 formatter: (value) => {
-                    return `${value}%`
+                    return `${((value / props.totalCount) * 100).toPrecision(3)}%`
                 }
             },
             tooltip: {
                 y: {
                     formatter: (value) => {
-                        return `${value}%`
+                        return `${value.toLocaleString()} from ${props.totalCount.toLocaleString()}`
                     }
                 }
             }

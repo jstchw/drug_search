@@ -94,12 +94,14 @@ const SearchResultObject = (props) => {
                     {drugInfo.length > 0 ? (
                         Object.entries(groupedByProduct).map(([product, terms], index) => (
                             <Col key={index}>
+                                {/* Searching by active substance*/}
                                 {searchTypeRef.current === searchTypes[0].value &&
                                     <>
                                         <h1>{terms[0].drug_name}</h1>
                                         {terms[0].groups && <h3>{processDrugGroups(terms[0].groups)}</h3>}
                                     </>
                                 }
+                                {/* Searching by brand names*/}
                                 {searchTypeRef.current === searchTypes[1].value &&
                                     <>
                                         <h1>{product}</h1>
@@ -111,6 +113,7 @@ const SearchResultObject = (props) => {
                                         ))}
                                     </>
                                 }
+                                {/* Searching by adverse effect*/}
                                 {searchTypeRef.current === searchTypes[2].value &&
                                     <>
                                         <h1>{terms.map(term => term.ADE).join(' & ')}</h1>

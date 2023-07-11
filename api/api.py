@@ -1,11 +1,14 @@
+import csv
+import io
+import openai
+import sys
+import json
+
 from flask import Flask, request, jsonify, send_file, abort
 from flask_cors import CORS
 from lxml import etree as ET
-import sys
-import csv
 from rdkit import Chem
 from rdkit.Chem import Draw
-import io
 
 app = Flask(__name__)
 CORS(app)
@@ -29,21 +32,24 @@ def process_element(element, drug_id=None, drug_name=None, drug_brand=None):
                 product_name = product.find('db:name', ns).text
                 break
     if product_name is None:
-            product_name = drug_tag.text
+        product_name = drug_tag.text
 
     return {
         'name': ((temp := element.find('db:name', ns)) is not None and temp.text) or None,
         'half_life': ((temp := element.find('db:half-life', ns)) is not None and temp.text) or None,
         'classification': ((temp := element.find('db:classification/db:class', ns)) is not None and temp.text) or None,
-        'groups': ((temp := element.findall('db:groups/db:group', ns)) is not None and [group.text for group in temp]) or None,
-        'brands': ((temp := element.findall('db:international-brands/db:international-brand', ns)) is not None and [brand.find('db:name', ns).text for brand in temp]) or None,
-        'iupac': ((temp := element.find('db:calculated-properties/db:property[db:kind="IUPAC Name"]/db:value', ns)) is not None and temp.text) or None,
-        'formula': ((temp := element.find('db:calculated-properties/db:property[db:kind="Molecular Formula"]/db:value', ns)) is not None and temp.text) or None,
+        'groups': ((temp := element.findall('db:groups/db:group', ns)) is not None and [group.text for group in
+                                                                                        temp]) or None,
+        'brands': ((temp := element.findall('db:international-brands/db:international-brand', ns)) is not None and [
+            brand.find('db:name', ns).text for brand in temp]) or None,
+        'iupac': ((temp := element.find('db:calculated-properties/db:property[db:kind="IUPAC Name"]/db:value',
+                                        ns)) is not None and temp.text) or None,
+        'formula': ((temp := element.find('db:calculated-properties/db:property[db:kind="Molecular Formula"]/db:value',
+                                          ns)) is not None and temp.text) or None,
         'indication': ((temp := element.find('db:indication', ns)) is not None and temp.text) or None,
         'description': ((temp := element.find('db:state', ns)) is not None and temp.text) or None,
         'product': product_name,
     }
-
 
 
 def search_csv(column_name, search_term):
@@ -71,8 +77,6 @@ def get_molecule():
     return "No molecule found", 404
 
 
-
-
 @app.route('/api/get_info', methods=['GET'])
 def get_info():
     drug_name = request.args.get('drug_name')
@@ -83,11 +87,11 @@ def get_info():
     if search_type == 'patient.drug.activesubstance.activesubstancename':
         drug_id = search_csv('Common name', drug_name)
         for element in root.findall('{http://www.drugbank.ca}drug'):
-                if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
-                     drug = process_element(element=element, drug_id=drug_id)
-                     if drug:
-                         results.append(drug)
-                         break
+            if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
+                drug = process_element(element=element, drug_id=drug_id)
+                if drug:
+                    results.append(drug)
+                    break
     elif search_type == 'patient.drug.openfda.brand_name':
         for element in root.findall('{http://www.drugbank.ca}drug'):
             if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':
@@ -105,11 +109,30 @@ def get_info():
         abort(404, description="No results found")
     return jsonify(results)
 
+
 @app.route('/api/get_suggestions', methods=['GET'])
 def get_suggestions():
     with open('data/suggestion_db.csv', 'r') as file:
         reader = csv.DictReader(file)
         return jsonify([row['Common name'] for row in reader])
+
+
+@app.route('/api/get_summary', methods=['POST'])
+def get_summary():
+    openai.api_key_path = 'keys/openai.txt'
+    data = request.get_json()
+    instruction = 'You are an AI trained to analyze and summarize data from charts. ' \
+                  'Your task is to derive new conclusions and facts from the given data, ' \
+                  'not just rephrase the information. You should provide a concise summary of the key insights ' \
+                  'focusing on the most valuable information. Your response should be limited ' \
+                  'to 300-400 characters and should not include any information other than the summary. ' \
+                  'Here is the data: '
+
+    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo",
+                                                   temperature=1,
+                                                   messages=[{"role": "system", "content": instruction},
+                                                             {"role": "user", "content": json.dumps(data)}])
+    return jsonify(chat_completion)
 
 
 def on_startup():

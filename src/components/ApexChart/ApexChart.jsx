@@ -161,14 +161,6 @@ const ApexChart = (props) => {
                     }
                 }
             },
-            title : {
-                align: 'center',
-                text: 'Reports over time',
-                style: {
-                    fontSize: '20px',
-                    fontWeight: 'light',
-                }
-            },
             stroke: {
                 curve: 'smooth'
             },

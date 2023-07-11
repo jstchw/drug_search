@@ -112,7 +112,9 @@ export const getSideEffectsForDemographics = async (drug) => {
         const url = generatePath([drug], searchOptions, 'reaction')
         const response = await fetch(url)
         const data = await response.json()
-        console.log('works')
+        if(!response.ok) {
+            break
+        }
         results[group.name] = {
             ...processDrugEvents(data),
             def: group.def,

@@ -10,7 +10,7 @@ const options = {
     enableOptimizations: true,
     deterministic: true,
     fontFamily: "trebuchet ms",
-    fontSizes: [5, 60],
+    fontSizes: [10, 60],
     fontStyle: "normal",
     fontWeight: "normal",
     padding: 1,

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Badge, Col, Modal, OverlayTrigger, Popover, Row} from 'react-bootstrap'
+import {Badge, Col, Modal, OverlayTrigger, Popover, Row, Spinner} from 'react-bootstrap'
 import {useEffect, useState} from "react";
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
@@ -19,10 +19,34 @@ const chunkArray = (array, size) => {
     return chunked_arr;
 };
 
+const prepareDataForGPT = (data) => {
+    let maxTerms = 10;
+
+    for (let key in data) {
+        // Remove unnecessary properties
+        delete data[key].def;
+        delete data[key].age;
+
+        let termCountDict = data[key].termCountDict;
+        // Convert the object to an array of entries and sort it
+        let sortedDict = Object.entries(termCountDict).sort((a, b) => b[1] - a[1]);
+        // Keep only the top 10 items and convert them back into an object
+        let popularTerms = {};
+        for (let [term, count] of sortedDict.slice(0, maxTerms)) {
+            popularTerms[term] = count;
+        }
+
+        // Replace the original termCountDict with the sorted one
+        data[key].termCountDict = popularTerms;
+    }
+    return data
+}
+
 const DemographicModalInfo = ({word}) => {
     const wordRef = React.useRef(null)
     const drugInfo = useDrugInfo([word], searchTypes[0].value)
     const [demographicInfo, setDemographicInfo] = useState([])
+    const [demographicSummary, setDemographicSummary] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
 
     // Get demographic info only if the word has changed
@@ -42,6 +66,31 @@ const DemographicModalInfo = ({word}) => {
                 });
         }
     }, [word]);
+
+    // Get response from the GPT model if the demographic info has changed
+    useEffect(() => {
+        if(Object.keys(demographicInfo).length > 0) {
+            console.log(demographicInfo)
+            const cachedResponse = localStorage.getItem(JSON.stringify(demographicInfo));
+            if (cachedResponse) {
+                setDemographicSummary(JSON.parse(cachedResponse));
+            } else {
+                fetch('api/get_summary', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(prepareDataForGPT(demographicInfo))
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        setDemographicSummary(data)
+                        localStorage.setItem(JSON.stringify(demographicInfo), JSON.stringify(data))
+                    })
+                    .catch(err => console.log(err))
+            }
+        }
+    }, [demographicInfo])
 
 
     const getDemographicDef = (name, count, def) => {
@@ -63,10 +112,9 @@ const DemographicModalInfo = ({word}) => {
 
 
     return (
-        <div>
+        <React.Fragment>
             {drugInfo && drugInfo.length > 0 &&
-                <React.Fragment>
-                    <Row>
+                <Row>
                     <Col xs={4}>
                         <DrugDescription
                             drugInfo={drugInfo[0]}
@@ -76,32 +124,37 @@ const DemographicModalInfo = ({word}) => {
                     <Col xs={4}>
                         <DrugAccordion drugInfo={drugInfo[0]}/>
                     </Col>
-                    </Row>
-                    <Col className={'text-center'}>
-                        {isLoading ?
-                            <p>LOADING...</p>
-                            :
-                            (demographicInfo && Object.keys(demographicInfo).length > 0) ?
-                                chunkArray(Object.entries(demographicInfo), 2).map((chunk, index) => (
-                                    <Row key={index}>
-                                        {chunk.map(([key, value], subIndex) => (
-                                            <Col className={'text-center'} key={subIndex}>
-                                                <h4>{getDemographicDef(key, value.totalCount, value.def)}</h4>
-                                                <ApexChart
-                                                    eventDict={value.termCountDict}
-                                                    totalCount={value.totalCount}
-                                                    type={'searched_group'} />
-                                            </Col>
-                                        ))}
-                                    </Row>
-                                ))
-                                :
-                                <p>No demographic info available</p>
-                        }
+                    <Col xs={4}>
+                        <h4><Badge>AI</Badge>&nbsp;Demographic Summary</h4>
+                        {demographicSummary && <p>{demographicSummary.choices[0].message.content}</p>}
                     </Col>
-                </React.Fragment>
+                </Row>
             }
-        </div>
+            <Col className={'text-center'}>
+                {isLoading ?
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                    :
+                    (demographicInfo && Object.keys(demographicInfo).length > 0) ?
+                        chunkArray(Object.entries(demographicInfo), 2).map((chunk, index) => (
+                            <Row key={index}>
+                                {chunk.map(([key, value], subIndex) => (
+                                    <Col className={'text-center'} key={subIndex}>
+                                        <h4>{getDemographicDef(key, value.totalCount, value.def)}</h4>
+                                        <ApexChart
+                                            eventDict={value.termCountDict}
+                                            totalCount={value.totalCount}
+                                            type={'searched_group'} />
+                                    </Col>
+                                ))}
+                            </Row>
+                        ))
+                        :
+                        <p>No demographic info available</p>
+                }
+            </Col>
+        </React.Fragment>
     )
 }
 

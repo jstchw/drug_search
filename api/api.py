@@ -124,7 +124,7 @@ def get_summary():
     instruction = 'You are an AI trained to analyze and summarize data from charts. ' \
                   'Your task is to derive new conclusions and facts from the given data, ' \
                   'not just rephrase the information. You should provide a concise summary of the key insights ' \
-                  'focusing on the most valuable information. Your response should be limited ' \
+                  'focusing on the most valuable information and comparing the data. Your response should be limited ' \
                   'to 300-400 characters and should not include any information other than the summary. ' \
                   'Here is the data: '
 

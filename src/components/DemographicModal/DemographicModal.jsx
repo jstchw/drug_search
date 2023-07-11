@@ -1,5 +1,5 @@
 import React from 'react'
-import {Badge, Col, Modal, OverlayTrigger, Popover, Row, Spinner} from 'react-bootstrap'
+import {Badge, Col, Modal, OverlayTrigger, Placeholder, Popover, Row, Spinner} from 'react-bootstrap'
 import {useEffect, useState} from "react";
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
@@ -47,7 +47,9 @@ const DemographicModalInfo = ({word}) => {
     const drugInfo = useDrugInfo([word], searchTypes[0].value)
     const [demographicInfo, setDemographicInfo] = useState([])
     const [demographicSummary, setDemographicSummary] = useState(null)
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
+    let placeholderSizes = [6, 4, 4, 5, 3, 4, 4, 5, 3, 2, 4, 6]
+    placeholderSizes = placeholderSizes.concat(placeholderSizes)
 
     // Get demographic info only if the word has changed
     useEffect(() => {
@@ -70,7 +72,6 @@ const DemographicModalInfo = ({word}) => {
     // Get response from the GPT model if the demographic info has changed
     useEffect(() => {
         if(Object.keys(demographicInfo).length > 0) {
-            console.log(demographicInfo)
             const cachedResponse = localStorage.getItem(JSON.stringify(demographicInfo));
             if (cachedResponse) {
                 setDemographicSummary(JSON.parse(cachedResponse));
@@ -126,7 +127,17 @@ const DemographicModalInfo = ({word}) => {
                     </Col>
                     <Col xs={4}>
                         <h4><Badge>AI</Badge>&nbsp;Demographic Summary</h4>
-                        {demographicSummary && <p>{demographicSummary.choices[0].message.content}</p>}
+                        {demographicSummary ? (
+                            <p>{demographicSummary.choices[0].message.content}</p>
+                        ) : (
+                            <Placeholder as="p" animation={'glow'}>
+                                {placeholderSizes.map((size, index) => (
+                                    <React.Fragment key={index}>
+                                        <Placeholder xs={size} />{' '}
+                                    </React.Fragment>
+                                ))}
+                            </Placeholder>
+                        )}
                     </Col>
                 </Row>
             }

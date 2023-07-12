@@ -1,5 +1,6 @@
-import React from "react";
-import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert} from "react-bootstrap";
+import React, {useEffect} from "react";
+import {Col, Container, Row, Badge, Placeholder, Popover, OverlayTrigger, Alert, Button} from "react-bootstrap";
+import {Book as BookIcon} from "react-bootstrap-icons";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
@@ -7,6 +8,7 @@ import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
 import PatientCard from "../PatientCard/PatientCard";
 import {searchTypes} from "../OptionModal/OptionModal";
 import useDrugInfo from "../../hooks/useDrugInfo";
+import DemographicModal from "../DemographicModal/DemographicModal";
 
 const getUniqueObjects = (array) => {
     return array.filter((obj, index, self) =>
@@ -21,6 +23,15 @@ const SearchResultObject = (props) => {
     const searchTypeRef = React.useRef(props.searchOptions.searchBy)
 
     const drugInfo = useDrugInfo(props.searchTerm, searchTypeRef.current)
+
+    const [showDemographicModal, setShowDemographicModal] = React.useState(false)
+    const [selectedWord, setSelectedWord] = React.useState(null)
+
+    useEffect(() => {
+        if(!showDemographicModal) {
+            setSelectedWord(null);
+        }
+    }, [showDemographicModal])
 
     const uniqueDrugInfo = getUniqueObjects(drugInfo)
     let groupDescription
@@ -99,6 +110,13 @@ const SearchResultObject = (props) => {
                                     <>
                                         <h1>{terms[0].drug_name}</h1>
                                         {terms[0].groups && <h3>{processDrugGroups(terms[0].groups)}</h3>}
+                                        {/* Demographic modal for every drug */}
+                                        <Button onClick={() => {
+                                            setSelectedWord(terms[0].drug_name)
+                                            setShowDemographicModal(true)
+                                        }}>
+                                            <BookIcon size={'22'}></BookIcon>
+                                        </Button>
                                     </>
                                 }
                                 {/* Searching by brand names*/}
@@ -156,8 +174,6 @@ const SearchResultObject = (props) => {
                                         <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
                                     </Col>
                                     <Col>
-                                        {/* FIX THIS ACCORDION WHEN THERE IS NO INFORMATION - MAKE IT NOT RENDER IF THERE IS NO INFO */}
-                                        {/* RENDER SOME PARTS OF THE ACCORDION IF THERE IS LIMITED INFORMATION */}
                                         <DrugAccordion drugInfo={term} totalCount={totalCount}/>
                                     </Col>
                                 </React.Fragment>
@@ -165,8 +181,6 @@ const SearchResultObject = (props) => {
                         ))
                     )}
                 </Row>
-
-                <PatientCard searchOptions={props.searchOptions} totalADE={totalCount} />
 
             </Container>
 
@@ -176,6 +190,13 @@ const SearchResultObject = (props) => {
                                     searchOptions={props.searchOptions}
                 />
             </Col>
+
+            <DemographicModal
+                show={showDemographicModal}
+                handleClose={() => setShowDemographicModal(false)}
+                selectedWord={selectedWord}
+            />
+            <PatientCard searchOptions={props.searchOptions} totalADE={totalCount} />
         </div>
     );
 }

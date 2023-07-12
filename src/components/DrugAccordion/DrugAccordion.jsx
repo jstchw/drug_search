@@ -1,5 +1,6 @@
 import {Accordion, Badge} from "react-bootstrap";
 import React from "react";
+import {ReadMore} from "../ReadMore/ReadMore";
 
 const DrugAccordion = (props) => {
     return (
@@ -26,9 +27,11 @@ const DrugAccordion = (props) => {
                 <Accordion.Item eventKey={'2'}>
                     <Accordion.Header><Badge>Brands</Badge></Accordion.Header>
                     <Accordion.Body>
-                        {props.drugInfo.brands.map((brand, index) => (
-                            <span key={index}>{brand}{index !== props.drugInfo.brands.length - 1 ? ', ' : ''}</span>
-                        ))}
+                        <ReadMore>
+                            {props.drugInfo.brands.map((brand, index) => (
+                                <span key={index}>{brand}{index !== props.drugInfo.brands.length - 1 ? ', ' : ' '}</span>
+                            ))}
+                        </ReadMore>
                     </Accordion.Body>
                 </Accordion.Item>
             )}

@@ -111,22 +111,44 @@ const DemographicModalInfo = ({word}) => {
         )
     }
 
+    const showAIWarning = () => {
+        const popover = (
+            <Popover>
+                <Popover.Body>
+                    <div className={'fs-6 text-center'}>
+                        This content is generated using GPT 3.5 model and may contain false information.
+                        Always cross-verify with reliable sources and consult professionals for important decisions.
+                    </div>
+                </Popover.Body>
+            </Popover>
+        )
+
+        return (
+            <OverlayTrigger trigger={['hover', 'focus']} placement={'left'} overlay={popover}>
+                <Badge className={'mx-1 no-pointer-badge'}>AI</Badge>
+            </OverlayTrigger>
+        )
+    }
+
 
     return (
         <React.Fragment>
-            {drugInfo && drugInfo.length > 0 &&
-                <Row>
+                <Row className={!drugInfo.length > 0 ? 'd-flex justify-content-center text-center' : ''}>
+                    {drugInfo && drugInfo.length > 0 && (
+                        <React.Fragment>
+                            <Col xs={4}>
+                                <DrugDescription
+                                    drugInfo={drugInfo[0]}
+                                    style={{border: "none"}}
+                                />
+                            </Col>
+                            <Col xs={4}>
+                                <DrugAccordion drugInfo={drugInfo[0]}/>
+                            </Col>
+                        </React.Fragment>
+                    )}
                     <Col xs={4}>
-                        <DrugDescription
-                            drugInfo={drugInfo[0]}
-                            style={{border: "none"}}
-                        />
-                    </Col>
-                    <Col xs={4}>
-                        <DrugAccordion drugInfo={drugInfo[0]}/>
-                    </Col>
-                    <Col xs={4}>
-                        <h4><Badge>AI</Badge>&nbsp;Demographic Summary</h4>
+                        <h4>{showAIWarning()}Demographic Summary</h4>
                         {demographicSummary ? (
                             <p>{demographicSummary.choices[0].message.content}</p>
                         ) : (
@@ -140,7 +162,6 @@ const DemographicModalInfo = ({word}) => {
                         )}
                     </Col>
                 </Row>
-            }
             <Col className={'text-center'}>
                 {isLoading ?
                     <Spinner animation="border" role="status">

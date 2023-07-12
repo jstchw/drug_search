@@ -192,18 +192,30 @@ const DemographicModalInfo = ({word}) => {
 
 const DemographicModal = ({ show, handleClose, selectedWord}) => {
     const [word, setWord] = useState(null)
+    const [shouldRenderContent, setShouldRenderContent] = useState(false)
 
     // Make the word not all caps and check if the word has changed
     useEffect(() => {
         if (selectedWord) {
-            const newWord = selectedWord.charAt(0).toUpperCase() + selectedWord.slice(1).toLowerCase();
-            setWord(prevWord => newWord !== prevWord ? newWord : prevWord);
+            const newWord = selectedWord.charAt(0).toUpperCase() + selectedWord.slice(1).toLowerCase()
+            setWord(newWord)
         }
-    }, [selectedWord]);
+    }, [selectedWord])
+
+    useEffect(() => {
+        if (show) {
+            setShouldRenderContent(true);
+        } else {
+            const timer = setTimeout(() => {
+                setShouldRenderContent(false);
+            }, 300); // Delay for closing animation
+            return () => clearTimeout(timer);
+        }
+    }, [show]);
+
 
     const handleOnHide = () => {
-        handleClose();
-        setWord(null);
+        handleClose()
     }
 
 
@@ -213,7 +225,7 @@ const DemographicModal = ({ show, handleClose, selectedWord}) => {
           {word && <Modal.Title>{word}</Modal.Title>}
       </Modal.Header>
       <Modal.Body>
-            {word && <DemographicModalInfo word={word}/>}
+            {shouldRenderContent && word && <DemographicModalInfo word={word}/>}
       </Modal.Body>
     </Modal>
     )

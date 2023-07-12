@@ -43,6 +43,8 @@ const formatDate = (date) => {
 const processDrugEvents = (data) => {
     const termCountDict = {}
 
+    console.log(data)
+
     const totalCount = data.results.reduce((total, item) => {
         termCountDict[item.term] = item.count
         return total + item.count

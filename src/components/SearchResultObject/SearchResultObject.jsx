@@ -126,7 +126,15 @@ const SearchResultObject = (props) => {
                                         <Badge className={'mb-3'}>Active substance</Badge>
                                         {terms.map((term, termIndex) => (
                                             <React.Fragment key={termIndex}>
-                                                <h5>{term.drug_name}{processDrugGroups(term.groups)}</h5>
+                                                <h5>
+                                                    {term.drug_name}{processDrugGroups(term.groups)}
+                                                    <Button className={'mx-1'} size={'sm'} onClick={() => {
+                                                        setSelectedWord(term.drug_name)
+                                                        setShowDemographicModal(true)
+                                                    }}>
+                                                        <BookIcon/>
+                                                    </Button>
+                                                </h5>
                                             </React.Fragment>
                                         ))}
                                     </>

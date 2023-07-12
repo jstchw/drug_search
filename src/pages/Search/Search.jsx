@@ -1,11 +1,12 @@
-import React, {useEffect} from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import React, {useEffect} from 'react'
+import { Container, Row, Col, Button } from 'react-bootstrap'
 import Header from '../../components/Header/Header'
 import SearchBox from '../../components/SearchBox/SearchBox'
-import SearchResultObject from "../../components/SearchResultObject/SearchResultObject";
-import {getDrugsFromEvents, getEventsFromDrugs, getEventsOverTime} from "../../services/FDA_Request";
+import SearchResultObject from "../../components/SearchResultObject/SearchResultObject"
+import {getDrugsFromEvents, getEventsFromDrugs, getEventsOverTime} from "../../services/FDA_Request"
 import './Search.css'
-import {searchAgeRange, searchTypes, searchSex, searchCountry} from "../../components/OptionModal/OptionModal";
+import {searchAgeRange, searchTypes, searchSex, searchCountry} from "../../components/OptionModal/OptionModal"
+import { CSSTransition } from "react-transition-group"
 
 
 const Search = () => {
@@ -124,20 +125,25 @@ const Search = () => {
                             </Button>
                         )}
 
-                        {showAdditionalSearch &&
-                            <Row className={'mt-4'}>
-                                <SearchBox
-                                    onSearch={handleSearch}
-                                    isMainSearch={false}
-                                    showAdditionalSearch={showAdditionalSearch}
-                                    onInputChange={setAdditionalSearchTerm}
-                                    searchOptions={searchOptions}
-                                    setSearchOptions={setSearchOptions}
-                                    selectedSearchOptionIndex={selectedSearchOptionIndex}
-                                    setSelectedSearchOptionIndex={setSelectedSearchOptionIndex}
-                                />
-                            </Row>
-                        }
+                            <CSSTransition
+                                in={showAdditionalSearch}
+                                timeout={300}
+                                classNames="fade"
+                                unmountOnExit
+                            >
+                                <Row className={'mt-4'}>
+                                    <SearchBox
+                                        onSearch={handleSearch}
+                                        isMainSearch={false}
+                                        showAdditionalSearch={showAdditionalSearch}
+                                        onInputChange={setAdditionalSearchTerm}
+                                        searchOptions={searchOptions}
+                                        setSearchOptions={setSearchOptions}
+                                        selectedSearchOptionIndex={selectedSearchOptionIndex}
+                                        setSelectedSearchOptionIndex={setSelectedSearchOptionIndex}
+                                    />
+                                </Row>
+                            </CSSTransition>
                         {eventResults && eventsOverTime && currentSearchTerm && searchOptions &&
                             <SearchResultObject
                                 searchResults={eventResults}

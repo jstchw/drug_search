@@ -43,8 +43,6 @@ const formatDate = (date) => {
 const processDrugEvents = (data) => {
     const termCountDict = {}
 
-    console.log(data)
-
     const totalCount = data.results.reduce((total, item) => {
         termCountDict[item.term] = item.count
         return total + item.count
@@ -59,7 +57,7 @@ export const getEventsFromDrugs = async (searchTerm, searchOptions) => {
         const data = await response.json()
         return {result: processDrugEvents(data)}
     } catch (error) {
-        throw new Error(error.message)
+        return {error: error.message}
     }
 }
 
@@ -70,7 +68,7 @@ export const getEventsOverTime = async (searchTerm, searchOptions) => {
         const data = await response.json()
         return {result: data}
     } catch (error) {
-        throw new Error(error.message)
+        return {error: error.message}
     }
 }
 
@@ -81,7 +79,7 @@ export const getDrugsFromEvents = async (searchTerm, searchOptions) => {
         const data = await response.json()
         return {result: processDrugEvents(data)}
     } catch (error) {
-        throw new Error(error.message)
+        return {error: error.message}
     }
 }
 

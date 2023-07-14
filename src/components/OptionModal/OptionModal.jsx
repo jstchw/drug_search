@@ -1,6 +1,8 @@
 import React, {useEffect} from 'react';
-import {Modal, Form, InputGroup, ToggleButton} from 'react-bootstrap';
+import {Modal, Form, InputGroup, ToggleButton, Button} from 'react-bootstrap';
 import countries from '../../assets/countries.json';
+import {ThemeContext} from "../../contexts/ThemeContext";
+import {Moon, Sun} from "react-bootstrap-icons";
 
 
 // Search types that can be selected in the popover
@@ -71,6 +73,8 @@ const OptionModal = (props) => {
     const [isCountryDisabled, setIsCountryDisabled] = React.useState(true)
     const defaultCountry = searchCountry.find(country => country.value === 'US')
     const [lastSelectedCountry, setLastSelectedCountry] = React.useState(defaultCountry.value)
+
+    const { theme, toggleTheme } = React.useContext(ThemeContext)
 
     // Clear the age range when the age is disabled
     useEffect(() => {
@@ -172,6 +176,9 @@ const OptionModal = (props) => {
             <Modal centered show={props.show} onHide={props.handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Options</Modal.Title>
+                    <Button onClick={toggleTheme}>
+                        {theme === 'light' ? <Moon /> : <Sun />}
+                    </Button>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>

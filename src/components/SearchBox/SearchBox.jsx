@@ -235,7 +235,7 @@ const SearchBox = (props) => {
                 </Form.Group>
             </Form>
         </div>
-    );
+    )
 }
 
-export default SearchBox;
+export default SearchBox

@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react'
 import AppRoutes from './AppRoutes'
 import Cookies from 'js-cookie'
-import {ThemeContext} from "./contexts/ThemeContext";
+import {ThemeContext} from "./contexts/ThemeContext"
+import {CookieInfoFooter} from "./components/CookieInfoFooter/CookieInfoFooter";
 
 const App = () => {
     const [theme, setTheme] = React.useState(() => {
@@ -20,9 +21,13 @@ const App = () => {
     }
 
     return (
-        <ThemeContext.Provider value={{theme, toggleTheme}}>
-            <AppRoutes />
-        </ThemeContext.Provider>
+        <React.Fragment>
+            <ThemeContext.Provider value={{theme, toggleTheme}}>
+                <AppRoutes />
+            </ThemeContext.Provider>
+            <CookieInfoFooter />
+        </React.Fragment>
+
     )
 }
 

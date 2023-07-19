@@ -190,7 +190,7 @@ const DemographicModalInfo = ({word}) => {
     )
 }
 
-const DemographicModal = ({ show, handleClose, selectedWord}) => {
+const DemographicModal = ({ show, handleClose, selectedWord, isMobile}) => {
     const [word, setWord] = useState(null)
     const [shouldRenderContent, setShouldRenderContent] = useState(false)
 
@@ -225,7 +225,7 @@ const DemographicModal = ({ show, handleClose, selectedWord}) => {
           {word && <Modal.Title>{word}</Modal.Title>}
       </Modal.Header>
       <Modal.Body>
-            {shouldRenderContent && word && <DemographicModalInfo word={word}/>}
+            {shouldRenderContent && word && <DemographicModalInfo word={word} isMobile={isMobile}/>}
       </Modal.Body>
     </Modal>
     )

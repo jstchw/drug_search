@@ -9,7 +9,7 @@ const DrugDescription = (props) => {
             {props.drugInfo.molecule_url && <Card.Img src={props.drugInfo.molecule_url} alt={props.drugInfo.drug_name}
                                                 className="molecule" style={{ backgroundColor: 'transparent'}} />}
 
-            <Card.Body className="text-md-start">
+            <Card.Body className="text-start">
                 {props.drugInfo && props.drugInfo.iupac &&
                     <p><Badge>IUPAC</Badge>&nbsp;<span className={'iupac'}>{props.drugInfo.iupac}</span></p>
                 }

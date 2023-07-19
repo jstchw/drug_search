@@ -200,9 +200,11 @@ const SearchResultObject = (props) => {
                                 .every((term) => term.ADE === null && term.full_info === true)) &&
                             (uniqueDrugInfo.map((term, index) => (
                                     <React.Fragment key={index}>
-                                        <DrugDescription drugInfo={term}
-                                                         showAdditionalSearch={props.showAdditionalSearch}/>
-                                        <DrugAccordion drugInfo={term} totalCount={totalCount}/>
+                                        <div className={'mb-4'}>
+                                            <DrugDescription drugInfo={term}
+                                                             showAdditionalSearch={props.showAdditionalSearch}/>
+                                            <DrugAccordion drugInfo={term} totalCount={totalCount}/>
+                                        </div>
                                     </React.Fragment>
                                 ))
                             )}
@@ -223,8 +225,9 @@ const SearchResultObject = (props) => {
                 show={showDemographicModal}
                 handleClose={() => setShowDemographicModal(false)}
                 selectedWord={selectedWord}
+                isMobile={isMobile}
             />
-            <PatientCard searchOptions={props.searchOptions} totalADE={totalCount} />
+            { !isMobile && <PatientCard searchOptions={props.searchOptions} totalADE={totalCount} /> }
         </div>
     );
 }

@@ -9,6 +9,7 @@ import PatientCard from "../PatientCard/PatientCard";
 import {searchTypes} from "../OptionModal/OptionModal";
 import useDrugInfo from "../../hooks/useDrugInfo";
 import DemographicModal from "../DemographicModal/DemographicModal";
+import { isMobile } from 'react-device-detect'
 
 const getUniqueObjects = (array) => {
     return array.filter((obj, index, self) =>
@@ -98,97 +99,116 @@ const SearchResultObject = (props) => {
         return acc;
     }, {});
 
+    const DrugInfoObject = ({drugInfo}) => {
+        return (
+            drugInfo.length > 0 ? (
+                Object.entries(groupedByProduct).map(([product, terms], index) => (
+                    <Col key={index}>
+                        {/* Searching by active substance*/}
+                        {searchTypeRef.current === searchTypes[0].value &&
+                            <>
+                                <h1>{terms[0].drug_name}</h1>
+                                {terms[0].groups && <h3>{processDrugGroups(terms[0].groups)}</h3>}
+                                {/* Demographic modal for every drug */}
+                                <Button onClick={() => {
+                                    setSelectedWord(terms[0].drug_name)
+                                    setShowDemographicModal(true)
+                                }}>
+                                    <BookIcon size={'22'}></BookIcon>
+                                </Button>
+                            </>
+                        }
+                        {/* Searching by brand names*/}
+                        {searchTypeRef.current === searchTypes[1].value &&
+                            <>
+                                <h1>{product}</h1>
+                                <Badge className={'mb-3'}>Active substance</Badge>
+                                {terms.map((term, termIndex) => (
+                                    <React.Fragment key={termIndex}>
+                                        <h5>
+                                            {term.drug_name}{processDrugGroups(term.groups)}
+                                            <Button className={'mx-1'} size={'sm'} onClick={() => {
+                                                setSelectedWord(term.drug_name)
+                                                setShowDemographicModal(true)
+                                            }}>
+                                                <BookIcon/>
+                                            </Button>
+                                        </h5>
+                                    </React.Fragment>
+                                ))}
+                            </>
+                        }
+                        {/* Searching by adverse effect*/}
+                        {searchTypeRef.current === searchTypes[2].value &&
+                            <>
+                                <h1>{terms.map(term => term.ADE).join(' & ')}</h1>
+                            </>
+                        }
+                    </Col>
+                ))
+            ) : (
+                <>
+                    <Placeholder as={'h1'} animation="glow">
+                        <Placeholder xs={6} />
+                    </Placeholder>
+                    <Placeholder as={'h3'} animation="glow">
+                        <Placeholder xs={3} />
+                    </Placeholder>
+                </>
+            )
+        )
+    }
+
     return (
         <div>
             <Container className={'my-4'}>
-                <Row>
-                    {drugInfo.length > 0 ? (
-                        Object.entries(groupedByProduct).map(([product, terms], index) => (
-                            <Col key={index}>
-                                {/* Searching by active substance*/}
-                                {searchTypeRef.current === searchTypes[0].value &&
-                                    <>
-                                        <h1>{terms[0].drug_name}</h1>
-                                        {terms[0].groups && <h3>{processDrugGroups(terms[0].groups)}</h3>}
-                                        {/* Demographic modal for every drug */}
-                                        <Button onClick={() => {
-                                            setSelectedWord(terms[0].drug_name)
-                                            setShowDemographicModal(true)
-                                        }}>
-                                            <BookIcon size={'22'}></BookIcon>
-                                        </Button>
-                                    </>
-                                }
-                                {/* Searching by brand names*/}
-                                {searchTypeRef.current === searchTypes[1].value &&
-                                    <>
-                                        <h1>{product}</h1>
-                                        <Badge className={'mb-3'}>Active substance</Badge>
-                                        {terms.map((term, termIndex) => (
-                                            <React.Fragment key={termIndex}>
-                                                <h5>
-                                                    {term.drug_name}{processDrugGroups(term.groups)}
-                                                    <Button className={'mx-1'} size={'sm'} onClick={() => {
-                                                        setSelectedWord(term.drug_name)
-                                                        setShowDemographicModal(true)
-                                                    }}>
-                                                        <BookIcon/>
-                                                    </Button>
-                                                </h5>
-                                            </React.Fragment>
-                                        ))}
-                                    </>
-                                }
-                                {/* Searching by adverse effect*/}
-                                {searchTypeRef.current === searchTypes[2].value &&
-                                    <>
-                                        <h1>{terms.map(term => term.ADE).join(' & ')}</h1>
-                                    </>
-                                }
-                            </Col>
-                        ))
-                        ) : (
-                            <>
-                                <Placeholder as={'h1'} animation="glow">
-                                    <Placeholder xs={6} />
-                                </Placeholder>
-                                <Placeholder as={'h3'} animation="glow">
-                                    <Placeholder xs={3} />
-                                </Placeholder>
-                            </>
-                        )}
-                </Row>
+                {!isMobile ? <Row><DrugInfoObject drugInfo={drugInfo}/></Row> : <DrugInfoObject drugInfo={drugInfo}/>}
             </Container>
 
             <Container className={'main-drug-container'}>
-                <React.Fragment>
-                    <Alert variant={"secondary"}>
-                        <span>The provided information is indicative and shouldn't be used for inference.</span>
-                    </Alert>
-                </React.Fragment>
-                <Row>
-                    {
-                        (uniqueDrugInfo.length > 0 && uniqueDrugInfo
-                            .every((term) => term.ADE === null && term.full_info === true)) &&
-                        (uniqueDrugInfo.map((term, index) => (
-                            uniqueDrugInfo.length > 1 ? (
-                                <Col key={index}>
-                                    <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
-                                    <DrugAccordion drugInfo={term} totalCount={totalCount}/>
-                                </Col>
-                            ) : (
-                                <React.Fragment key={index}>
-                                    <Col>
+                <Alert variant={"secondary"}>
+                    The provided information is indicative and shouldn't be used for inference.
+                </Alert>
+                { !isMobile  &&
+                    <Row>
+                        {(uniqueDrugInfo.length > 0 && uniqueDrugInfo
+                                .every((term) => term.ADE === null && term.full_info === true)) &&
+                            (uniqueDrugInfo.map((term, index) => (
+                                uniqueDrugInfo.length > 1 ? (
+                                    <Col key={index}>
                                         <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
-                                    </Col>
-                                    <Col>
                                         <DrugAccordion drugInfo={term} totalCount={totalCount}/>
                                     </Col>
-                                </React.Fragment>
-                            )
-                        ))
-                    )}
-                </Row>
+                                ) : (
+                                    <React.Fragment key={index}>
+                                        <Col>
+                                            <DrugDescription drugInfo={term} showAdditionalSearch={props.showAdditionalSearch}/>
+                                        </Col>
+                                        <Col>
+                                            <DrugAccordion drugInfo={term} totalCount={totalCount}/>
+                                        </Col>
+                                    </React.Fragment>
+                                )
+                            ))
+                        )}
+                    </Row>
+                }
+                { isMobile &&
+                    <React.Fragment>
+                        <Col>
+                            {(uniqueDrugInfo.length > 0 && uniqueDrugInfo
+                                .every((term) => term.ADE === null && term.full_info === true)) &&
+                            (uniqueDrugInfo.map((term, index) => (
+                                    <React.Fragment key={index}>
+                                        <DrugDescription drugInfo={term}
+                                                         showAdditionalSearch={props.showAdditionalSearch}/>
+                                        <DrugAccordion drugInfo={term} totalCount={totalCount}/>
+                                    </React.Fragment>
+                                ))
+                            )}
+                        </Col>
+                    </React.Fragment>
+                }
 
             </Container>
 

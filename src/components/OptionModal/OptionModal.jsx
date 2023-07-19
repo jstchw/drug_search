@@ -175,10 +175,10 @@ const OptionModal = (props) => {
         <>
             <Modal centered show={props.show} onHide={props.handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Options</Modal.Title>
-                    <Button onClick={toggleTheme}>
+                    <Button size={'md'} onClick={toggleTheme} className={'me-2'}>
                         {theme === 'light' ? <Moon /> : <Sun />}
                     </Button>
+                    <Modal.Title>Options</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>

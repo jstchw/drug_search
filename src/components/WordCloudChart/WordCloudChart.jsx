@@ -4,6 +4,7 @@ import DemographicModal from "../DemographicModal/DemographicModal";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import {searchTypes} from "../OptionModal/OptionModal";
+import {ThemeContext} from "../../contexts/ThemeContext";
 
 const options = {
     enableTooltip: true,
@@ -21,7 +22,7 @@ const options = {
 };
 
 const WordCloudChart = (props) => {
-
+    const {theme} = React.useContext(ThemeContext);
     const [showDemographicModal, setShowDemographicModal] = useState(false);
     const [selectedWord, setSelectedWord] = useState(null);
 
@@ -30,11 +31,14 @@ const WordCloudChart = (props) => {
         .slice(0, 50)
 
     const callbacks = {
+        // It needs a thorough rework, but it's a start
         getWordColor: word => {
-            const maxFrequency = Math.max(...data.map(w => w.value)); // get the maximum frequency
-            const frequencyRatio = word.value / maxFrequency; // calculate the ratio of the word's frequency to the maximum frequency
-            const redComponent = Math.floor(frequencyRatio * 255); // calculate the red component (0-255)
-            return `rgb(${redComponent}, 0, 0)`; // return as an RGB color string
+            const maxFrequency = Math.max(...data.map(w => w.value))
+            const frequencyRatio = word.value / maxFrequency
+            const redComponent = Math.floor(frequencyRatio * 255)
+            const greenComponent = theme === 'dark' ? 255 : 0;
+            const blueComponent = theme === 'dark' ? Math.floor((1 - frequencyRatio) * 255) : 0;
+            return `rgb(${redComponent}, 0, ${blueComponent})`
         },
         onWordClick: (word) => {
             if(props.searchOptions.searchBy === searchTypes[2].value) {

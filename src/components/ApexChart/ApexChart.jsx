@@ -1,5 +1,6 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
+import {ThemeContext} from "../../contexts/ThemeContext";
 
 const chartTypes = [
     'searched_group',
@@ -49,7 +50,7 @@ const processDataForChart = (eventDict, totalCount, type) => {
 
 
 const ApexChart = (props) => {
-
+    const { theme } = React.useContext(ThemeContext)
     const processedData = processDataForChart(props.eventDict, props.totalCount, props.type)
 
     if (props.type === chartTypes[0]) {
@@ -62,6 +63,9 @@ const ApexChart = (props) => {
         }
 
         const optionsSearchedGroup = {
+            theme: {
+                mode: theme,
+            },
             labels: chartData.labels,
             legend: {
                 show: false,
@@ -71,7 +75,8 @@ const ApexChart = (props) => {
                 width: '100%',
                 toolbar: {
                     show: false,
-                }
+                },
+                background: theme === 'dark' ? '#212529' : '',
             },
             plotOptions: {
                 bar: {
@@ -146,6 +151,9 @@ const ApexChart = (props) => {
         }
 
         const optionsReportsOverTime = {
+            theme: {
+                mode: theme,
+            },
             legend: {
                 show: true,
                 position: 'bottom',
@@ -159,7 +167,8 @@ const ApexChart = (props) => {
                         zoomin: false,
                         zoomout: false
                     }
-                }
+                },
+                background: theme === 'dark' ? '#212529' : '',
             },
             stroke: {
                 curve: 'smooth'
@@ -169,6 +178,25 @@ const ApexChart = (props) => {
             },
             dataLabels: {
                 enabled: false
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    style: {
+                        theme: 'dark',
+                        fontSize: '14px',
+                    },
+                },
+                tooltip: {
+                    enabled: false,
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        fontSize: '14px',
+                    },
+                },
             },
         }
 

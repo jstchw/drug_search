@@ -1,6 +1,8 @@
-.main-drug-container {
-    width: 40vw;
-    min-width: 700px;
+@media(min-width: 768px) {
+    .main-drug-container {
+        width: 40vw;
+        min-width: 700px;
+    }
 }
 
 .testing {

@@ -36,7 +36,7 @@ const useSearchPlaceholder = (duration, searchType) => {
         const interval = setInterval(setRandomPlaceholder, duration); // then update it every `duration` milliseconds
 
         return () => clearInterval(interval);
-    }, [duration, searchType]);
+    }, [duration, searchType]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return currentPlaceholder;
 };

@@ -71,7 +71,7 @@ const useDrugInfo = (drugName, searchType) => {
             getDrugInfo()
         }
 
-    }, [JSON.stringify(drugName)])
+    }, [JSON.stringify(drugName)]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return drugInfo
 }

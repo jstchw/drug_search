@@ -42,7 +42,7 @@ const prepareDataForGPT = (data) => {
     return data
 }
 
-const DemographicModalInfo = ({word}) => {
+const DemographicModalInfo = ({word, isMobile}) => {
     const wordRef = React.useRef(null)
     const drugInfo = useDrugInfo([word], searchTypes[0].value)
     const [demographicInfo, setDemographicInfo] = useState([])
@@ -124,44 +124,59 @@ const DemographicModalInfo = ({word}) => {
         )
 
         return (
-            <OverlayTrigger trigger={['hover', 'focus']} placement={'left'} overlay={popover}>
+            <OverlayTrigger trigger={['hover', 'focus']} placement={isMobile ? 'right' : 'left'} overlay={popover}>
                 <Badge className={'mx-1 no-pointer-badge'}>AI</Badge>
             </OverlayTrigger>
+        )
+    }
+
+    const DrugSummaryObject = ({drugInfo, demographicSummary, placeholderSizes, width}) => {
+        return (
+            <React.Fragment>
+                {drugInfo && drugInfo.length > 0 && (
+                    <React.Fragment>
+                        <Col xs={width}>
+                            <DrugDescription
+                                drugInfo={drugInfo[0]}
+                                style={{border: "none"}}
+                            />
+                        </Col>
+                        <Col xs={width} className={isMobile ? 'mb-4' : ''}>
+                            <DrugAccordion drugInfo={drugInfo[0]}/>
+                        </Col>
+                    </React.Fragment>
+                )}
+                <Col xs={width}>
+                    <h4>{showAIWarning()}Demographic Summary</h4>
+                    {demographicSummary ? (
+                        <p>{demographicSummary.choices[0].message.content}</p>
+                    ) : (
+                        <Placeholder as="p" animation={'glow'}>
+                            {placeholderSizes.map((size, index) => (
+                                <React.Fragment key={index}>
+                                    <Placeholder xs={size} />{' '}
+                                </React.Fragment>
+                            ))}
+                        </Placeholder>
+                    )}
+                </Col>
+            </React.Fragment>
         )
     }
 
 
     return (
         <React.Fragment>
+            {!isMobile ?
                 <Row className={!drugInfo.length > 0 ? 'd-flex justify-content-center text-center' : ''}>
-                    {drugInfo && drugInfo.length > 0 && (
-                        <React.Fragment>
-                            <Col xs={4}>
-                                <DrugDescription
-                                    drugInfo={drugInfo[0]}
-                                    style={{border: "none"}}
-                                />
-                            </Col>
-                            <Col xs={4}>
-                                <DrugAccordion drugInfo={drugInfo[0]}/>
-                            </Col>
-                        </React.Fragment>
-                    )}
-                    <Col xs={4}>
-                        <h4>{showAIWarning()}Demographic Summary</h4>
-                        {demographicSummary ? (
-                            <p>{demographicSummary.choices[0].message.content}</p>
-                        ) : (
-                            <Placeholder as="p" animation={'glow'}>
-                                {placeholderSizes.map((size, index) => (
-                                    <React.Fragment key={index}>
-                                        <Placeholder xs={size} />{' '}
-                                    </React.Fragment>
-                                ))}
-                            </Placeholder>
-                        )}
-                    </Col>
+                    <DrugSummaryObject drugInfo={drugInfo} demographicSummary={demographicSummary}
+                                       placeholderSizes={placeholderSizes} width={4}/>
                 </Row>
+                :
+                <DrugSummaryObject drugInfo={drugInfo} demographicSummary={demographicSummary}
+                                   placeholderSizes={placeholderSizes} width={12}/>
+            }
+
             <Col className={'text-center'}>
                 {isLoading ?
                     <Spinner animation="border" role="status">
@@ -169,19 +184,22 @@ const DemographicModalInfo = ({word}) => {
                     </Spinner>
                     :
                     (demographicInfo && Object.keys(demographicInfo).length > 0) ?
-                        chunkArray(Object.entries(demographicInfo), 2).map((chunk, index) => (
-                            <Row key={index}>
-                                {chunk.map(([key, value], subIndex) => (
-                                    <Col className={'text-center'} key={subIndex}>
-                                        <h4>{getDemographicDef(key, value.totalCount, value.def)}</h4>
-                                        <ApexChart
-                                            eventDict={value.termCountDict}
-                                            totalCount={value.totalCount}
-                                            type={'searched_group'} />
-                                    </Col>
-                                ))}
-                            </Row>
-                        ))
+                        chunkArray(Object.entries(demographicInfo), 2).map((chunk, index) => {
+                            const Wrapper = isMobile ? React.Fragment : Row
+                            return (
+                                <Wrapper key={index}>
+                                    {chunk.map(([key, value], subIndex) => (
+                                        <Col className={'text-center'} key={subIndex}>
+                                            <h4>{getDemographicDef(key, value.totalCount, value.def)}</h4>
+                                            <ApexChart
+                                                eventDict={value.termCountDict}
+                                                totalCount={value.totalCount}
+                                                type={'searched_group'}/>
+                                        </Col>
+                                    ))}
+                                </Wrapper>
+                            )
+                        })
                         :
                         <p>No demographic info available</p>
                 }

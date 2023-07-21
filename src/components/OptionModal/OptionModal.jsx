@@ -89,7 +89,7 @@ const OptionModal = (props) => {
                 age: lastSelectedAge
             });
         }
-    }, [isAgeDisabled]);
+    }, [isAgeDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
 
 
     useEffect(() => {

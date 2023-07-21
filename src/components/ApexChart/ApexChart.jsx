@@ -87,11 +87,15 @@ const ApexChart = (props) => {
                     barHeight: '100%',
                 }
             },
+            grid: {
+                show: false,
+            },
             yaxis: {
                 labels: {
                     show: true,
                     style: {
                         fontSize: '14px',
+                        colors: theme === 'dark' ? '#ACB5BD' : '',
                     },
                     formatter: (value) => {
                         value = String(value)
@@ -104,29 +108,12 @@ const ApexChart = (props) => {
                     show: false
                 }
             },
-            // fill: {
-            //     type: 'gradient',
-            //     gradient: {
-            //         shade: 'light',
-            //         type: 'horizontal', // Change this to 'horizontal' for horizontal gradient
-            //         shadeIntensity: 0.25,
-            //         gradientToColors: undefined,
-            //         inverseColors: true,
-            //         opacityFrom: 1,
-            //         opacityTo: 0.75,
-            //         stops: [0, 100]
-            //     },
-            // },
-            // stroke: {
-            //     show: true,
-            //     width: 3, // This sets the stroke colors
-            // },
             dataLabels: {
                 enabled: true,
                 // Converts the value to a percentage
                 formatter: (value) => {
                     return `${((value / props.totalCount) * 100).toPrecision(3)}%`
-                }
+                },
             },
             tooltip: {
                 y: {
@@ -155,6 +142,7 @@ const ApexChart = (props) => {
         const optionsReportsOverTime = {
             theme: {
                 mode: theme,
+                palette: 'palette1'
             },
             legend: {
                 show: true,
@@ -187,6 +175,7 @@ const ApexChart = (props) => {
                     style: {
                         theme: 'dark',
                         fontSize: '14px',
+                        colors: theme === 'dark' ? '#ACB5BD' : '',
                     },
                 },
                 tooltip: {
@@ -197,6 +186,7 @@ const ApexChart = (props) => {
                 labels: {
                     style: {
                         fontSize: '14px',
+                        colors: theme === 'dark' ? '#ACB5BD' : '',
                     },
                 },
             },

@@ -63,6 +63,8 @@ const ApexChart = (props) => {
         }
 
         const optionsSearchedGroup = {
+            colors: ["#0c6dfd", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"]
+            ,
             theme: {
                 mode: theme,
             },
@@ -82,7 +84,7 @@ const ApexChart = (props) => {
                 bar: {
                     horizontal: true,
                     distributed: true,
-                    barHeight: '95%',
+                    barHeight: '100%',
                 }
             },
             yaxis: {
@@ -102,23 +104,23 @@ const ApexChart = (props) => {
                     show: false
                 }
             },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shade: 'light',
-                    type: 'horizontal', // Change this to 'horizontal' for horizontal gradient
-                    shadeIntensity: 0.25,
-                    gradientToColors: undefined,
-                    inverseColors: true,
-                    opacityFrom: 1,
-                    opacityTo: 0.75,
-                    stops: [0, 100]
-                },
-            },
-            stroke: {
-                show: true,
-                width: 3, // This sets the stroke colors
-            },
+            // fill: {
+            //     type: 'gradient',
+            //     gradient: {
+            //         shade: 'light',
+            //         type: 'horizontal', // Change this to 'horizontal' for horizontal gradient
+            //         shadeIntensity: 0.25,
+            //         gradientToColors: undefined,
+            //         inverseColors: true,
+            //         opacityFrom: 1,
+            //         opacityTo: 0.75,
+            //         stops: [0, 100]
+            //     },
+            // },
+            // stroke: {
+            //     show: true,
+            //     width: 3, // This sets the stroke colors
+            // },
             dataLabels: {
                 enabled: true,
                 // Converts the value to a percentage

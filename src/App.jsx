@@ -1,8 +1,9 @@
+import './App.scss'
 import React, {useEffect} from 'react'
 import AppRoutes from './AppRoutes'
 import Cookies from 'js-cookie'
 import {ThemeContext} from "./contexts/ThemeContext"
-import {CookieInfoFooter} from "./components/CookieInfoFooter/CookieInfoFooter";
+import {CookieInfoFooter} from "./components/CookieInfoFooter/CookieInfoFooter"
 
 const App = () => {
     const [theme, setTheme] = React.useState(() => {

@@ -63,7 +63,7 @@ const ApexChart = (props) => {
         }
 
         const optionsSearchedGroup = {
-            colors: ["#0c6dfd", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"]
+            colors: ["#59768A", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"]
             ,
             theme: {
                 mode: theme,
@@ -141,9 +141,9 @@ const ApexChart = (props) => {
 
         const optionsReportsOverTime = {
             theme: {
-                mode: theme,
-                palette: 'palette1'
+                mode: theme
             },
+            colors: ['#59768A'],
             legend: {
                 show: true,
                 position: 'bottom',

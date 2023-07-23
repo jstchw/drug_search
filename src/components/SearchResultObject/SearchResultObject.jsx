@@ -214,7 +214,7 @@ const SearchResultObject = (props) => {
 
             </Container>
 
-            <Col className={'mt-3'}>
+            <Col>
                 <ChartDisplayObject eventsOverTime={eventsOverTime} termCountDict={termCountDict}
                                     totalCount={totalCount} searchResults={termCountDict}
                                     searchOptions={props.searchOptions}

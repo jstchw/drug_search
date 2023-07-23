@@ -19,7 +19,7 @@ const options = {
     scale: "log",
     spiral: "archimedean",
     transitionDuration: 1000,
-};
+}
 
 const WordCloudChart = (props) => {
     const {theme} = React.useContext(ThemeContext);

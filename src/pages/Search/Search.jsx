@@ -7,6 +7,7 @@ import {getDrugsFromEvents, getEventsFromDrugs, getEventsOverTime} from "../../s
 import './Search.css'
 import {searchAgeRange, searchTypes, searchSex, searchCountry} from "../../components/OptionModal/OptionModal"
 import { CSSTransition } from "react-transition-group"
+import Cookies from "js-cookie"
 
 
 const Search = () => {
@@ -24,9 +25,9 @@ const Search = () => {
     const [showAdditionalSearch, setShowAdditionalSearch] = React.useState(false)
 
     const [selectedSearchOptionIndex, setSelectedSearchOptionIndex] = React.useState({
-        searchBy: 0,
-        sex: 0,
-        country: searchCountry.findIndex(({ value }) => value === 'US'),
+        searchBy: searchTypes.findIndex(({ value }) => value === (Cookies.get('searchBy') || searchTypes[0].value)),
+        sex: searchSex.findIndex(({ value }) => value === (Cookies.get('lastSelectedSex') || searchSex[0].value)),
+        country: searchCountry.findIndex(({ value }) => value === (Cookies.get('lastSelectedCountry') || 'US')),
     })
 
     const [searchOptions, setSearchOptions] = React.useState({

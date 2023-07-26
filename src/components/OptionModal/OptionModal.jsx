@@ -3,6 +3,7 @@ import {Modal, Form, InputGroup, ToggleButton, Button} from 'react-bootstrap';
 import countries from '../../assets/countries.json';
 import {ThemeContext} from "../../contexts/ThemeContext";
 import {Moon, Sun} from "react-bootstrap-icons";
+import Cookies from 'js-cookie'
 
 
 // Search types that can be selected in the popover
@@ -63,18 +64,46 @@ export const searchCountry = Object.entries(countries).map(([value, label], inde
 }))
 
 const OptionModal = (props) => {
-    const [isSexDisabled, setIsSexDisabled] = React.useState(true)
-    const [lastSelectedSex, setLastSelectedSex] = React.useState(searchSex[0].value)
+    const isSexDisabledCookie = Cookies.get('isSexDisabled')
+    const [isSexDisabled, setIsSexDisabled] = React.useState(
+        isSexDisabledCookie === 'false' ? false : isSexDisabledCookie === 'true' ? true : true
+    )
+    const [lastSelectedSex, setLastSelectedSex] = React.useState(
+        Cookies.get('lastSelectedSex') || searchSex[0].value
+    )
 
-    const [isAgeDisabled, setIsAgeDisabled] = React.useState(true)
-    const [ageRange, setAgeRange] = React.useState([searchAgeRange[0].value, searchAgeRange[1].value])
-    const [lastSelectedAge, setLastSelectedAge] = React.useState([searchAgeRange[0].value, searchAgeRange[1].value])
+    const isAgeDisabledCookie = Cookies.get('isAgeDisabled')
+    const [isAgeDisabled, setIsAgeDisabled] = React.useState(
+        isAgeDisabledCookie === 'false' ? false : isAgeDisabledCookie === 'true' ? true : true
+    )
 
-    const [isCountryDisabled, setIsCountryDisabled] = React.useState(true)
+    const ageCookieStart = Cookies.get('lastSelectedAgeStart')
+    const ageCookieEnd = Cookies.get('lastSelectedAgeEnd')
+    const [ageRange, setAgeRange] = React.useState(
+        [ageCookieStart, ageCookieEnd] || [searchAgeRange[0].value, searchAgeRange[1].value]
+    )
+
+    const [lastSelectedAge, setLastSelectedAge] = React.useState(
+        [ageCookieStart, ageCookieEnd] || [searchAgeRange[0].value, searchAgeRange[1].value]
+    )
+
+    const isCountryDisabledCookie = Cookies.get('isCountryDisabled')
+    const [isCountryDisabled, setIsCountryDisabled] = React.useState(
+        isCountryDisabledCookie === 'false' ? false : isCountryDisabledCookie === 'true' ? true : true
+    )
     const defaultCountry = searchCountry.find(country => country.value === 'US')
-    const [lastSelectedCountry, setLastSelectedCountry] = React.useState(defaultCountry.value)
+
+    const [lastSelectedCountry, setLastSelectedCountry] = React.useState(
+        Cookies.get('lastSelectedCountry') || defaultCountry.value
+    )
 
     const { theme, toggleTheme } = React.useContext(ThemeContext)
+
+    useEffect(() => {
+        Cookies.set('isSexDisabled', isSexDisabled, { expires: 365 })
+        Cookies.set('isAgeDisabled', isAgeDisabled, { expires: 365 })
+        Cookies.set('isCountryDisabled', isCountryDisabled, { expires: 365 })
+    }, [isSexDisabled, isAgeDisabled, isCountryDisabled])
 
     // Clear the age range when the age is disabled
     useEffect(() => {
@@ -82,12 +111,12 @@ const OptionModal = (props) => {
             props.setSearchOptions({
                 ...props.searchOptions,
                 age: undefined
-            });
+            })
         } else {
             props.setSearchOptions({
                 ...props.searchOptions,
                 age: lastSelectedAge
-            });
+            })
         }
     }, [isAgeDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -124,6 +153,7 @@ const OptionModal = (props) => {
                     ...props.searchOptions,
                     [type]: searchTypes[index].value
                 })
+                Cookies.set('searchBy', searchTypes[index].value, { expires: 365 })
 
                 props.setSelectedSearchOptionIndex({
                     ...props.selectedSearchOptionIndex,
@@ -134,6 +164,7 @@ const OptionModal = (props) => {
                 break
             case 'sex':
                 setLastSelectedSex(searchSex[index].value)
+                Cookies.set('lastSelectedSex', searchSex[index].value, { expires: 365 })
                 props.setSearchOptions({
                     ...props.searchOptions,
                     [type]: searchSex[index].value
@@ -148,6 +179,8 @@ const OptionModal = (props) => {
                 const newAgeRange = [...ageRange]
                 newAgeRange[index] = value
                 setAgeRange(newAgeRange)
+                Cookies.set('lastSelectedAgeStart', newAgeRange[0], { expires: 365 })
+                Cookies.set('lastSelectedAgeEnd', newAgeRange[1], { expires: 365 })
                 if(!isAgeDisabled) {
                     setLastSelectedAge(newAgeRange)
                     props.setSearchOptions({
@@ -158,6 +191,7 @@ const OptionModal = (props) => {
                 break
             case 'country':
                 setLastSelectedCountry(searchCountry[index].value)
+                Cookies.set('lastSelectedCountry', searchCountry[index].value, { expires: 365 })
                 props.setSearchOptions({
                     ...props.searchOptions,
                     [type]: searchCountry[index].value

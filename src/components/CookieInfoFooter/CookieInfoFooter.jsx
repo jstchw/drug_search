@@ -1,7 +1,6 @@
 import {Button, Col, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import './CookieInfoFooter.css'
-import {CSSTransition} from "react-transition-group";
 
 export const CookieInfoFooter = () => {
     const [show, setShow] = useState(false)
@@ -19,13 +18,7 @@ export const CookieInfoFooter = () => {
     }
 
     return (
-        <CSSTransition
-            in={show}
-            timeout={300}
-            classNames="fade"
-            unmountOnExit
-        >
-            { show ? (
+            show ? (
             <div className={'cookie-info-footer fixed-bottom d-flex justify-content-center m-4 text-center'}>
                 <Row>
                     <Col md="auto" className={'p-3'}>
@@ -33,7 +26,6 @@ export const CookieInfoFooter = () => {
                         <Button className={'mx-2'} onClick={handleDismissed}>Got it!</Button>
                     </Col>
                 </Row>
-            </div> ) : <></> }
-        </CSSTransition>
+            </div> ) : <></>
     )
 }

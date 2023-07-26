@@ -100,9 +100,9 @@ const OptionModal = (props) => {
     const { theme, toggleTheme } = React.useContext(ThemeContext)
 
     useEffect(() => {
-        Cookies.set('isSexDisabled', isSexDisabled, { expires: 365 })
-        Cookies.set('isAgeDisabled', isAgeDisabled, { expires: 365 })
-        Cookies.set('isCountryDisabled', isCountryDisabled, { expires: 365 })
+        Cookies.set('isSexDisabled', isSexDisabled, { expires: 365 }, { secure: true })
+        Cookies.set('isAgeDisabled', isAgeDisabled, { expires: 365 }, { secure: true })
+        Cookies.set('isCountryDisabled', isCountryDisabled, { expires: 365 }, { secure: true })
     }, [isSexDisabled, isAgeDisabled, isCountryDisabled])
 
     // Clear the age range when the age is disabled
@@ -153,7 +153,7 @@ const OptionModal = (props) => {
                     ...props.searchOptions,
                     [type]: searchTypes[index].value
                 })
-                Cookies.set('searchBy', searchTypes[index].value, { expires: 365 })
+                Cookies.set('searchBy', searchTypes[index].value, { expires: 365 }, { secure: true })
 
                 props.setSelectedSearchOptionIndex({
                     ...props.selectedSearchOptionIndex,
@@ -164,7 +164,7 @@ const OptionModal = (props) => {
                 break
             case 'sex':
                 setLastSelectedSex(searchSex[index].value)
-                Cookies.set('lastSelectedSex', searchSex[index].value, { expires: 365 })
+                Cookies.set('lastSelectedSex', searchSex[index].value, { expires: 365 }, { secure: true })
                 props.setSearchOptions({
                     ...props.searchOptions,
                     [type]: searchSex[index].value
@@ -179,8 +179,8 @@ const OptionModal = (props) => {
                 const newAgeRange = [...ageRange]
                 newAgeRange[index] = value
                 setAgeRange(newAgeRange)
-                Cookies.set('lastSelectedAgeStart', newAgeRange[0], { expires: 365 })
-                Cookies.set('lastSelectedAgeEnd', newAgeRange[1], { expires: 365 })
+                Cookies.set('lastSelectedAgeStart', newAgeRange[0], { expires: 365 }, { secure: true })
+                Cookies.set('lastSelectedAgeEnd', newAgeRange[1], { expires: 365 }, { secure: true })
                 if(!isAgeDisabled) {
                     setLastSelectedAge(newAgeRange)
                     props.setSearchOptions({
@@ -191,7 +191,7 @@ const OptionModal = (props) => {
                 break
             case 'country':
                 setLastSelectedCountry(searchCountry[index].value)
-                Cookies.set('lastSelectedCountry', searchCountry[index].value, { expires: 365 })
+                Cookies.set('lastSelectedCountry', searchCountry[index].value, { expires: 365 }, { secure: true })
                 props.setSearchOptions({
                     ...props.searchOptions,
                     [type]: searchCountry[index].value

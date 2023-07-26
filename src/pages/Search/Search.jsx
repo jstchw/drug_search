@@ -44,6 +44,12 @@ const Search = () => {
         }
     }, [showAdditionalSearch])
 
+    useEffect(() => {
+        if(currentSearchTerm) {
+            document.title = currentSearchTerm.join(' & ') + ' - DrugSearch'
+        }
+    }, [currentSearchTerm])
+
     const handleSearch = async (searchOptions, singleSearchTerm) => {
 
         let events

@@ -46,7 +46,8 @@ const Search = () => {
 
     useEffect(() => {
         if(currentSearchTerm) {
-            document.title = currentSearchTerm.join(' & ') + ' - DrugSearch'
+            let capitalizedTerms = currentSearchTerm.map(term => term.charAt(0).toUpperCase() + term.slice(1))
+            document.title = capitalizedTerms.join(' & ') + ' - DrugSearch'
         }
     }, [currentSearchTerm])
 

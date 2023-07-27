@@ -21,25 +21,16 @@ const chunkArray = (array, size) => {
 
 const prepareDataForGPT = (data) => {
     let maxTerms = 10;
+    let gptData = JSON.parse(JSON.stringify(data))
 
-    for (let key in data) {
-        // Remove unnecessary properties
-        delete data[key].def;
-        delete data[key].age;
-
-        let termCountDict = data[key].termCountDict;
-        // Convert the object to an array of entries and sort it
-        let sortedDict = Object.entries(termCountDict).sort((a, b) => b[1] - a[1]);
-        // Keep only the top 10 items and convert them back into an object
-        let popularTerms = {};
-        for (let [term, count] of sortedDict.slice(0, maxTerms)) {
-            popularTerms[term] = count;
+    for (let key in gptData) {
+        if(gptData.hasOwnProperty(key)) {
+            delete gptData[key].def
+            let sortedTerms = Object.entries(gptData[key].termCountDict).sort((a, b) => b[1] - a[1])
+            gptData[key].termCountDict = sortedTerms.slice(0, maxTerms).reduce((obj, [k, v]) => ({...obj, [k]: v}), {})
         }
-
-        // Replace the original termCountDict with the sorted one
-        data[key].termCountDict = popularTerms;
     }
-    return data
+    return gptData
 }
 
 const DemographicModalInfo = ({word, isMobile}) => {
@@ -50,7 +41,6 @@ const DemographicModalInfo = ({word, isMobile}) => {
     const [isLoading, setIsLoading] = useState(false)
     let placeholderSizes = [6, 4, 4, 5, 3, 4, 4, 5, 3, 2, 4, 6]
     placeholderSizes = placeholderSizes.concat(placeholderSizes)
-    const [demographicDef, setDemographicDef] = useState(null)
 
     // Get demographic info only if the word has changed
     useEffect(() => {
@@ -68,7 +58,11 @@ const DemographicModalInfo = ({word, isMobile}) => {
                     setIsLoading(false);
                 });
         }
-    }, [word]);
+    }, [word])
+
+    useEffect(() => {
+        console.log(demographicInfo)
+    })
 
     // Get response from the GPT model if the demographic info has changed
     useEffect(() => {
@@ -96,14 +90,10 @@ const DemographicModalInfo = ({word, isMobile}) => {
 
 
     const getDemographicDef = (name, count, def) => {
-        if (def !== undefined && def !== null && demographicDef === null) {
-            setDemographicDef(def);
-        }
-
         const popover = (
             <Popover>
                 <Popover.Body>
-                    <div className={'fs-6 text-center'}>{demographicDef}</div>
+                    <div className={'fs-6 text-center'}>{def}</div>
                     <div className={'fs-6 text-center'}><strong>{count.toLocaleString()}</strong> cases recorded
                     </div>
                 </Popover.Body>
@@ -169,7 +159,6 @@ const DemographicModalInfo = ({word, isMobile}) => {
             </React.Fragment>
         )
     }
-
 
     return (
         <React.Fragment>

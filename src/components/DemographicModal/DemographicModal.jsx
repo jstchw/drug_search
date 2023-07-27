@@ -50,6 +50,7 @@ const DemographicModalInfo = ({word, isMobile}) => {
     const [isLoading, setIsLoading] = useState(false)
     let placeholderSizes = [6, 4, 4, 5, 3, 4, 4, 5, 3, 2, 4, 6]
     placeholderSizes = placeholderSizes.concat(placeholderSizes)
+    const [demographicDef, setDemographicDef] = useState(null)
 
     // Get demographic info only if the word has changed
     useEffect(() => {
@@ -95,11 +96,16 @@ const DemographicModalInfo = ({word, isMobile}) => {
 
 
     const getDemographicDef = (name, count, def) => {
+        if (def !== undefined && def !== null && demographicDef === null) {
+            setDemographicDef(def);
+        }
+
         const popover = (
             <Popover>
                 <Popover.Body>
-                    <div className={'fs-6 text-center'}>{def}</div>
-                    <div className={'fs-6 text-center'}><strong>{count.toLocaleString()}</strong> cases recorded</div>
+                    <div className={'fs-6 text-center'}>{demographicDef}</div>
+                    <div className={'fs-6 text-center'}><strong>{count.toLocaleString()}</strong> cases recorded
+                    </div>
                 </Popover.Body>
             </Popover>
         )

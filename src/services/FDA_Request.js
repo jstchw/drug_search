@@ -91,8 +91,8 @@ export const getSideEffectsForDemographics = async (drug) => {
         { name: 'Young Girls', sex: '2', age: [0, 18], def: 'Females aged 0-18 years'},
         { name: 'Men', sex: '1', age: [19, 59], def: 'Males aged 19-59 years'},
         { name: 'Women', sex: '2', age: [19, 59], def: 'Females aged 19-59 years'},
+        { name: 'Elderly Men', sex: '1', age: [60, 120], def: 'Males aged 60-120 years'},
         { name: 'Elderly Women', sex: '2', age: [60, 120], def: 'Females aged 60-120 years'},
-        { name: 'Elderly Men', sex: '1', age: [60, 120], def: 'Males aged 60-120 years'}
     ];
 
     // If the data for this drug is already in the cache, return it

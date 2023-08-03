@@ -86,7 +86,7 @@ const SearchBox = (props) => {
        }
     }, [errorAnimation, props.searchError])
 
-    const fuse = useSuggestions('http://localhost:16000/api/get_suggestions', fuseOptions)
+    const fuse = useSuggestions(`${window.REACT_APP_API_URL}/get_suggestions`, fuseOptions)
 
 
     // Handling clicking outside the dropdown menu

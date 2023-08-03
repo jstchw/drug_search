@@ -137,7 +137,7 @@ def get_summary():
 
 def on_startup():
     global root
-    tree = ET.parse('data/drugs.xml')
+    tree = ET.parse('data/drugs_cleaned.xml')
     root = tree.getroot()
 
 

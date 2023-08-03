@@ -26,3 +26,6 @@ yarn-error.log*
 /api/__pycache__/
 /api/data/
 /api/keys/
+
+/public/config.js
+

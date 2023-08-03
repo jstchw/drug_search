@@ -7,7 +7,7 @@ const toSubscript = (str) => {
 }
 
 const useDrugInfo = (drugName, searchType) => {
-    const drugAPI = 'http://localhost:16000/api'
+    const drugAPI = window.REACT_APP_API_URL
 
     const [drugInfo, setDrugInfo] = useState([])
 

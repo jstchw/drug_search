@@ -39,7 +39,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-api": "cd api && venv/Scripts/flask run --no-debugger",
+    "start-api": "cd api && venv/bin/flask run --no-debugger",
     "start-all": "concurrently \"yarn start-api\" \"yarn start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/core": "^7.22.10",
     "@jest/globals": "^29.6.2",
     "@testing-library/jest-dom": "^6.0.1",
     "@testing-library/react": "^14.0.0",
@@ -38,11 +39,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-api": "cd api && venv/bin/flask run --no-debugger",
+    "start-api": "cd api && venv/Scripts/flask run --no-debugger",
     "start-all": "concurrently \"yarn start-api\" \"yarn start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}'"
   },
   "eslintConfig": {
     "extends": [
@@ -64,6 +65,9 @@
   },
   "proxy": "http://localhost:16000",
   "devDependencies": {
-    "@welldone-software/why-did-you-render": "^7.0.1"
+    "@types/babel__core": "^7.20.1",
+    "@types/js-cookie": "^3.0.3",
+    "@welldone-software/why-did-you-render": "^7.0.1",
+    "typescript": "^5.1.6"
   }
 }

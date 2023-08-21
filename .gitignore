@@ -30,3 +30,6 @@ yarn-error.log*
 /public/config.js
 
 /Instructions.md
+
+.idea/
+dist/

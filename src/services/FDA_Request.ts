@@ -10,10 +10,10 @@ const generatePath = (searchTerm, searchOptions, countType) => {
         drug: 'patient.drug.activesubstance.activesubstancename.exact'
     }
 
-    let searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
+    const searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
 
     if (searchTerm) {
-        searchTerm.map(term => searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(term)}"`))
+        searchTerm.map((term: string | number | boolean) => searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(term)}"`))
     }
 
     if (searchOptions.sex) {

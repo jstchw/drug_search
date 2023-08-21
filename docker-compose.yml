@@ -1,0 +1,27 @@
+version: '4.22'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+    volumes:
+      - ./public:/app/public
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+      - ./yarn.lock:/app/yarn.lock
+    ports:
+        - "3000:3000"
+    environment:
+        - NODE_ENV=development
+        - CHOKIDAR_USEPOLLING=true
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.backend.dev
+    volumes:
+        - ./api:/app
+    ports:
+        - "16000:16000"
+    environment:
+      - FLASK_ENV=development

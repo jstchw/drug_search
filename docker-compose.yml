@@ -6,10 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile.frontend.dev
     volumes:
+      - .:/app
       - ./public:/app/public
       - ./src:/app/src
       - ./package.json:/app/package.json
       - ./yarn.lock:/app/yarn.lock
+      - /app/node_modules
     ports:
         - "3000:3000"
     environment:

@@ -13,7 +13,7 @@ const generatePath = (searchTerm, searchOptions, countType) => {
     const searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`]
 
     if (searchTerm) {
-        searchTerm.map((term: string | number | boolean) => searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(term)}"`))
+        searchTerm.map(term => searchParts.push(`${searchOptions.searchBy}:"${encodeURIComponent(term)}"`))
     }
 
     if (searchOptions.sex) {

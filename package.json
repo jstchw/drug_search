@@ -38,7 +38,7 @@
     "web-vitals": "^3.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "WATCHPACK_POLLING=true react-scripts start",
     "start-api": "cd api && venv/bin/flask run --no-debugger",
     "start-all": "concurrently \"yarn start-api\" \"yarn start\"",
     "build": "react-scripts build",
@@ -52,7 +52,9 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"]
+    "plugins": [
+      "@typescript-eslint"
+    ]
   },
   "browserslist": {
     "production": [
@@ -70,6 +72,8 @@
   "devDependencies": {
     "@types/babel__core": "^7.20.1",
     "@types/js-cookie": "^3.0.3",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
     "@welldone-software/why-did-you-render": "^7.0.1",
     "typescript": "^5.1.6"
   }

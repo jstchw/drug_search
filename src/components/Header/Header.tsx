@@ -6,10 +6,11 @@ const Header = () => {
         // Navbar containing the links to all the pages of the webapp
         <Navbar className="header-full-width">
             <Container className={'d-flex justify-content-center'}>
-                <Badge className={'p-2'} style={{cursor: "pointer"}} onClick={e => window.location.href = '/'}>
+                <Badge className={'p-2'} style={{cursor: "pointer"}} onClick={() => window.location.href = '/'}>
                     <span className={'fs-5'}><SearchIcon/>DrugSearch</span>
                 </Badge>
             </Container>
+            <Badge className={'version-sticker'}>Alpha</Badge>
         </Navbar>
     );
 }

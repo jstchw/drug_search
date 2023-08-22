@@ -101,9 +101,9 @@ const Search = () => {
                 <Row className="w-100 mx-auto">
                     <Col xs="auto" className="text-center mb-5 mt-3 mx-auto">
                         <Row className={'mb-4'}>
-                            <Header />
-                        </Row>
-                        <Row className={'mb-4'}>
+                            <Container className={'mb-4 mt-3 w-auto'}>
+                                <Header />
+                            </Container>
                             <SearchBox
                                 onSearch={handleSearch}
                                 searchError={searchError}

@@ -111,13 +111,13 @@ const ApexChart = (props) => {
             dataLabels: {
                 enabled: true,
                 // Converts the value to a percentage
-                formatter: (value) => {
+                formatter: (value:number) => {
                     return `${((value / props.totalCount) * 100).toPrecision(3)}%`
                 },
             },
             tooltip: {
                 y: {
-                    formatter: (value) => {
+                    formatter: (value:string) => {
                         return `${value.toLocaleString()} from ${props.totalCount.toLocaleString()}`
                     }
                 }
@@ -170,7 +170,7 @@ const ApexChart = (props) => {
                 enabled: false
             },
             xaxis: {
-                type: 'datetime',
+                type: 'category',
                 labels: {
                     style: {
                         theme: 'dark',
@@ -188,6 +188,9 @@ const ApexChart = (props) => {
                         fontSize: '14px',
                         colors: theme === 'dark' ? '#ACB5BD' : '',
                     },
+                    formatter: (value) => {
+                        return value.toLocaleString('en-US')
+                    }
                 },
             },
         }

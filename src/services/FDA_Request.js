@@ -34,7 +34,7 @@ const generatePath = (searchTerm, searchOptions, countType) => {
 
 
 const formatDate = (date) => {
-    const year = date.getFullYear()
+    const year = date.getFullYear() - 1
     const month = date.getMonth() + 1
     const day = date.getDate()
     return `${year}${month < 10 ? `0${month}` : month}${day < 10 ? `0${day}` : day}`

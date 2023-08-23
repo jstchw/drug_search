@@ -202,6 +202,8 @@ const OptionModal = (props) => {
                     [type]: index
                 })
                 break
+            default:
+                break
         }
     }
 
@@ -253,7 +255,7 @@ const OptionModal = (props) => {
                                     variant="outline-primary"
                                     checked={!isSexDisabled}
                                     value="1"
-                                    onClick={(e) => setIsSexDisabled(!isSexDisabled)}
+                                    onClick={() => setIsSexDisabled(!isSexDisabled)}
                                 >
                                     Sex
                                 </ToggleButton>
@@ -283,7 +285,7 @@ const OptionModal = (props) => {
                                     variant="outline-primary"
                                     checked={!isAgeDisabled}
                                     value="1"
-                                    onClick={(e) => setIsAgeDisabled(!isAgeDisabled)}
+                                    onClick={() => setIsAgeDisabled(!isAgeDisabled)}
                                 >
                                 Age
                                 </ToggleButton>
@@ -325,7 +327,7 @@ const OptionModal = (props) => {
                                     type="checkbox"
                                     variant="outline-primary"
                                     value="1"
-                                    onClick={(e) => setIsCountryDisabled(!isCountryDisabled)}
+                                    onClick={() => setIsCountryDisabled(!isCountryDisabled)}
                                     checked={!isCountryDisabled}
                                 >
                                     Country

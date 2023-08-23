@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { Container, Row, Col, Button } from 'react-bootstrap'
+import {Container, Row, Col, Button} from 'react-bootstrap'
 import Header from '../../components/Header/Header'
 import SearchBox from '../../components/SearchBox/SearchBox'
 import SearchResultObject from "../../components/SearchResultObject/SearchResultObject"
@@ -8,6 +8,7 @@ import './Search.css'
 import {searchAgeRange, searchTypes, searchSex, searchCountry} from "../../components/OptionModal/OptionModal"
 import { CSSTransition } from "react-transition-group"
 import Cookies from "js-cookie"
+import {ClockHistory} from "react-bootstrap-icons"
 
 
 const Search = () => {
@@ -37,6 +38,8 @@ const Search = () => {
         country: searchCountry[selectedSearchOptionIndex.country].value,
     })
 
+    const [searchHistory, setSearchHistory] = React.useState(JSON.parse(Cookies.get('searchHistory') || '[]'))
+
 
     useEffect(() => {
         if(!showAdditionalSearch) {
@@ -44,12 +47,41 @@ const Search = () => {
         }
     }, [showAdditionalSearch])
 
+    // Manipulate the cookies and display of drug search terms
     useEffect(() => {
-        if(currentSearchTerm) {
-            let capitalizedTerms = currentSearchTerm.map(term => term.charAt(0).toUpperCase() + term.slice(1))
-            document.title = capitalizedTerms.join(' & ') + ' - DrugSearch'
+        if (currentSearchTerm) {
+            let capitalizedTerms = currentSearchTerm.map((term: string) => term.charAt(0).toUpperCase() + term.slice(1));
+            document.title = capitalizedTerms.join(' & ') + ' - DrugSearch';
+
+            // Sorting the capitalized terms (search terms) to compare disregarding the order
+            const sortedCapitalizedTerms = capitalizedTerms.sort().join();
+
+            if (searchHistory.length > 0) {
+                // For the sake of clarity, a separate variable is created for the first term in the cookies
+                const sortedFirstCookieTerm = searchHistory[0].sort().join();
+
+                if (sortedFirstCookieTerm !== sortedCapitalizedTerms) {
+                    // Finding the index of the duplicate search term
+                    const duplicateIndex = searchHistory.findIndex(
+                        (search: string[]) => search.sort().join() === sortedCapitalizedTerms
+                    );
+
+                    // If a duplicate is found, remove it
+                    if (duplicateIndex !== -1) {
+                        searchHistory.splice(duplicateIndex, 1);
+                    }
+
+                    // Add the ORIGINAL capitalizedTerms and update the state
+                    setSearchHistory([capitalizedTerms, ...searchHistory.slice(0, 4)]);
+                    Cookies.set('searchHistory', JSON.stringify([capitalizedTerms, ...searchHistory.slice(0, 4)]));
+                }
+            } else {
+                setSearchHistory([capitalizedTerms]);
+                Cookies.set('searchHistory', JSON.stringify([capitalizedTerms]));
+            }
         }
-    }, [currentSearchTerm])
+    }, [currentSearchTerm, searchHistory]);
+
 
     const handleSearch = async (searchOptions, singleSearchTerm) => {
 
@@ -58,10 +90,20 @@ const Search = () => {
         setEventResults(null)
         setSearchError(false)
 
+
+        // This is a very, very bad implementation but it works
+        // 100% needs to be refactored
+        // When a search is submitted from a cookie button - the search term is an array from the beginning
+        // When a search is submitted from the search box - the search term needs to be formed into an array and checked if other search term is present
         if(singleSearchTerm) {
             setIsLoading(true)
-            const searchTerm = (additionalSearchTerm) ? [mainSearchTerm, additionalSearchTerm] : [singleSearchTerm]
 
+            let searchTerm
+            if(typeof singleSearchTerm === 'string') {
+                searchTerm = additionalSearchTerm ? [mainSearchTerm, additionalSearchTerm] : [singleSearchTerm]
+            } else {
+                searchTerm = singleSearchTerm
+            }
 
             if (mainSearchTerm === additionalSearchTerm) {
                 setSearchError(true)
@@ -152,6 +194,28 @@ const Search = () => {
                                     />
                                 </Row>
                             </CSSTransition>
+
+
+                        {!eventResults && searchHistory.length > 0 &&
+                                <Container>
+                                    <Container className={'d-flex align-items-center justify-content-center opacity-75 lead mt-4'}>
+                                        <ClockHistory className={'mx-1'} />
+                                        <span>Recent Searches</span>
+                                    </Container>
+                                    <Container className={'mt-2 d-flex flex-column align-items-center opacity-75'}>{searchHistory.map((term: string[]) => {
+                                        return (
+                                            <Button
+                                                variant={'link'}
+                                                className={'mb-2'}
+                                                onClick={() => handleSearch(searchOptions, term)}
+                                            >
+                                                {term.join(' & ')}
+                                            </Button>
+                                        )
+                                    })}</Container>
+                                </Container>
+                        }
+
                         {eventResults && eventsOverTime && currentSearchTerm && searchOptions &&
                             <SearchResultObject
                                 searchResults={eventResults}

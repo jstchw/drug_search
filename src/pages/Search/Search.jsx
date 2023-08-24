@@ -184,7 +184,7 @@ const Search = () => {
                                             <Button
                                                 key={item.terms.join(' & ')}
                                                 variant={'link'}
-                                                className={'mb-2'}
+                                                className={'mb-2 recent-search'}
                                                 onClick={() => {
                                                     handleSearch(item.options, item.terms)
                                                     setSearchOptions(item.options)

@@ -12,3 +12,9 @@
     opacity: 0;
     transition: opacity 300ms;
 }
+
+.recent-search {
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+}

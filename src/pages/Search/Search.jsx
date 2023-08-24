@@ -9,6 +9,7 @@ import {searchAgeRange, searchTypes, searchSex, searchCountry} from "../../compo
 import { CSSTransition } from "react-transition-group"
 import Cookies from "js-cookie"
 import {ClockHistory} from "react-bootstrap-icons"
+import updateSearchHistory from "../../services/updateSearchHistory"
 
 
 const Search = () => {
@@ -52,35 +53,10 @@ const Search = () => {
         if (currentSearchTerm) {
             let capitalizedTerms = currentSearchTerm.map((term: string) => term.charAt(0).toUpperCase() + term.slice(1));
             document.title = capitalizedTerms.join(' & ') + ' - DrugSearch';
-
-            // Sorting the capitalized terms (search terms) to compare disregarding the order
-            const sortedCapitalizedTerms = capitalizedTerms.sort().join();
-
-            if (searchHistory.length > 0) {
-                // For the sake of clarity, a separate variable is created for the first term in the cookies
-                const sortedFirstCookieTerm = searchHistory[0].sort().join();
-
-                if (sortedFirstCookieTerm !== sortedCapitalizedTerms) {
-                    // Finding the index of the duplicate search term
-                    const duplicateIndex = searchHistory.findIndex(
-                        (search: string[]) => search.sort().join() === sortedCapitalizedTerms
-                    );
-
-                    // If a duplicate is found, remove it
-                    if (duplicateIndex !== -1) {
-                        searchHistory.splice(duplicateIndex, 1);
-                    }
-
-                    // Add the ORIGINAL capitalizedTerms and update the state
-                    setSearchHistory([capitalizedTerms, ...searchHistory.slice(0, 4)]);
-                    Cookies.set('searchHistory', JSON.stringify([capitalizedTerms, ...searchHistory.slice(0, 4)]));
-                }
-            } else {
-                setSearchHistory([capitalizedTerms]);
-                Cookies.set('searchHistory', JSON.stringify([capitalizedTerms]));
-            }
+            console.log(searchHistory)
+            updateSearchHistory(capitalizedTerms, searchHistory, setSearchHistory, searchOptions)
         }
-    }, [currentSearchTerm, searchHistory]);
+    }, [currentSearchTerm]);
 
 
     const handleSearch = async (searchOptions, singleSearchTerm) => {

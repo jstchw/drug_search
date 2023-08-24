@@ -8,3 +8,8 @@ export type SearchOptions = {
     } | undefined;
     country: string | undefined;
 }
+
+export type SearchHistoryElement = {
+    terms: string[];
+    options: SearchOptions;
+}

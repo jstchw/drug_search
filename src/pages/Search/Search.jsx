@@ -10,6 +10,7 @@ import { CSSTransition } from "react-transition-group"
 import Cookies from "js-cookie"
 import {ClockHistory} from "react-bootstrap-icons"
 import updateSearchHistory from "../../services/updateSearchHistory"
+import {SearchHistoryElement} from "../../types";
 
 
 const Search = () => {
@@ -53,7 +54,6 @@ const Search = () => {
         if (currentSearchTerm) {
             let capitalizedTerms = currentSearchTerm.map((term: string) => term.charAt(0).toUpperCase() + term.slice(1));
             document.title = capitalizedTerms.join(' & ') + ' - DrugSearch';
-            console.log(searchHistory)
             updateSearchHistory(capitalizedTerms, searchHistory, setSearchHistory, searchOptions)
         }
     }, [currentSearchTerm]);
@@ -178,15 +178,19 @@ const Search = () => {
                                         <ClockHistory className={'mx-1'} />
                                         <span>Recent Searches</span>
                                     </Container>
-                                    <Container className={'mt-2 d-flex flex-column align-items-center opacity-75'}>{searchHistory.map((term: string[]) => {
+                                    <Container className={'mt-2 d-flex flex-column align-items-center opacity-75'}>
+                                        {searchHistory.map((item: SearchHistoryElement) => {
                                         return (
                                             <Button
-                                                key={term.join(' & ')}
+                                                key={item.terms.join(' & ')}
                                                 variant={'link'}
                                                 className={'mb-2'}
-                                                onClick={() => handleSearch(searchOptions, term)}
+                                                onClick={() => {
+                                                    handleSearch(item.options, item.terms)
+                                                    setSearchOptions(item.options)
+                                                }}
                                             >
-                                                {term.join(' & ')}
+                                                {item.terms.join(' & ') + ' • ' + searchTypes.find(({ value }) => value === item.options.searchBy).label}
                                             </Button>
                                         )
                                     })}</Container>

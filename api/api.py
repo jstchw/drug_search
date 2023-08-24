@@ -84,7 +84,7 @@ def get_info():
 
     results = []
 
-    if search_type == 'patient.drug.activesubstance.activesubstancename':
+    if search_type == 'patient.drug.openfda.generic_name':
         drug_id = search_csv('Common name', drug_name)
         for element in root.findall('{http://www.drugbank.ca}drug'):
             if element.tag == '{http://www.drugbank.ca}drug' and element.getparent().tag == '{http://www.drugbank.ca}drugbank':

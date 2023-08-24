@@ -9,9 +9,9 @@ import Cookies from 'js-cookie'
 // Search types that can be selected in the popover
 export const searchTypes = [
     {
-        value: 'patient.drug.activesubstance.activesubstancename',
+        value: 'patient.drug.openfda.generic_name',
         index: 0,
-        label: 'Active substance',
+        label: 'Generic Name',
         type: 'searchBy'
     },
     {

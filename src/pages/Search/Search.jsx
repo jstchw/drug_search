@@ -205,6 +205,7 @@ const Search = () => {
                                     <Container className={'mt-2 d-flex flex-column align-items-center opacity-75'}>{searchHistory.map((term: string[]) => {
                                         return (
                                             <Button
+                                                key={term.join(' & ')}
                                                 variant={'link'}
                                                 className={'mb-2'}
                                                 onClick={() => handleSearch(searchOptions, term)}

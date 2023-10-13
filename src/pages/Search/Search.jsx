@@ -33,8 +33,10 @@ const Search = () => {
         country: searchCountry.findIndex(({ value }) => value === (Cookies.get('lastSelectedCountry') || 'US')),
     })
 
+
     const [searchOptions, setSearchOptions] = React.useState({
-        searchBy: searchTypes[selectedSearchOptionIndex.searchBy].value,
+        searchBy: (selectedSearchOptionIndex.searchBy >= 0 && selectedSearchOptionIndex.searchBy < searchTypes.length)
+            ? searchTypes[selectedSearchOptionIndex.searchBy].value : 'patient.drug.openfda.generic_name',
         sex: searchSex[selectedSearchOptionIndex.sex].value,
         age: searchAgeRange[-1],
         country: searchCountry[selectedSearchOptionIndex.country].value,

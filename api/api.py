@@ -135,6 +135,18 @@ def get_summary():
     return jsonify(chat_completion)
 
 
+@app.route('/api/get_causes', methods=['GET'])
+def get_causes():
+    with open('data/causal/root.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        filtered_rows = [
+            {"feature": row["Feature"], "value": row["value"], "z_score": float(row["z score"])}
+            for row in reader
+        ]
+        return jsonify(filtered_rows)
+
+
+
 def on_startup():
     global root
     tree = ET.parse('data/drugs_cleaned.xml')

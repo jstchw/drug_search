@@ -2,6 +2,7 @@ import axios, {AxiosResponse} from 'axios'
 import React from "react"
 import { Nav } from "react-bootstrap"
 import { animated, useTransition } from "@react-spring/web"
+import { Table } from "react-bootstrap"
 
 
 interface CausalInfoType {
@@ -59,17 +60,27 @@ const CausalInterface = () => {
 
             {transitions((style, item) => item && (
                 <animated.div style={style}>
-                    {causalInfo && causalInfo.map((item: CausalInfoType, index: number) => {
-                        if (item.feature.toUpperCase() === selectedFeature) {
-                            return (
-                                <div key={index}>
-                                    <h1>Value: {item.value}</h1>
-                                    <h1>Z-score: {item.z_score}</h1>
-                                </div>
-                            )
-                        }
-                        return null
-                    })}
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Value</th>
+                                <th>Z-score</th>
+                            </tr>
+                        </thead>
+                        {causalInfo && causalInfo.map((item: CausalInfoType, index: number) => {
+                            if (item.feature.toUpperCase() === selectedFeature && item.z_score >= 7) {
+                                return (
+                                    <tbody key={index}>
+                                        <tr>
+                                            <td>{item.value}</td>
+                                            <td>{Math.round(item.z_score * 100) / 100}</td>
+                                        </tr>
+                                    </tbody>
+                                )
+                            }
+                            return null
+                        })}
+                    </Table>
                 </animated.div>
             ))}
         </React.Fragment>

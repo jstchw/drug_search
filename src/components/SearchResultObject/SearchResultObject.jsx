@@ -10,7 +10,6 @@ import {searchTypes} from "../OptionModal/OptionModal";
 import useDrugInfo from "../../hooks/useDrugInfo";
 import DemographicModal from "../DemographicModal/DemographicModal";
 import { isMobile } from 'react-device-detect'
-import CausalInterface from "../CausalInterface/CausalInterface";
 
 const getUniqueObjects = (array) => {
     return array.filter((obj, index, self) =>
@@ -220,7 +219,6 @@ const SearchResultObject = (props) => {
                                     totalCount={totalCount} searchResults={termCountDict}
                                     searchOptions={props.searchOptions}
                 />
-                <CausalInterface></CausalInterface>
             </Col>
 
             <DemographicModal

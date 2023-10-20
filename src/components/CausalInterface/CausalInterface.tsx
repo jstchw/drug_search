@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from 'axios'
 import React from "react"
-import { Nav } from "react-bootstrap"
+import { Button, Nav } from "react-bootstrap"
 import { animated, useTransition } from "@react-spring/web"
 import { Table } from "react-bootstrap"
 
@@ -28,6 +28,7 @@ const CausalInterface = () => {
     const [currentFeatureIndex, setCurrentFeatureIndex] = React.useState<number>(0)
     const prevFeatureIndex = React.useRef<number>(0)
     const direction = currentFeatureIndex > prevFeatureIndex.current ? 'right' : 'left'
+    const [selectedView, setSelectedView] = React.useState<string>('table')
 
     const transitions = useTransition(selectedFeature, {
         from: { opacity: 0, transform: direction === 'right' ? 'translate3d(100%,0,0)' : 'translate3d(-100%,0,0)' },
@@ -56,6 +57,8 @@ const CausalInterface = () => {
 
     return (
         <React.Fragment>
+            <Button className={`mb-2 ${selectedView === 'table' ? 'active' : ''}`} onClick={() => setSelectedView('table')}>Table</Button>
+            <Button className={`mb-2 ms-2 ${selectedView === 'tree' ? 'active' : ''}`} onClick={() => setSelectedView('tree')}>Tree</Button>
             <Nav variant={'underline'} className={'d-flex justify-content-center mb-4'}>
                 {uniqueFeatures && uniqueFeatures.map((feature: string, index: number) =>
                     <Nav.Link key={index} onClick={() => handleFeatureChange(index, feature)}

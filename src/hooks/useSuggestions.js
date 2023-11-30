@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react";
 import Fuse from "fuse.js";
 
-export const useSuggestions = (apiEndpoint, fuseOptions) => {
+export const useSuggestions = (apiEndpoint, fuseOptions, searchBy) => {
     const [fuse, setFuse] = useState(null);
 
     useEffect(() => {
         async function fetchSuggestions() {
             try {
-                const response = await fetch(apiEndpoint);
+                // Form a URL based on the searchBy parameter and fetch the data
+                const url = `${apiEndpoint}?searchBy=${encodeURIComponent(searchBy)}`;
+                const response = await fetch(url);
                 const data = await response.json();
                 setFuse(new Fuse(data, fuseOptions));
             } catch (error) {
@@ -16,7 +18,7 @@ export const useSuggestions = (apiEndpoint, fuseOptions) => {
         }
 
         fetchSuggestions();
-    }, [apiEndpoint, fuseOptions]);
+    }, [apiEndpoint, fuseOptions, searchBy]);
 
     return fuse;
 }

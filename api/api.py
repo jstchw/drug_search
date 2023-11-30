@@ -3,6 +3,7 @@ import io
 import openai
 import sys
 import json
+import requests
 
 from flask import Flask, request, jsonify, send_file, abort
 from flask_cors import CORS
@@ -11,7 +12,22 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+def on_startup():
+    global root
+    tree = ET.parse('data/drugs_cleaned.xml')
+    root = tree.getroot()
+
+def load_data(file_path, delim):
+    with open(file_path, 'r') as file:
+        reader = csv.DictReader(file, delimiter=delim)
+        return list(reader)
+
+
+on_startup()
+substances = load_data('data/suggestion_db.csv', ',')
+products = load_data('data/products_fda.csv', ',')
 
 
 def process_element(element, drug_id=None, drug_name=None, drug_brand=None):
@@ -112,9 +128,17 @@ def get_info():
 
 @app.route('/api/get_suggestions', methods=['GET'])
 def get_suggestions():
-    with open('data/suggestion_db.csv', 'r') as file:
-        reader = csv.DictReader(file)
-        return jsonify([row['Common name'] for row in reader])
+    search_by = request.args.get('searchBy')
+    try:
+        if search_by == 'patient.drug.openfda.generic_name':
+            return jsonify([row['Common name'] for row in substances])
+        elif search_by == 'patient.drug.openfda.brand_name':
+            return jsonify([row['DrugName'] for row in products])
+        else:
+            return jsonify({"error": "Invalid search type"}), 400
+    except Exception as e:
+        print(e, file=sys.stderr)
+        return jsonify({"error": "Something went wrong"}), 500
 
 
 @app.route('/api/get_summary', methods=['POST'])
@@ -134,14 +158,6 @@ def get_summary():
                                                              {"role": "user", "content": json.dumps(data)}])
     return jsonify(chat_completion)
 
-
-def on_startup():
-    global root
-    tree = ET.parse('data/drugs_cleaned.xml')
-    root = tree.getroot()
-
-
-on_startup()
 
 if __name__ == '__main__':
     app.run(debug=True)

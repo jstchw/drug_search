@@ -171,6 +171,7 @@ const Search = () => {
                                 </Row>
                             </CSSTransition>
 
+                        {/* Recent searches powered by cookies with js-cookie */}
 
                         {!eventResults && searchHistory.length > 0 &&
                                 <Container>

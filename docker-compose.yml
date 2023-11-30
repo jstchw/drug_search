@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./public:/usr/src/app/public
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+  backend:
+    build: ./api
+    volumes:
+      - ./api:/app
+    ports:
+      - "16000:16000"
+    environment:
+      - FLASK_ENV=development

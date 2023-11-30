@@ -86,7 +86,7 @@ const SearchBox = (props) => {
        }
     }, [errorAnimation, props.searchError])
 
-    const fuse = useSuggestions(`${window.REACT_APP_API_URL}/get_suggestions`, fuseOptions)
+    const fuse = useSuggestions(`${window.REACT_APP_API_URL}/get_suggestions`, fuseOptions, props.searchOptions.searchBy)
 
 
     // Handling clicking outside the dropdown menu
@@ -132,9 +132,8 @@ const SearchBox = (props) => {
         if(props.isMainSearch) props.setSearchError(false)
         setInputValue(e.target.value)
 
-        // Suggestions should only work when a substance name or a generic name is searched for
-        if(props.searchOptions.searchBy === 'patient.drug.activesubstance.activesubstancename' ||
-            props.searchOptions.searchBy === 'patient.drug.openfda.generic_name') {
+        if(props.searchOptions.searchBy === 'patient.drug.openfda.generic_name' ||
+            props.searchOptions.searchBy === 'patient.drug.openfda.brand_name') {
 
             if (fuse && inputValue.length >= 3 && inputValue.length <= 20) {
                 const timeout = setTimeout(() => {

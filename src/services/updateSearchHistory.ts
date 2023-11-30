@@ -9,8 +9,6 @@ const updateSearchHistory = (
     setSearchHistory: React.Dispatch<React.SetStateAction<SearchHistoryElement[] | null>>,
     searchOptions: SearchOptions,
 ) => {
-    console.log('searchOptions', searchOptions);
-
     if (searchHistory && searchHistory[0] !== undefined) {
         // Finding the index of the duplicate search term
         const duplicateIndex = searchHistory.findIndex(

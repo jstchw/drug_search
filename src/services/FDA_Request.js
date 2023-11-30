@@ -28,8 +28,6 @@ const generatePath = (searchTerm, searchOptions, countType) => {
         searchParts.push(`occurcountry:"${searchOptions.country}"`)
     }
 
-
-    console.log(`${BASE_URL}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`)
     return `${BASE_URL}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`
 }
 

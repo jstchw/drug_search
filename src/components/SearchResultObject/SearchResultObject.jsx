@@ -227,7 +227,7 @@ const SearchResultObject = (props) => {
                 selectedWord={selectedWord}
                 isMobile={isMobile}
             />
-            { !isMobile && <PatientCard searchOptions={props.searchOptions} totalADE={totalCount} /> }
+            { !isMobile && <PatientCard searchOptions={props.searchOptions} ADEs={totalCount} /> }
         </div>
     );
 }

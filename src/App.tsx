@@ -4,10 +4,11 @@ import AppRoutes from './AppRoutes'
 import Cookies from 'js-cookie'
 import {ThemeContext} from "./contexts/ThemeContext"
 import {CookieInfoFooter} from "./components/CookieInfoFooter/CookieInfoFooter"
+import {ThemeType} from "./types"
 
 const App = () => {
-    const [theme, setTheme] = React.useState<string>(() => {
-        const theme = Cookies.get('theme')
+    const [theme, setTheme] = React.useState<ThemeType>(() => {
+        const theme = Cookies.get('theme') as ThemeType | undefined
         return theme ? theme : 'light'
     })
 

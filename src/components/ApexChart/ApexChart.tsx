@@ -1,59 +1,46 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import {ThemeContext} from "../../contexts/ThemeContext";
+import {ChartDataPoint, Results, ThemeType, TimeEventData} from "../../types";
+import {ApexOptions} from "apexcharts";
 
 const chartTypes = [
     'searched_group',
     'events_over_time',
 ]
 
+const processTermData = (data: Results): ChartDataPoint[] => {
+    const entries = Object.entries(data)
+    const sortedEntries = entries.sort((a, b) => b[1] - a[1])
 
-// This function sorts terms by popularity and crops the rest
-const processDataForChart = (eventDict, totalCount, type) => {
-    const maxTerms = 10
-
-
-    if (type === chartTypes[0]) {
-        let popularTerms = {}
-        let sortedDict = Object.entries(eventDict).sort((a, b) => b[1] - a[1])
-
-        for (let [term, count] of sortedDict.slice(0, maxTerms)) {
-            popularTerms[term] = count;
-        }
-
-        popularTerms = Object.entries(popularTerms).map(([term, count]) => ({
-            x: term,
-            y: count,
-        }))
-
-        return popularTerms;
-
-    }
-    if (type === chartTypes[1]) {
-
-        let yearlyData = {}
-        eventDict.forEach(entry => {
-            let year = entry.time.substring(0, 4)
-            if (yearlyData[year]) {
-                yearlyData[year] += entry.count
-            } else {
-                yearlyData[year] = entry.count;
-            }
-        })
-
-        return Object.entries(yearlyData).map(([time, count]) => ({
-            x: time,
-            y: count
-        }))
-    }
+    return sortedEntries.slice(0, 10).map(([term, count]) => ({
+        x: term,
+        y: count,
+    }))
 }
 
+const processYearData = (data: TimeEventData[]): ChartDataPoint[] => {
+    const yearlyData = data.reduce((acc: { [year: string]: number }, entry: TimeEventData) => {
+        const year = entry.time.substring(0, 4) // Accessing the year from the time string (e.g. 2019-01-01)
+        acc[year] = (acc[year] || 0) + entry.count // If the year exists in the accumulator, add the count to it, otherwise set it to 0 and add the count to it (this is to avoid undefined errors)
+        return acc
+    }, {})
 
-const ApexChart = (props) => {
+    const sortedEntries: [string, number][] = Object.entries(yearlyData).sort((a, b) => a[0].localeCompare(b[0]))
+
+    return sortedEntries.map(([time, count]): ChartDataPoint => ({
+        x: time,
+        y: count,
+    }))
+}
+
+const ApexChart = (props: { eventDict: TimeEventData[] | Results; totalCount: number; type: string}) => {
     const { theme } = React.useContext(ThemeContext)
-    const processedData = processDataForChart(props.eventDict, props.totalCount, props.type)
+    // const processedData = processDataForChart(props.eventDict, props.type)
 
     if (props.type === chartTypes[0]) {
+        const processedData = processTermData(props.eventDict as Results)
+
         const chartData = {
             labels: processedData.map((x) => x.x),
             series: [{
@@ -62,18 +49,17 @@ const ApexChart = (props) => {
             }]
         }
 
-        const optionsSearchedGroup = {
-            colors: ["#59768A", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"]
-            ,
+        const options: ApexOptions = {
+            colors: ["#59768A", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"],
             theme: {
-                mode: theme,
+                mode: theme as ThemeType,
             },
             labels: chartData.labels,
             legend: {
                 show: false,
             },
             chart: {
-                type: 'bar',
+                type: "bar",
                 width: '100%',
                 toolbar: {
                     show: false,
@@ -97,9 +83,9 @@ const ApexChart = (props) => {
                         fontSize: '14px',
                         colors: theme === 'dark' ? '#ACB5BD' : '',
                     },
-                    formatter: (value) => {
-                        value = String(value)
-                        return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+                    formatter: (value: number) => {
+                        const stringValue = String(value)
+                        return stringValue.charAt(0).toUpperCase() + stringValue.slice(1).toLowerCase()
                     }
                 }
             },
@@ -117,7 +103,7 @@ const ApexChart = (props) => {
             },
             tooltip: {
                 y: {
-                    formatter: (value:string) => {
+                    formatter: (value: number) => {
                         return `${value.toLocaleString()} from ${props.totalCount.toLocaleString()}`
                     }
                 }
@@ -126,12 +112,14 @@ const ApexChart = (props) => {
 
         return (
             <ReactApexChart
-                options={optionsSearchedGroup}
+                options={options}
                 series={chartData.series}
-                type={optionsSearchedGroup.chart.type}
+                type={options.chart?.type}
             />
         )
     } else if (props.type === chartTypes[1]) {
+        const processedData = processYearData(props.eventDict as TimeEventData[])
+
         const chartData = {
             series: [{
                 name: 'Reports',
@@ -139,9 +127,9 @@ const ApexChart = (props) => {
             }]
         }
 
-        const optionsReportsOverTime = {
+        const options: ApexOptions = {
             theme: {
-                mode: theme
+                mode: theme as ThemeType,
             },
             colors: ['#59768A'],
             legend: {
@@ -173,7 +161,6 @@ const ApexChart = (props) => {
                 type: 'category',
                 labels: {
                     style: {
-                        theme: 'dark',
                         fontSize: '14px',
                         colors: theme === 'dark' ? '#ACB5BD' : '',
                     },
@@ -196,12 +183,15 @@ const ApexChart = (props) => {
         }
 
         return (
+            // Type specified redundantly because it doesn't work otherwise
             <ReactApexChart
-                options={optionsReportsOverTime}
+                options={options}
                 series={chartData.series}
-                type={optionsReportsOverTime.chart.type}
+                type={options.chart?.type}
             />
         )
+    } else {
+        return <div></div>
     }
 }
 

@@ -132,10 +132,7 @@ const DemographicModalInfo = ({word, isMobile}) => {
                 {drugInfo && drugInfo.length > 0 && (
                     <React.Fragment>
                         <Col xs={width}>
-                            <DrugDescription
-                                drugInfo={drugInfo[0]}
-                                style={{border: "none"}}
-                            />
+                            <DrugDescription drugInfo={drugInfo[0]} />
                         </Col>
                         <Col xs={width} className={isMobile ? 'mb-4' : ''}>
                             <DrugAccordion drugInfo={drugInfo[0]}/>

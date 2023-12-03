@@ -3,7 +3,7 @@ import {Modal, Form, InputGroup, ToggleButton, Button} from 'react-bootstrap';
 import countries from '../../assets/countries.json';
 import {ThemeContext} from "../../contexts/ThemeContext";
 import {Moon, Sun} from "react-bootstrap-icons";
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 
 
 // Search types that can be selected in the popover
@@ -47,19 +47,21 @@ export const searchAgeRange = [
     {
         value: '',
         index: 0,
+        label: '',
         type: 'age',
     },
     {
         value: '',
         index: 1,
+        label: '',
         type: 'age',
     }
 ]
 
 export const searchCountry = Object.entries(countries).map(([value, label], index) => ({
     value,
-    label,
     index,
+    label,
     type: 'country'
 }))
 

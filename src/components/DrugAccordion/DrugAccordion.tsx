@@ -1,9 +1,9 @@
 import {Accordion, Badge} from "react-bootstrap";
 import {ReadMore} from "../ReadMore/ReadMore";
 import {Key} from "react";
-import { DrugInfo } from "../../types";
+import { DrugProperties } from "../../types";
 
-const DrugAccordion = (props: {drugInfo: DrugInfo}) => {
+const DrugAccordion = (props: {drugInfo: DrugProperties}) => {
     return (
         <Accordion>
             {props.drugInfo && props.drugInfo.indication && (
@@ -30,7 +30,7 @@ const DrugAccordion = (props: {drugInfo: DrugInfo}) => {
                     <Accordion.Body>
                         <ReadMore>
                             {props.drugInfo.brands.map((brand: string, index: Key) => (
-                                <span key={index}>{brand}{index !== props.drugInfo.brands.length - 1 ? ', ' : ' '}</span>
+                                <span key={index}>{brand}{index !== (props.drugInfo.brands?.length ?? 0) - 1 ? ', ' : ' '}</span>
                             ))}
                         </ReadMore>
                     </Accordion.Body>

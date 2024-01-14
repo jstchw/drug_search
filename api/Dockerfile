@@ -1,8 +1,8 @@
 FROM python:3.10-slim
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY requirements.txt /app/
+COPY requirements.txt /usr/src/app/
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . /app
+COPY . /usr/src/app
 
 EXPOSE 16000
 

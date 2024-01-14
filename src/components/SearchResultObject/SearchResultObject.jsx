@@ -6,19 +6,22 @@ import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
 import PatientCard from "../PatientCard/PatientCard";
-import {searchTypes} from "../OptionModal/OptionModal";
 import useDrugInfo from "../../hooks/useDrugInfo";
 import DemographicModal from "../DemographicModal/DemographicModal";
 import { isMobile } from 'react-device-detect'
+import {searchTypes} from "../../constants";
+import {DrugInfo, Results, SearchOptions, TimeEventData} from "../../types";
 
-const getUniqueObjects = (array) => {
+const getUniqueObjects = (array: DrugInfo[]) => {
     return array.filter((obj, index, self) =>
         index === self.findIndex((otherObj) => obj.drug_name === otherObj.drug_name)
     );
 }
 
 
-const SearchResultObject = (props) => {
+const SearchResultObject = (props:
+                                {searchResults: any[], searchOptions: SearchOptions, eventsOverTime: TimeEventData, searchTerm: string,
+                                showAdditionalSearch: boolean}) => {
     const { termCountDict, totalCount } = props.searchResults.result
     const eventsOverTime = props.eventsOverTime.result.results
     const searchTypeRef = React.useRef(props.searchOptions.searchBy)
@@ -35,9 +38,9 @@ const SearchResultObject = (props) => {
     }, [showDemographicModal])
 
     const uniqueDrugInfo = getUniqueObjects(drugInfo)
-    let groupDescription
+    let groupDescription: string
 
-    const processDrugGroups = (groups) => {
+    const processDrugGroups = (groups: string[]) => {
         return groups.map((group, index) => {
             let variant
             switch (group) {
@@ -105,7 +108,7 @@ const SearchResultObject = (props) => {
                 Object.entries(groupedByProduct).map(([product, terms], index) => (
                     <Col key={index}>
                         {/* Searching by active substance*/}
-                        {searchTypeRef.current === searchTypes[0].value &&
+                        {searchTypeRef.current.value === searchTypes[0]?.value &&
                             <>
                                 <h1>{terms[0].drug_name}</h1>
                                 {terms[0].groups && <h3>{processDrugGroups(terms[0].groups)}</h3>}
@@ -172,7 +175,7 @@ const SearchResultObject = (props) => {
                 { !isMobile  &&
                     <Row>
                         {(uniqueDrugInfo.length > 0 && uniqueDrugInfo
-                                .every((term) => term.ADE === null && term.full_info === true)) &&
+                                .every((term) => term.ADE === null && term.full_info)) &&
                             (uniqueDrugInfo.map((term, index) => (
                                 uniqueDrugInfo.length > 1 ? (
                                     <Col key={index}>
@@ -197,7 +200,7 @@ const SearchResultObject = (props) => {
                     <React.Fragment>
                         <Col>
                             {(uniqueDrugInfo.length > 0 && uniqueDrugInfo
-                                .every((term) => term.ADE === null && term.full_info === true)) &&
+                                .every((term) => term.ADE === null && term.full_info)) &&
                             (uniqueDrugInfo.map((term, index) => (
                                     <React.Fragment key={index}>
                                         <div className={'mb-4'}>

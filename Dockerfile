@@ -1,12 +1,14 @@
-FROM node:20
+FROM node:21-slim
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
 RUN yarn install
 
-COPY . .
+COPY src ./src
+COPY public ./public
+COPY tsconfig.json ./
 
 EXPOSE 3000
 

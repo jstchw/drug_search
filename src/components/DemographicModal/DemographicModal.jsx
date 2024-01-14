@@ -6,7 +6,8 @@ import DrugAccordion from "../DrugAccordion/DrugAccordion";
 import useDrugInfo from "../../hooks/useDrugInfo";
 import ApexChart from "../ApexChart/ApexChart";
 import { getSideEffectsForDemographics } from "../../services/FDA_Request";
-import { searchTypes } from "../OptionModal/OptionModal";
+
+import {searchTypes} from "../../constants";
 
 // Function to split the array in chunks,
 const chunkArray = (array, size) => {
@@ -59,10 +60,6 @@ const DemographicModalInfo = ({word, isMobile}) => {
                 });
         }
     }, [word])
-
-    useEffect(() => {
-        console.log(demographicInfo)
-    })
 
     // Get response from the GPT model if the demographic info has changed
     useEffect(() => {

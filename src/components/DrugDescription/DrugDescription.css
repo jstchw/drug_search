@@ -7,3 +7,17 @@
     overflow-wrap: break-word;
     hyphens: auto;
 }
+
+.molecule {
+    background-color: transparent;
+    border: none;
+    width: 20em;
+    height: auto;
+}
+
+.drug-description-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}

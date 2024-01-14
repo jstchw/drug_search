@@ -1,12 +1,8 @@
 export type SearchOptions = {
-    searchBy: string;
-    sex: string | undefined;
-    age: {
-        value: string;
-        index: number;
-        type: string;
-    } | undefined;
-    country: string | undefined;
+    searchBy: SearchOptionsType;
+    sex: SearchOptionsType;
+    age: AgeOptions;
+    country: SearchOptionsType;
 }
 
 export type SearchOptionsType = {
@@ -14,6 +10,48 @@ export type SearchOptionsType = {
     index: number;
     label: string;
     type: string;
+    enabled?: boolean;
+    param?: string;
+}
+
+export type AgeOptions = {
+    enabled: boolean;
+    min: SearchOptionsType;
+    max: SearchOptionsType;
+}
+
+export type DrugProperties = {
+    name: string;
+    classification?: string;
+    groups?: string[];
+    iupac?: string;
+    formula?: string;
+    brands?: string[];
+    half_life?: string;
+    indication?: string;
+    product?: string;
+    molecule_url?: string;
+}
+
+export type URLParams = {
+    terms: string[];
+    searchBy: string;
+    sex?: string | null;
+    age?: {
+        min: string | null;
+        max: string | null;
+    };
+    country?: string | null;
+}
+
+export type SearchTypesMap = {
+    reaction: string;
+    receiveDate: string;
+    drug: string;
+}
+
+export type PlaceholderType = {
+    [key: string]: string[];
 }
 
 export type SearchHistoryElement = {
@@ -23,6 +61,22 @@ export type SearchHistoryElement = {
 
 export type Results = {
     [key: string]: number;
+}
+
+export type ResultItem = {
+    term: string;
+    count: number;
+}
+
+export type FDARawData = {
+    meta:
+    {
+        disclaimer: string;
+        terms: string;
+        license: string;
+        last_updated: string;
+    }
+    results: ResultItem[];
 }
 
 export type TimeEventData = {
@@ -37,17 +91,9 @@ export type ChartDataPoint = {
 
 export type ThemeType = 'light' | 'dark';
 
-export type DrugInfo = {
-    drug_name: string;
-    drug_class: string;
-    groups: string[];
-    half_life: string;
-    indication: string;
-    iupac: string;
-    molecule_url: string;
-    product: string;
-    brands: string[];
-    ADE: null;
-    formula: string;
-    full_info: boolean;
+export type DemographicGroups = {
+    name: string;
+    sex: string;
+    age: [number, number];
+    def: string;
 }

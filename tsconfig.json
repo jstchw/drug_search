@@ -16,6 +16,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmitOnError": false,
+    "noEmit": false,
   },
     "include": [
         "src/**/*.ts",

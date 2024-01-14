@@ -1,0 +1,22 @@
+services:
+  frontend:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./public:/usr/src/app/public
+      - ./tsconfig.json:/usr/src/app/tsconfig.json
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+  backend:
+    build: ./api
+    volumes:
+      - ./api:/usr/src/app
+    ports:
+      - "16000:16000"
+    environment:
+      - FLASK_ENV=development

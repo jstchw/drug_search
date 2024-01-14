@@ -3,10 +3,10 @@ import ReactWordcloud, {OptionsProp} from 'react-wordcloud';
 import DemographicModal from "../DemographicModal/DemographicModal";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-import {searchTypes} from "../OptionModal/OptionModal";
 import {ThemeContext} from "../../contexts/ThemeContext";
 import {isMobile} from "react-device-detect";
 import {Results, SearchOptions} from "../../types";
+import {searchTypes} from "../../constants";
 
 const options: OptionsProp  = {
     enableTooltip: true,
@@ -59,7 +59,7 @@ const WordCloudChart = (props: {searchOptions: SearchOptions; words: Results}) =
         },
         // Fix this later type
         onWordClick: (word: { text: string; }) => {
-            if(props.searchOptions.searchBy === searchTypes[2]?.value) {
+            if(props.searchOptions.searchBy === searchTypes[2]) {
                 setSelectedWord(word.text);
                 setShowDemographicModal(true);
             }
@@ -75,7 +75,7 @@ const WordCloudChart = (props: {searchOptions: SearchOptions; words: Results}) =
     return (
         <React.Fragment>
             <ReactWordcloud words={data} options={options} callbacks={callbacks} />
-            {props.searchOptions.searchBy === searchTypes[2]?.value &&
+            {props.searchOptions.searchBy === searchTypes[2] &&
                 <DemographicModal
                 show={showDemographicModal}
                 handleClose={() => setShowDemographicModal(false)}

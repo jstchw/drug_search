@@ -1,14 +1,21 @@
-import {Accordion, Badge} from "react-bootstrap";
+import {Accordion} from "react-bootstrap";
 import {ReadMore} from "../ReadMore/ReadMore";
 import {Key} from "react";
 import { DrugProperties } from "../../types";
+import { PencilSimple, ClockCountdown, Pill } from "@phosphor-icons/react";
 
 const DrugAccordion = (props: {drugInfo: DrugProperties}) => {
     return (
         <Accordion>
             {props.drugInfo && props.drugInfo.indication && (
                 <Accordion.Item eventKey={'0'}>
-                    <Accordion.Header><Badge>Indication</Badge></Accordion.Header>
+                    <Accordion.Header>
+                        <div className={'d-flex justify-content-center fs-5'}>
+                            <PencilSimple weight={'light'}/>
+                            <div className={'vr mx-2'}/>
+                            <span>Indication</span>
+                        </div>
+                    </Accordion.Header>
                     <Accordion.Body>
                         {props.drugInfo.indication === 'N/A' ?
                             props.drugInfo.indication :
@@ -18,7 +25,13 @@ const DrugAccordion = (props: {drugInfo: DrugProperties}) => {
             )}
             {props.drugInfo && props.drugInfo.half_life && (
                 <Accordion.Item eventKey={'1'}>
-                    <Accordion.Header><Badge>Half-life</Badge></Accordion.Header>
+                    <Accordion.Header>
+                        <div className={'d-flex justify-content-center fs-5'}>
+                            <ClockCountdown weight={'light'}/>
+                            <div className={'vr mx-2'}/>
+                            <span>Half-Life</span>
+                        </div>
+                    </Accordion.Header>
                     <Accordion.Body>
                         {props.drugInfo.half_life}
                     </Accordion.Body>
@@ -26,7 +39,13 @@ const DrugAccordion = (props: {drugInfo: DrugProperties}) => {
             )}
             {props.drugInfo && props.drugInfo.brands && (
                 <Accordion.Item eventKey={'2'}>
-                    <Accordion.Header><Badge>Brands</Badge></Accordion.Header>
+                    <Accordion.Header>
+                        <div className={'d-flex justify-content-center fs-5'}>
+                            <Pill weight={'light'}/>
+                            <div className={'vr mx-2'}/>
+                            <span>Brands</span>
+                        </div>
+                    </Accordion.Header>
                     <Accordion.Body>
                         <ReadMore>
                             {props.drugInfo.brands.map((brand: string, index: Key) => (

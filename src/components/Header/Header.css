@@ -1,7 +1,7 @@
 .version-sticker {
     position: absolute;
-    top: -0.7em;
-    right: -1.8em;
+    top: -0.7rem;
+    right: -0.7rem;
     z-index: 1000;
     transform: rotate(30deg);
     background: #f00 !important;

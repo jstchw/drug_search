@@ -44,19 +44,22 @@ export type URLParams = {
     country?: string | null;
 }
 
+export type SearchHistoryContextType = {
+    searchHistory: URLParams[];
+    updateSearchHistory: (params: URLParams) => void;
+    clearSearchHistory: () => void;
+}
+
 export type SearchTypesMap = {
-    reaction: string;
+    generic_name: string;
+    brand_name: string;
     receiveDate: string;
-    drug: string;
+    side_effect: string;
+    [key: string]: string;
 }
 
 export type PlaceholderType = {
     [key: string]: string[];
-}
-
-export type SearchHistoryElement = {
-    terms: string[];
-    options: SearchOptions;
 }
 
 export type Results = {
@@ -76,7 +79,7 @@ export type FDARawData = {
         license: string;
         last_updated: string;
     }
-    results: ResultItem[];
+    results: ResultItem[] | TimeEventData[];
 }
 
 export type TimeEventData = {

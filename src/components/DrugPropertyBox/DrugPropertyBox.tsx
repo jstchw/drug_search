@@ -4,8 +4,7 @@ import {Col, Row} from "react-bootstrap";
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 
-const DrugPropertyBox = (props: {drug: DrugProperties}) => {
-
+const DrugPropertyBox = (props: {drug: DrugProperties, isSingle: boolean}) => {
     return (
         <>
             <Col style={{ textAlign: 'center' }}>
@@ -15,20 +14,36 @@ const DrugPropertyBox = (props: {drug: DrugProperties}) => {
                         <DrugGroups drugGroups={props.drug.groups || []}/>
                     </Col>
                 </Row>
-                <Row className="justify-content-center">
-                    <Col xs={12} md={8}>
-                        <DrugDescription drugInfo={props.drug} />
-                    </Col>
-                </Row>
-                <Row className="justify-content-center">
-                    <Col xs={12} md={8}>
-                        <div style={{ maxWidth: '100%', overflow: 'auto' }}>
-                            <DrugAccordion drugInfo={props.drug} />
-                        </div>
-                    </Col>
-                </Row>
+                {props.isSingle ? (
+                    // For a single drug, put DrugDescription and DrugAccordion side by side
+                    <Row className="justify-content-center">
+                        <Col>
+                            <DrugDescription drugInfo={props.drug}/>
+                        </Col>
+                        <Col>
+                            <DrugAccordion drugInfo={props.drug}/>
+                        </Col>
+                    </Row>
+                ) : (
+                    // For multiple drugs, stack DrugDescription and DrugAccordion
+                    <>
+                        <Row className="justify-content-center">
+                            <Col xs={12} md={8}>
+                                <DrugDescription drugInfo={props.drug}/>
+                            </Col>
+                        </Row>
+                        <Row className="justify-content-center">
+                            <Col xs={12} md={8}>
+                                <div style={{maxWidth: '100%', overflow: 'auto'}}>
+                                    <DrugAccordion drugInfo={props.drug}/>
+                                </div>
+                            </Col>
+                        </Row>
+                    </>
+                )}
             </Col>
         </>
+
 
     )
 }

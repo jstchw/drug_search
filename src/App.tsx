@@ -5,6 +5,7 @@ import Cookies from 'js-cookie'
 import {ThemeContext} from "./contexts/ThemeContext"
 import {CookieInfoFooter} from "./components/CookieInfoFooter/CookieInfoFooter"
 import {ThemeType} from "./types"
+import {SearchHistoryProvider} from "./contexts/SearchHistoryContext";
 
 const App = () => {
     const [theme, setTheme] = React.useState<ThemeType>(() => {
@@ -25,7 +26,9 @@ const App = () => {
     return (
         <React.Fragment>
             <ThemeContext.Provider value={{theme, toggleTheme}}>
-                <AppRoutes />
+                <SearchHistoryProvider>
+                    <AppRoutes />
+                </SearchHistoryProvider>
             </ThemeContext.Provider>
             <CookieInfoFooter />
         </React.Fragment>

@@ -41,7 +41,6 @@ const parseUrlParams = (paramString: string, setError: React.Dispatch<boolean>) 
     }
     const query = params.get('query')
     const terms = query ? query.split('-') : []
-
     return {
         terms: terms,
         searchBy: params.get('searchBy') as string,

@@ -4,7 +4,7 @@ import {Book as BookIcon} from "react-bootstrap-icons";
 import './SearchResultObject.css'
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
-import ChartDisplayObject from "../ChartDisplayObject/ChartDisplayObject";
+import ChartSection from "../ChartSection/ChartSection";
 import PatientCard from "../PatientCard/PatientCard";
 import useDrugInfo from "../../hooks/useDrugInfo";
 import DemographicModal from "../DemographicModal/DemographicModal";
@@ -218,9 +218,9 @@ const SearchResultObject = (props:
             </Container>
 
             <Col>
-                <ChartDisplayObject eventsOverTime={eventsOverTime} termCountDict={termCountDict}
-                                    totalCount={totalCount} searchResults={termCountDict}
-                                    searchOptions={props.searchOptions}
+                <ChartSection eventsOverTime={eventsOverTime} termCountDict={termCountDict}
+                              totalCount={totalCount} searchResults={termCountDict}
+                              searchOptions={props.searchOptions}
                 />
             </Col>
 

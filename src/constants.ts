@@ -64,7 +64,7 @@ export const searchCountry: SearchOptionsType[] = Object.entries(countries).map(
     index,
     label,
     type: 'country',
-    param: 'country'
+    param: value
 }))
 
 export const defaultSearchOptions = {
@@ -123,9 +123,10 @@ export const drugGroups = {
 
 export const backendUrl = 'http://localhost:16000/api/'
 
+export const baseFdaUrl = 'https://api.fda.gov/drug/event.json'
+
 export const fuseOptions = {
     keys: ['name'],
     threshold: 0.4,
     minMatchCharLength: 2,
-
 }

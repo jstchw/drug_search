@@ -1,20 +1,23 @@
 import React, {useEffect} from 'react';
-import {Button, Form, InputGroup, Spinner} from 'react-bootstrap';
-//import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
-import {FilterLeft as FilterLeftIcon, Search as SearchIcon} from 'react-bootstrap-icons'
+import { Button, Form, InputGroup, Spinner } from 'react-bootstrap';
+import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons'
 import './SearchBox.css'
 import OptionModal from "../OptionModal/OptionModal";
 import { useSuggestions } from "../../hooks/useSuggestions";
-import {AgeOptions, SearchOptions, SearchOptionsType} from "../../types";
+import { SearchOptions } from "../../types";
 import {defaultSearchOptions} from "../../constants";
-import { useNavigate } from "react-router-dom";
 import Fuse, { FuseResult, Expression } from "fuse.js";
 import CreatableSelect from 'react-select/creatable';
 import Cookies from "js-cookie";
+import { useSearch } from "../../hooks/useSearch";
+//import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
+
+type SearchBoxProps = {
+    passedInput?: string[]
+}
 
 
-const SearchBox = () => {
-
+const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
     const initialSearchOptionsState = () => {
         const optionsString = Cookies.get('searchOptions')
         if (optionsString) {
@@ -48,7 +51,7 @@ const SearchBox = () => {
 
     const [showOptionModal, setShowOptionModal] = React.useState(false)
 
-    const navigate = useNavigate()
+    const { executeSearch } = useSearch('SearchOptions')
 
     // Timeout for the placeholder animation
     //const searchPlaceholder = useSearchPlaceholder(3000, searchOptions.searchBy)
@@ -77,30 +80,7 @@ const SearchBox = () => {
     const handleSearch = async (e: { preventDefault: () => void; }) => {
         setIsSearching(true)
         if (e) e.preventDefault()
-        const queryParams = new URLSearchParams()
-
-        if (inputValue.length > 0) {
-            const prettyInputValues = inputValue.map((value) => value.charAt(0).toLowerCase() + value.slice(1))
-            queryParams.append('query', prettyInputValues.join('-'))
-
-            Object.entries(searchOptions).forEach(([key, value]) => {
-                if (value !== null && value !== undefined) {
-                    if (key === 'age' && value.enabled) {
-                        const ageOptions = value as AgeOptions
-                        if(ageOptions.min.value) {
-                            queryParams.append('min_age', ageOptions.min.value)
-                        }
-                        if(ageOptions.max.value) {
-                            queryParams.append('max_age', ageOptions.max.value)
-                        }
-                    } else if (key !== 'age' && value.enabled) {
-                        const searchParams = value as SearchOptionsType
-                        queryParams.append(key, searchParams.param || searchParams.value)
-                    }
-                }
-            })
-            navigate(`/search?${queryParams.toString()}`)
-        }
+        executeSearch(inputValue, searchOptions)
             // if (props.searchError) {
             //     setErrorAnimation((prevCount) => prevCount + 1)
             // }
@@ -154,6 +134,8 @@ const SearchBox = () => {
                         <CreatableSelect
                             className={'creatable-select'}
                             isMulti
+                            // display the passed input value if it exists
+                            defaultValue={passedInput ? passedInput.map((item) => ({value: item, label: item})) : undefined}
                             menuIsOpen={suggestions.length > 0 || (searchOptions.searchBy.index === 2 && inputRef.current.some((item) => item.length > 0))}
                             onInputChange={(e) => handleInputChange(e)}
                             onChange={(e) => setInputValue(e.map((item) => item.value))}
@@ -161,6 +143,10 @@ const SearchBox = () => {
                             components={{
                                 DropdownIndicator: () => null,
                                 IndicatorSeparator: () => null,
+                            }}
+                            styles={{
+                                // Needs fixing !!!
+                                control: (provided) => ({...provided, backgroundColor: 'transparent'}),
                             }}
                         />
 

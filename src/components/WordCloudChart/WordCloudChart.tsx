@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import ReactWordcloud, {OptionsProp} from 'react-wordcloud';
-import DemographicModal from "../DemographicModal/DemographicModal";
+// import DemographicModal from "../DemographicModal/DemographicModal";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import {ThemeContext} from "../../contexts/ThemeContext";
-import {isMobile} from "react-device-detect";
-import {Results, SearchOptions} from "../../types";
-import {searchTypes} from "../../constants";
+// import {isMobile} from "react-device-detect";
+// import { Results } from "../../types";
+// import {searchTypes} from "../../constants";
+import { useTermData } from "../../hooks/useTermData";
 
 const options: OptionsProp  = {
     enableTooltip: true,
@@ -23,19 +24,28 @@ const options: OptionsProp  = {
     transitionDuration: 1000,
 }
 
-const WordCloudChart = (props: {searchOptions: SearchOptions; words: Results}) => {
+const WordCloudChart = () => {
     const {theme} = React.useContext(ThemeContext);
-    const [showDemographicModal, setShowDemographicModal] = useState<boolean>(false);
-    const [selectedWord, setSelectedWord] = useState<string | null>(null);
+    // const [showDemographicModal, setShowDemographicModal] = useState<boolean>(false);
+    // const [selectedWord, setSelectedWord] = useState<string | null>(null);
 
-    const data = Object.entries(props.words)
-        .map(([text, value]) => ({text, value}))
-        .slice(0, 50)
+    const { data } = useTermData();
+
+    if (!data) {
+        return null;
+    }
+
+    const words = data.map((item) => {
+        return {
+            text: item.x,
+            value: item.y,
+        }
+    })
 
     const callbacks = {
         // Fix this later type
         getWordColor: (word: { text: string; value: number; }) => {
-            const maxFrequency = Math.max(...data.map(w => w.value))
+            const maxFrequency = Math.max(...words.map(w => w.value))
             const frequencyRatio = word.value / maxFrequency
 
             if (theme === 'dark') {
@@ -58,30 +68,30 @@ const WordCloudChart = (props: {searchOptions: SearchOptions; words: Results}) =
             }
         },
         // Fix this later type
-        onWordClick: (word: { text: string; }) => {
-            if(props.searchOptions.searchBy === searchTypes[2]) {
-                setSelectedWord(word.text);
-                setShowDemographicModal(true);
-            }
-        }
+        // onWordClick: (word: { text: string; }) => {
+        //     if(props.searchOptions.searchBy === searchTypes[2]) {
+        //         setSelectedWord(word.text);
+        //         setShowDemographicModal(true);
+        //     }
+        // }
     };
 
-    useEffect(() => {
-        if(!showDemographicModal) {
-            setSelectedWord(null);
-        }
-    }, [showDemographicModal])
+    // useEffect(() => {
+    //     if(!showDemographicModal) {
+    //         setSelectedWord(null);
+    //     }
+    // }, [showDemographicModal])
 
     return (
         <React.Fragment>
-            <ReactWordcloud words={data} options={options} callbacks={callbacks} />
-            {props.searchOptions.searchBy === searchTypes[2] &&
-                <DemographicModal
-                show={showDemographicModal}
-                handleClose={() => setShowDemographicModal(false)}
-                selectedWord={selectedWord}
-                isMobile={isMobile}
-            />}
+            <ReactWordcloud words={words} options={options} callbacks={callbacks} />
+            {/*{props.searchOptions.searchBy === searchTypes[2] &&*/}
+            {/*    <DemographicModal*/}
+            {/*    show={showDemographicModal}*/}
+            {/*    handleClose={() => setShowDemographicModal(false)}*/}
+            {/*    selectedWord={selectedWord}*/}
+            {/*    isMobile={isMobile}*/}
+            {/*/>}*/}
         </React.Fragment>
     )
 }

@@ -46,7 +46,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
 
     const [isSearching, setIsSearching] = React.useState(false)
 
-    const [inputValue, setInputValue] = React.useState<string[]>([])
+    const [inputValue, setInputValue] = React.useState<string[]>(passedInput ? passedInput : [])
     const inputRef = React.useRef<string[]>([])
 
     const [showOptionModal, setShowOptionModal] = React.useState(false)
@@ -112,7 +112,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
             setSuggestions([])
         }
     }
-
 
     return (
         <div className={'d-flex justify-content-center'}>

@@ -5,6 +5,8 @@ import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 
 const DrugPropertyBox = (props: {drug: DrugProperties, isSingle: boolean}) => {
+
+    console.log(props.drug)
     return (
         <>
             <Col style={{ textAlign: 'center' }}>

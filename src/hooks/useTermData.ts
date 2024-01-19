@@ -7,31 +7,69 @@ export const useTermData = () => {
     const { params } = useUrlParams();
     const url = generatePath(params);
 
-    const [data, setData] = useState<ChartDataPoint[] | null>(null); // Set initial data to null
+    const [data, setData] = useState<ChartDataPoint[] | null>(null);
     const [error, setError] = useState<unknown | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        let isMounted = true; // Flag to check if component is still mounted
+
         const fetchData = async () => {
+            localStorage.setItem('isFetching', 'true'); // Set fetching flag
             try {
                 const response = await fetch(url);
-                // Check if the response is ok (status in the range 200-299)
                 if (!response.ok) {
                     setError(`HTTP error: ${response.status}`);
                 }
                 const result: FDARawData = await response.json();
                 const processedData = processTermData(result.results as ResultItem[]);
-                setData(processedData); // Update the state with the parsed result
-                setLoading(false); // Set loading to false after data is fetched
-                setError(null);
+                if (isMounted) {
+                    setData(processedData);
+                    setError(null);
+                }
+                localStorage.setItem('termData', JSON.stringify({processedData, params, timestamp: Date.now()}));
             } catch (e: unknown) {
-                setError(e); // Set error if an exception occurs
-                setLoading(false); // Ensure loading is set to false on error
+                if (isMounted) {
+                    setError(e);
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+                localStorage.removeItem('isFetching'); // Clear fetching flag
             }
         };
 
-        fetchData();
-    }, [url]); // Dependency array with url to re-run effect when url changes
+        const waitForOtherFetch = async () => {
+            while (localStorage.getItem('isFetching')) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            if (isMounted) {
+                fetchData();
+            }
+        };
+
+        const rawCachedData = localStorage.getItem('termData');
+        if (rawCachedData) {
+            const {processedData: cachedData, params: cachedParams, timestamp} = JSON.parse(rawCachedData);
+            if (Date.now() - timestamp < 1000 * 60 * 60 * 24 && JSON.stringify(cachedParams) === JSON.stringify(params)) {
+                setData(cachedData);
+                setLoading(false);
+            } else if (localStorage.getItem('isFetching')) {
+                waitForOtherFetch();
+            } else {
+                fetchData();
+            }
+        } else if (localStorage.getItem('isFetching')) {
+            waitForOtherFetch();
+        } else {
+            fetchData();
+        }
+
+        return () => {
+            isMounted = false; // Clean up to avoid setting state on unmounted component
+        };
+    }, [params, url]);
 
     return {data, error, loading}
 }

@@ -21,8 +21,10 @@ const TermChart = () => {
         }]
     }
 
+    const colors = ["#59768A", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"]
+
     const options: ApexOptions = {
-        colors: ["#59768A", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"],
+        colors: colors,
         theme: {
             mode: theme as ThemeType,
         },
@@ -37,6 +39,14 @@ const TermChart = () => {
                 show: false,
             },
             background: theme === 'dark' ? '#212529' : '',
+            dropShadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 2,
+                color: theme === 'dark' ? '#000' : '#000',
+                opacity: 0.2,
+            }
         },
         plotOptions: {
             bar: {
@@ -79,7 +89,7 @@ const TermChart = () => {
                     return `${value.toLocaleString()} from ${totalSideEffectCount.toLocaleString()}`
                 }
             }
-        }
+        },
     }
 
     return (

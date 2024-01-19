@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popover, OverlayTrigger, Badge } from 'react-bootstrap';
-import { IconProps, Prescription, MagnifyingGlass, PawPrint, Trash, Carrot, Flask, X } from "@phosphor-icons/react";
+import { IconProps, Prescription, MagnifyingGlass, PawPrint, Trash, Carrot, Flask, X, SmileyNervous } from "@phosphor-icons/react";
 
 interface DrugGroupConfig {
     [key: string]: {
@@ -54,6 +54,12 @@ const groupConfig: DrugGroupConfig = {
         description: 'Shown to bind specific proteins in experimental settings.',
         IconComponent: Flask
     },
+    side_effect: {
+        label: 'Side Effect',
+        variant: 'primary',
+        description: 'Has been reported as a side effect.',
+        IconComponent: SmileyNervous
+    }
 };
 
 interface DrugGroupsProps {
@@ -64,6 +70,7 @@ const DrugGroups: React.FC<DrugGroupsProps> = ({ drugGroups }) => {
     const processDrugGroups = (groups: string[]) => {
         return groups.map((group, index) => {
             const groupData = groupConfig[group];
+
             if (!groupData) {
                 throw new Error(`No data found for group ${group}`);
             }

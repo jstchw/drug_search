@@ -3,7 +3,6 @@ import { SearchOptions, AgeOptions, SearchOptionsType, URLParams } from "../type
 
 export const useSearch = (paramType: 'SearchOptions' | 'URLParams') => {
     const navigate = useNavigate();
-
     const executeSearch = (inputValue: string[], params: SearchOptions | URLParams) => {
         if (inputValue.length > 0) {
             const prettyInputValues = inputValue.map((value) => value.charAt(0).toLowerCase() + value.slice(1));

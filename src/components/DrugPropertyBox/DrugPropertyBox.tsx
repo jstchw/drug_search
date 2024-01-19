@@ -3,14 +3,22 @@ import DrugGroups from "../DrugGroups/DrugGroups";
 import {Col, Row} from "react-bootstrap";
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
+import {useUrlParams} from "../../hooks/useUrlParams";
 
 const DrugPropertyBox = (props: {drug: DrugProperties, isSingle: boolean}) => {
+    const { params } = useUrlParams()
 
-    console.log(props.drug)
+    if (params.searchBy === 'side_effect') {
+        props.drug.groups = ['side_effect']
+    }
+
     return (
         <>
             <Col style={{ textAlign: 'center' }}>
-                <h1>{props.drug.name}</h1>
+                {params.searchBy === 'generic_name' ?
+                    <h1>{props.drug.name}</h1> :
+                    <h3>{props.drug.name}</h3>
+                }
                 <Row className="justify-content-center">
                     <Col xs={12} md={8}>
                         <DrugGroups drugGroups={props.drug.groups || []}/>

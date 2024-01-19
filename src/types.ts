@@ -31,6 +31,7 @@ export type DrugProperties = {
     indication?: string;
     product?: string;
     molecule_url?: string;
+    [key: string]: string | string[] | undefined;
 }
 
 export type URLParams = {

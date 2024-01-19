@@ -1,6 +1,7 @@
 import React from 'react';
 import { Popover, OverlayTrigger, Badge } from 'react-bootstrap';
 import { IconProps, Prescription, MagnifyingGlass, PawPrint, Trash, Carrot, Flask, X, SmileyNervous } from "@phosphor-icons/react";
+import { useUrlParams } from '../../hooks/useUrlParams';
 
 interface DrugGroupConfig {
     [key: string]: {
@@ -67,6 +68,7 @@ interface DrugGroupsProps {
 }
 
 const DrugGroups: React.FC<DrugGroupsProps> = ({ drugGroups }) => {
+    const { params } = useUrlParams()
     const processDrugGroups = (groups: string[]) => {
         return groups.map((group, index) => {
             const groupData = groupConfig[group];
@@ -102,7 +104,12 @@ const DrugGroups: React.FC<DrugGroupsProps> = ({ drugGroups }) => {
     };
 
     return (
-        <h3>{processDrugGroups(drugGroups)}</h3>
+        <>
+            {params.searchBy === 'generic_name' ?
+                    <h3>{processDrugGroups(drugGroups)}</h3> :
+                    <h5>{processDrugGroups(drugGroups)}</h5>
+            }
+        </>
     );
 };
 

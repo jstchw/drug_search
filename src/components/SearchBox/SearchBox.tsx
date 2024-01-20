@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { Button, Form, InputGroup, Spinner } from 'react-bootstrap';
+import { Button, Form, InputGroup } from 'react-bootstrap';
 import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons'
 import './SearchBox.css'
 import OptionModal from "../OptionModal/OptionModal";
@@ -10,7 +10,7 @@ import Fuse, { FuseResult, Expression } from "fuse.js";
 import CreatableSelect from 'react-select/creatable';
 import Cookies from "js-cookie";
 import { useSearch } from "../../hooks/useSearch";
-//import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
+import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 
 type SearchBoxProps = {
     passedInput?: string[]
@@ -44,8 +44,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
         }
     }, []);
 
-    const [isSearching, setIsSearching] = React.useState(false)
-
     const [inputValue, setInputValue] = React.useState<string[]>(passedInput ? passedInput : [])
     const inputRef = React.useRef<string[]>([])
 
@@ -54,37 +52,17 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
     const { executeSearch } = useSearch('SearchOptions')
 
     // Timeout for the placeholder animation
-    //const searchPlaceholder = useSearchPlaceholder(3000, searchOptions.searchBy)
-
-    // When the searched element doesn't exist in FDA's database
-    // const errorBox = props.searchError ? {borderColor: 'red'} : {}
-    // const [errorAnimation, setErrorAnimation] = React.useState(0)
-    //const inputRef = React.useRef(null)
+    const searchPlaceholder = useSearchPlaceholder(3000, searchOptions.searchBy)
 
     const [fuse, setFuse] = React.useState<Fuse<string> | null>(null)
     // Elements for the suggestion mechanism
     const [suggestions, setSuggestions] = React.useState<FuseResult<string>[]>([])
 
-    // React.useEffect(() => {
-    //    if (props.searchError) {
-    //        inputRef.current.classList.add('shake')
-    //        const timeout = setTimeout(() => {
-    //            inputRef.current.classList.remove('shake')
-    //        }, 300)
-    //           return () => clearTimeout(timeout)
-    //    }
-    // }, [errorAnimation, props.searchError])
-
     useSuggestions(searchOptions.searchBy, setFuse)
 
     const handleSearch = async (e: { preventDefault: () => void; }) => {
-        setIsSearching(true)
         if (e) e.preventDefault()
         executeSearch(inputValue, searchOptions)
-            // if (props.searchError) {
-            //     setErrorAnimation((prevCount) => prevCount + 1)
-            // }
-        setIsSearching(false)
     }
 
 
@@ -143,29 +121,14 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
                                 DropdownIndicator: () => null,
                                 IndicatorSeparator: () => null,
                             }}
+                            placeholder={searchPlaceholder}
                             styles={{
                                 // Needs fixing !!!
                                 control: (provided) => ({...provided, backgroundColor: 'transparent'}),
                             }}
                         />
 
-                        <Button variant="outline-primary" id="button-submit" type="submit">
-                        {isSearching ? (
-                            <>
-                                <Spinner
-                                    as="span"
-                                    animation="border"
-                                    size="sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <SearchIcon />
-                            </>
-                        )}
-                    </Button>
+                        <Button variant="outline-primary" id="button-submit" type="submit"><SearchIcon /></Button>
                     </InputGroup>
                 </Form.Group>
             </Form>

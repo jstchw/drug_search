@@ -177,8 +177,8 @@ const TermCarousel = () => {
                 <div style={{cursor: 'default'}}>
                     {params.searchBy !== 'side_effects' ?
                         <span className={'d-inline-flex align-items-center'}>
-                            <SmileyNervous weight={'light'} />
-                            <SealWarning weight={'light'}/>
+                            <SmileyNervous className={'text-secondary'} weight={'light'} />
+                            <SealWarning className={'text-secondary'} weight={'light'}/>
                             <div className={'vr mx-2'} />
                             <span>Side Effects</span>
                         </span>

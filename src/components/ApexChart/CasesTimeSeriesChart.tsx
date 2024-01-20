@@ -83,7 +83,7 @@ const CasesTimeSeriesChart = () => {
     return (
         <>
             <h3 className={'d-flex justify-content-center align-items-center'}>
-                <Clock weight={'light'} />
+                <Clock weight={'light'} className={'text-secondary'}/>
                 <div className={'vr mx-2'} />
                 Reports over time
             </h3>

@@ -8,10 +8,11 @@ export const useTermData = () => {
     const url = generatePath(params);
 
     const [data, setData] = useState<ChartDataPoint[] | null>(null);
-    const [error, setError] = useState<unknown | null>(null);
+    const [error, setError] = useState<unknown | boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        setError(false);
         let isMounted = true; // Flag to check if component is still mounted
 
         const fetchData = async () => {

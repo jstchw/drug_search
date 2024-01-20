@@ -45,6 +45,7 @@ export const useSearch = (paramType: 'SearchOptions' | 'URLParams') => {
                 });
             }
 
+            console.log('navigate to: ', `/search?${queryParams.toString()}`);
             navigate(`/search?${queryParams.toString()}`);
         }
     };

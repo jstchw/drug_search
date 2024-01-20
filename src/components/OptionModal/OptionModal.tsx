@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
-import {Button, Carousel, FigureCaption, Form, InputGroup, Modal, Nav, ToggleButton} from 'react-bootstrap';
+import {Button, FigureCaption, Form, InputGroup, Modal, Nav, ToggleButton} from 'react-bootstrap';
 import {ThemeContext} from "../../contexts/ThemeContext";
 import { Moon, Sun, Funnel, ClockCounterClockwise } from "@phosphor-icons/react";
 import Cookies from 'js-cookie';
 import {searchCountry, searchSex, searchTypes} from "../../constants";
 import {SearchOptions, SearchOptionsType} from "../../types";
 import SearchHistory from "../SearchHistory/SearchHistory";
-
+import { Carousel } from 'react-responsive-carousel';
 
 const OptionModal = (props: {
     showOptionModal: boolean,
@@ -23,10 +23,6 @@ const OptionModal = (props: {
     const { theme, toggleTheme } = React.useContext(ThemeContext)
 
     const [carouselIndex, setCarouselIndex] = React.useState(0)
-
-    const handleCarouselSelect = (selectedIndex: number) => {
-        setCarouselIndex(selectedIndex)
-    }
 
     // const sanitizeAge = (age) => {
     //     const lastChar = age.slice(-1); // Get the last character
@@ -101,182 +97,179 @@ const OptionModal = (props: {
                 </Modal.Header>
                 <Modal.Body>
                     <Carousel
-                        activeIndex={carouselIndex}
-                        onSelect={handleCarouselSelect}
-                        interval={null}
-                        controls={false}
-                        indicators={false}
-                    >
-                        <Carousel.Item>
-                            <Form>
-                                {/* Search type change */}
-                                <Form.Group className="mb-3 d-flex align-items-center">
-                                    <div className={'d-flex align-items-center'}>
-                                        <ToggleButton
-                                            id={'search_type_button'}
-                                            type="checkbox"
-                                            variant="outline-primary"
-                                            checked={true}
-                                            value="1"
-                                            disabled={true}
-                                        >
-                                            Search by
-                                        </ToggleButton>
-                                    </div>
-                                    <InputGroup className={'flex-grow-1 mx-3'} style={{width: 'auto'}}>
-                                        <Form.Select
-                                            onChange={(e) => handleSearchTypeChange(e.currentTarget.value)}
-                                            value={props.searchOptions.searchBy.value}
-                                            style={{width: 'auto'}}
-                                        >
-                                            {searchTypes.map((searchType, index) => (
-                                                <option
-                                                    key={index}
-                                                    value={searchType.value}
-                                                >
-                                                    {searchType.label}
-                                                </option>
-                                            ))}
-                                        </Form.Select>
-                                    </InputGroup>
-                                </Form.Group>
-
-                                {/* Sex option change */}
-                                <Form.Group className="mb-3 d-flex align-items-center">
-                                    <div className={'d-flex align-items-center'}>
-                                        <ToggleButton
-                                            id={'sex_change_button'}
-                                            type="checkbox"
-                                            variant="outline-primary"
-                                            checked={props.searchOptions.sex.enabled}
-                                            value="1"
-                                            onClick={() => props.setSearchOptions({
-                                                ...props.searchOptions,
-                                                sex: {
-                                                    ...(props.searchOptions.sex as SearchOptionsType),
-                                                    enabled: !props.searchOptions.sex.enabled
-                                                }
-                                            })}
-                                        >
-                                            Sex
-                                        </ToggleButton>
-                                    </div>
-                                    <InputGroup className={'mx-3 flex-grow-1'}>
-                                        <Form.Select
-                                            onChange={e => {handleSexChange(e.currentTarget.value)}}
-                                            value={props.searchOptions.sex.value}
-                                            disabled={!props.searchOptions.sex.enabled}
-                                        >
-                                            {searchSex.map((sex, index) => (
-                                                <option
-                                                    key={index}
-                                                    value={sex.value}
-                                                >
-                                                    {sex.label}
-                                                </option>
-                                            ))}
-                                        </Form.Select>
-                                    </InputGroup>
-                                </Form.Group>
-
-                                {/* Age option change */}
-                                <Form.Group className="mb-3 d-flex align-items-center">
-                                    <div className={'d-flex align-items-center'}>
-                                        <ToggleButton
-                                            id={'age_change_button'}
-                                            type="checkbox"
-                                            variant="outline-primary"
-                                            checked={props.searchOptions.age.enabled}
-                                            value="1"
-                                            onClick={() => {
-                                                const newSearchOptions = {...props.searchOptions}
-                                                newSearchOptions.age = {
-                                                    ...props.searchOptions.age,
-                                                    enabled: !props.searchOptions.age.enabled
-                                                }
-                                                props.setSearchOptions(newSearchOptions)
-                                            }}
-                                        >
-                                            Age
-                                        </ToggleButton>
-                                    </div>
-
-                                    {/* Min age input */}
-                                    <InputGroup className={'mx-3 flex-grow-1'}>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Min"
-                                            value={props.searchOptions.age.min.value ?? 0}
-                                            id={'0'}
-                                            onChange={(e) => {
-                                                handleAgeChange(e as React.ChangeEvent<HTMLInputElement>)
-                                            }}
-                                            disabled={!props.searchOptions.age.enabled}
-                                            min={0}
-                                            max={120}
-                                            onCopy={(e) => (e.preventDefault())}
-                                            onPaste={(e) => (e.preventDefault())}
-                                        />
-
-                                        <InputGroup.Text>-</InputGroup.Text>
-
-                                        {/* Max age input */}
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Max"
-                                            value={props.searchOptions.age.max.value ?? 0}
-                                            id={'1'}
-                                            onChange={(e) => {
-                                                handleAgeChange(e as React.ChangeEvent<HTMLInputElement>)
-                                            }}
-                                            disabled={!props.searchOptions.age.enabled}
-                                            min={0}
-                                            max={120}
-                                            onCopy={(e) => (e.preventDefault())}
-                                            onPaste={(e) => (e.preventDefault())}
-                                        />
-                                    </InputGroup>
-                                </Form.Group>
-
-                                {/* Country option change */}
-                                <Form.Group>
-                                    <div className={'d-flex align-items-center'}>
-                                        <ToggleButton
-                                            id={'country_change_button'}
-                                            type="checkbox"
-                                            variant="outline-primary"
-                                            value="1"
-                                            onClick={() => props.setSearchOptions({
-                                                ...props.searchOptions,
-                                                country: {
-                                                    ...(props.searchOptions.country as SearchOptionsType),
-                                                    enabled: !props.searchOptions.country.enabled
-                                                }
-                                            })}
-                                            checked={props.searchOptions.country.enabled}
-                                        >
-                                            Country
-                                        </ToggleButton>
-                                        <InputGroup className={'mx-3 flex-grow-1'}>
-                                            <Form.Select
-                                                disabled={!props.searchOptions.country.enabled}
-                                                onChange={(e) => handleCountryChange(e.currentTarget.value)}
-                                                value={props.searchOptions.country.index}
+                        showThumbs={false}
+                        showIndicators={false}
+                        showArrows={false}
+                        showStatus={false}
+                        selectedItem={carouselIndex}
+                        dynamicHeight={true}>
+                        <Form>
+                            {/* Search type change */}
+                            <Form.Group className="mb-3 d-flex align-items-center">
+                                <div className={'d-flex align-items-center'}>
+                                    <ToggleButton
+                                        id={'search_type_button'}
+                                        type="checkbox"
+                                        variant="outline-primary"
+                                        checked={true}
+                                        value="1"
+                                        disabled={true}
+                                    >
+                                        Search by
+                                    </ToggleButton>
+                                </div>
+                                <InputGroup className={'flex-grow-1 mx-3'} style={{width: 'auto'}}>
+                                    <Form.Select
+                                        onChange={(e) => handleSearchTypeChange(e.currentTarget.value)}
+                                        value={props.searchOptions.searchBy.value}
+                                        style={{width: 'auto'}}
+                                    >
+                                        {searchTypes.map((searchType, index) => (
+                                            <option
+                                                key={index}
+                                                value={searchType.value}
                                             >
-                                                {searchCountry.map((country, index) => (
-                                                    <option key={index} value={index}>
-                                                        {country.label}
-                                                    </option>
-                                                ))}
-                                            </Form.Select>
-                                        </InputGroup>
-                                    </div>
-                                </Form.Group>
-                            </Form>
-                        </Carousel.Item>
-                        <Carousel.Item>
-                            <SearchHistory setShowOptionModal={props.setShowOptionModal}/>
-                        </Carousel.Item>
+                                                {searchType.label}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </InputGroup>
+                            </Form.Group>
+
+                            {/* Sex option change */}
+                            <Form.Group className="mb-3 d-flex align-items-center">
+                                <div className={'d-flex align-items-center'}>
+                                    <ToggleButton
+                                        id={'sex_change_button'}
+                                        type="checkbox"
+                                        variant="outline-primary"
+                                        checked={props.searchOptions.sex.enabled}
+                                        value="1"
+                                        onClick={() => props.setSearchOptions({
+                                            ...props.searchOptions,
+                                            sex: {
+                                                ...(props.searchOptions.sex as SearchOptionsType),
+                                                enabled: !props.searchOptions.sex.enabled
+                                            }
+                                        })}
+                                    >
+                                        Sex
+                                    </ToggleButton>
+                                </div>
+                                <InputGroup className={'mx-3 flex-grow-1'}>
+                                    <Form.Select
+                                        onChange={e => {handleSexChange(e.currentTarget.value)}}
+                                        value={props.searchOptions.sex.value}
+                                        disabled={!props.searchOptions.sex.enabled}
+                                    >
+                                        {searchSex.map((sex, index) => (
+                                            <option
+                                                key={index}
+                                                value={sex.value}
+                                            >
+                                                {sex.label}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </InputGroup>
+                            </Form.Group>
+
+                            {/* Age option change */}
+                            <Form.Group className="mb-3 d-flex align-items-center">
+                                <div className={'d-flex align-items-center'}>
+                                    <ToggleButton
+                                        id={'age_change_button'}
+                                        type="checkbox"
+                                        variant="outline-primary"
+                                        checked={props.searchOptions.age.enabled}
+                                        value="1"
+                                        onClick={() => {
+                                            const newSearchOptions = {...props.searchOptions}
+                                            newSearchOptions.age = {
+                                                ...props.searchOptions.age,
+                                                enabled: !props.searchOptions.age.enabled
+                                            }
+                                            props.setSearchOptions(newSearchOptions)
+                                        }}
+                                    >
+                                        Age
+                                    </ToggleButton>
+                                </div>
+
+                                {/* Min age input */}
+                                <InputGroup className={'mx-3 flex-grow-1'}>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Min"
+                                        value={props.searchOptions.age.min.value ?? 0}
+                                        id={'0'}
+                                        onChange={(e) => {
+                                            handleAgeChange(e as React.ChangeEvent<HTMLInputElement>)
+                                        }}
+                                        disabled={!props.searchOptions.age.enabled}
+                                        min={0}
+                                        max={120}
+                                        onCopy={(e) => (e.preventDefault())}
+                                        onPaste={(e) => (e.preventDefault())}
+                                    />
+
+                                    <InputGroup.Text>-</InputGroup.Text>
+
+                                    {/* Max age input */}
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Max"
+                                        value={props.searchOptions.age.max.value ?? 0}
+                                        id={'1'}
+                                        onChange={(e) => {
+                                            handleAgeChange(e as React.ChangeEvent<HTMLInputElement>)
+                                        }}
+                                        disabled={!props.searchOptions.age.enabled}
+                                        min={0}
+                                        max={120}
+                                        onCopy={(e) => (e.preventDefault())}
+                                        onPaste={(e) => (e.preventDefault())}
+                                    />
+                                </InputGroup>
+                            </Form.Group>
+
+                            {/* Country option change */}
+                            <Form.Group>
+                                <div className={'d-flex align-items-center'}>
+                                    <ToggleButton
+                                        id={'country_change_button'}
+                                        type="checkbox"
+                                        variant="outline-primary"
+                                        value="1"
+                                        onClick={() => props.setSearchOptions({
+                                            ...props.searchOptions,
+                                            country: {
+                                                ...(props.searchOptions.country as SearchOptionsType),
+                                                enabled: !props.searchOptions.country.enabled
+                                            }
+                                        })}
+                                        checked={props.searchOptions.country.enabled}
+                                    >
+                                        Country
+                                    </ToggleButton>
+                                    <InputGroup className={'mx-3 flex-grow-1'}>
+                                        <Form.Select
+                                            disabled={!props.searchOptions.country.enabled}
+                                            onChange={(e) => handleCountryChange(e.currentTarget.value)}
+                                            value={props.searchOptions.country.index}
+                                        >
+                                            {searchCountry.map((country, index) => (
+                                                <option key={index} value={index}>
+                                                    {country.label}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </InputGroup>
+                                </div>
+                            </Form.Group>
+                        </Form>
+
+                        <SearchHistory setShowOptionModal={props.setShowOptionModal}/>
                     </Carousel>
 
                     <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3'}>

@@ -10,29 +10,38 @@ import { SearchHistoryContext } from "../../contexts/SearchHistoryContext";
 import ChartSection from "../../components/ChartSection/ChartSection";
 import {DrugProperties} from "../../types";
 import {Badge} from "react-bootstrap";
+import { PropagateLoader } from "react-spinners";
 
 const Result = () => {
     const { params, error } = useUrlParams()
     const capitalizedTerms = params.terms.map(term => term.charAt(0).toUpperCase() + term.slice(1))
     const navigate = useNavigate()
 
+    const [loading, setLoading] = React.useState(true)
+    const primaryColor = window.getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()
+
     // Retrieve drug info from the API (DrugSearch server)
     const drugInfo = useDrugInfo(params)
 
-    const groupedByBrandName = React.useMemo(() => {
-        if (params.searchBy === 'brand_name') {
-            return drugInfo.reduce<Record<string, DrugProperties[]>>((acc, drug) => {
-                if (drug.product) {
-                    (acc[drug.product] = acc[drug.product] || []).push(drug)
-                }
-                return acc
-            }, {})
-        } else {
-            return drugInfo
-        }
-    }, [drugInfo, params.searchBy])
+    React.useEffect(() => {
+        setLoading(true)
+    }, [params])
 
-    console.log(groupedByBrandName)
+    React.useEffect(() => {
+        if (drugInfo.length > 0) {
+            setLoading(false)
+        }
+    }, [drugInfo])
+
+    // Grouping drugs by brand name only if the search type is brand name (specified in the conditional statement during rendering)
+    const groupedByBrandName = React.useMemo(() => {
+        return drugInfo.reduce<Record<string, DrugProperties[]>>((acc, drug) => {
+            if (drug.product) {
+                (acc[drug.product] = acc[drug.product] || []).push(drug)
+            }
+            return acc
+        }, {})
+    }, [drugInfo])
 
     // Effect to redirect to the error page if there is an error
     React.useEffect(() => {
@@ -69,37 +78,42 @@ const Result = () => {
                 </Row>
             </div>
 
-            <Row className={'justify-content-center mx-auto'}>
-                {params.searchBy === 'brand_name' ? (
-                    Object.entries(groupedByBrandName).map(([brandName, drugs], index) => (
-                        <React.Fragment key={index}>
-                            <Col xs={12} className={'mb-1 d-flex justify-content-center'}>
-                                <h1>{brandName}</h1>
-                            </Col>
-                            <Row className={'d-flex justify-content-center mb-2'}>
-                                <Badge className={'fst-italic'} style={{width: 'fit-content'}}>Active substances</Badge>
-                            </Row>
-                            {(drugs as DrugProperties[]).map((drug, index) => (
-                                <Col xs={drugs.length === 1 ? 6 : 4} key={index} className="mb-4">
-                                    <DrugPropertyBox drug={drug} isSingle={drugs.length === 1}/>
+            {loading ?
+                    <PropagateLoader className={'d-flex justify-content-center mt-4'} color={primaryColor} loading={loading} size={15}/> :
+                <>
+                    <Row className={'justify-content-center mx-auto'}>
+                        {params.searchBy === 'brand_name' ? (
+                            Object.entries(groupedByBrandName).map(([brandName, drugs], index) => (
+                                <React.Fragment key={index}>
+                                    <Col xs={12} className={'mb-1 d-flex justify-content-center'}>
+                                        <h1>{brandName}</h1>
+                                    </Col>
+                                    <Row className={'d-flex justify-content-center mb-2'}>
+                                        <Badge className={'fst-italic'} style={{width: 'fit-content'}}>Active substances</Badge>
+                                    </Row>
+                                    {(drugs as DrugProperties[]).map((drug, index) => (
+                                        <Col xs={drugs.length === 1 ? 6 : 4} key={index} className="mb-4">
+                                            <DrugPropertyBox drug={drug} isSingle={drugs.length === 1}/>
+                                        </Col>
+                                    ))}
+                                </React.Fragment>
+                            ))
+                        ) : (
+                            drugInfo.map((drug, index) => (
+                                <Col xs={drugInfo.length === 1 ? 6 : 4} key={index} className="mb-4">
+                                    <DrugPropertyBox drug={drug} isSingle={drugInfo.length === 1}/>
                                 </Col>
-                            ))}
-                        </React.Fragment>
-                    ))
-                ) : (
-                    drugInfo.map((drug, index) => (
-                        <Col xs={drugInfo.length === 1 ? 6 : 4} key={index} className="mb-4">
-                            <DrugPropertyBox drug={drug} isSingle={drugInfo.length === 1}/>
-                        </Col>
-                    ))
-                )}
-            </Row>
+                            ))
+                        )}
+                    </Row>
 
-            <Row className={'justify-content-center mx-auto'}>
-                <Col xs={6} className="mb-4">
-                    <ChartSection />
-                </Col>
-            </Row>
+                    <Row className={'justify-content-center mx-auto'}>
+                        <Col xs={6} className="mb-4">
+                            <ChartSection />
+                        </Col>
+                    </Row>
+                </>
+            }
         </>
     );
 }

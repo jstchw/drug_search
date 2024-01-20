@@ -10,9 +10,10 @@ export const useTimeSeriesData = () => {
 
     const [data, setData] = useState<ChartDataPoint[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<unknown | null>(null);
+    const [error, setError] = useState<unknown | boolean>(false);
 
     useEffect(() => {
+        setError(false); // Reset error
         const fetchData = async () => {
             try {
                 const response = await fetch(url);

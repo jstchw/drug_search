@@ -6,13 +6,15 @@ import {ThemeType} from "../../types";
 import {useTimeSeriesData} from "../../hooks/useTimeSeriesData";
 import {ApexOptions} from "apexcharts";
 import ReactApexChart from "react-apexcharts";
+import { Clock } from "@phosphor-icons/react";
+
 
 const CasesTimeSeriesChart = () => {
     const { theme } = React.useContext(ThemeContext)
 
-    const { data } = useTimeSeriesData()
+    const { data, error } = useTimeSeriesData()
 
-    if (!data) {
+    if (!data || error) {
         return null
     }
 
@@ -79,12 +81,18 @@ const CasesTimeSeriesChart = () => {
     }
 
     return (
-        // Type specified redundantly because it doesn't work otherwise
-        <ReactApexChart
-            options={options}
-            series={chartData.series}
-            type={options.chart?.type}
-        />
+        <>
+            <h3 className={'d-flex justify-content-center align-items-center'}>
+                <Clock weight={'light'} />
+                <div className={'vr mx-2'} />
+                Reports over time
+            </h3>
+            <ReactApexChart
+                options={options}
+                series={chartData.series}
+                type={options.chart?.type}
+            />
+        </>
     )
 
 }

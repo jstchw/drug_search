@@ -7,7 +7,7 @@ import React from "react";
 import ReactWordcloud, {OptionsProp} from "react-wordcloud";
 import {Carousel} from "react-responsive-carousel";
 import {Nav, OverlayTrigger, Popover, Pagination} from "react-bootstrap";
-import {Cloud, List} from "@phosphor-icons/react";
+import {Cloud, List, Pill} from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
 import {useUrlParams} from "../../hooks/useUrlParams";
 import 'tippy.js/dist/tippy.css';
@@ -201,7 +201,7 @@ const TermCarousel = () => {
         return (
             <OverlayTrigger trigger={['hover', 'focus']} placement={'bottom'} overlay={popover}>
                 <div style={{cursor: 'default'}}>
-                    {params.searchBy !== 'side_effects' ?
+                    {params.searchBy !== 'side_effect' ?
                         <span className={'d-inline-flex align-items-center'}>
                             <SmileyNervous className={'text-secondary'} weight={'light'} />
                             <SealWarning className={'text-secondary'} weight={'light'}/>
@@ -209,7 +209,12 @@ const TermCarousel = () => {
                             <span>Side Effects</span>
                         </span>
                         :
-                        <span>Substances</span>
+                        <span className={'d-inline-flex align-items-center'}>
+                            <Pill className={'text-secondary'} weight={'light'}/>
+                            <SealWarning className={'text-secondary'} weight={'light'}/>
+                            <div className={'vr mx-2'}/>
+                            <span>Substances</span>
+                        </span>
                     }
                 </div>
             </OverlayTrigger>

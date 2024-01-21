@@ -61,5 +61,5 @@ export const useUrlParams = () => {
 
     const params = useMemo(() => parseUrlParams(location.search, setError), [location.search])
 
-    return { params, error }
+    return { params, paramError: error }
 }

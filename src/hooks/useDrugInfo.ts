@@ -22,6 +22,7 @@ const toSubscript = (str: string): string => {
 
 const useDrugInfo = (params: URLParams) => {
     const [drugInfo, setDrugInfo] = useState<DrugProperties[]>([])
+    const [error, setError] = useState<unknown | boolean>(false)
 
     const fetchDrugMolecule = async (drug: string) => {
         try {
@@ -38,6 +39,8 @@ const useDrugInfo = (params: URLParams) => {
     }
 
     useEffect(() => {
+        setError(false)
+
         if(params.searchBy === searchTypes[2]?.param) {
             // When searching by side effect, we don't need to fetch drug info
             // Displaying only the side effect name
@@ -67,14 +70,14 @@ const useDrugInfo = (params: URLParams) => {
                                 molecule_url: await fetchDrugMolecule(drug.name) || "",
                             })) as DrugProperties;
                         } else {
-                            console.warn('No drug information found for:', response.config.url);
+                            setError(true)
                             return []
                         }
                     });
                     const infoArray: DrugProperties[] = await Promise.all(infoPromises);
                     setDrugInfo(infoArray);
                 } catch (error) {
-                    console.warn('Error fetching drug information:', error);
+                    setError(true)
                     setDrugInfo([]);
                 }
             };
@@ -84,7 +87,7 @@ const useDrugInfo = (params: URLParams) => {
 
     }, [JSON.stringify(params.terms)]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    return drugInfo
+    return { drugInfo, drugInfoError: error }
 }
 
 export default useDrugInfo

@@ -19,7 +19,7 @@ const DrugPropertyBox = (props: {drug: DrugProperties, isSingle: boolean}) => {
                     <h1>{props.drug.name}</h1> :
                     <h3>{props.drug.name}</h3>
                 }
-                <Row className="justify-content-center">
+                <Row className="justify-content-center mb-4">
                     <Col xs={12} md={8}>
                         <DrugGroups drugGroups={props.drug.groups || []}/>
                     </Col>

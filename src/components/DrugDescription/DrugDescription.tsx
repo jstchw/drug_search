@@ -14,7 +14,7 @@ const DrugDescription = (props: {drugInfo: DrugProperties}) => {
 
             <Card.Body className="text-start">
                 {props.drugInfo && props.drugInfo.iupac &&
-                    <div className={'d-flex align-items-center'}>
+                    <div className={'d-flex align-items-center mb-3'}>
                         <span className={'fs-5'}>IUPAC</span>
                         <div className={'vr mx-2'}/>
                         <span className={'iupac'}>
@@ -22,7 +22,7 @@ const DrugDescription = (props: {drugInfo: DrugProperties}) => {
                     </div>
                 }
                 {props.drugInfo && props.drugInfo.classification &&
-                    <div className={'d-flex align-items-center'}>
+                    <div className={'d-flex align-items-center mb-3'}>
                         <span className={'fs-5'}>Class</span>
                         <div className={'vr mx-2'}/>
                         {props.drugInfo.classification}

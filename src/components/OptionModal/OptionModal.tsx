@@ -90,9 +90,10 @@ const OptionModal = (props: {
             <Modal centered show={props.showOptionModal} onHide={() => props.setShowOptionModal(false)}>
                 <Modal.Header closeButton>
                     {/*Theme change button*/}
-                    <Button variant={'outline-primary'} onClick={toggleTheme} className={'d-flex align-items-center me-2'}>
+                    <Button variant={'outline-primary'} onClick={toggleTheme} className={'d-flex align-items-center'}>
                         {theme === 'light' ? <Moon /> : <Sun />}
                     </Button>
+                    <div className={'vr mx-2'}/>
                     <Modal.Title>Options</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

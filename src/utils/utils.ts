@@ -33,6 +33,7 @@ const formatDate = (date: Date) => {
 
 export const generatePath = (params: URLParams, countType?: string) => {
     const fromDate = `20040101`
+    const limit = 50
     const toDate = formatDate(new Date())
     const whatToCount: SearchTypesMap = {
         generic_name: 'patient.reaction.reactionmeddrapt.exact',
@@ -65,7 +66,7 @@ export const generatePath = (params: URLParams, countType?: string) => {
     if (countType) {
         return `${baseFdaUrl}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`
     } else {
-        return `${baseFdaUrl}?search=${searchParts.join('+AND+')}&count=${whatToCount[params.searchBy]}&limit=10`
+        return `${baseFdaUrl}?search=${searchParts.join('+AND+')}&count=${whatToCount[params.searchBy]}&limit=${limit}`
     }
 }
 

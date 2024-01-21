@@ -6,10 +6,12 @@ import {ThemeContext} from "../../contexts/ThemeContext";
 import React from "react";
 import ReactWordcloud, {OptionsProp} from "react-wordcloud";
 import {Carousel} from "react-responsive-carousel";
-import {Nav, OverlayTrigger, Popover} from "react-bootstrap";
+import {Nav, OverlayTrigger, Popover, Pagination} from "react-bootstrap";
 import {Cloud, List} from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
 import {useUrlParams} from "../../hooks/useUrlParams";
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 
 const cloudOptions: OptionsProp  = {
     enableTooltip: true,
@@ -33,6 +35,13 @@ const TermCarousel = () => {
 
     const { data, error } = useTermData()
 
+    const [currentChartPage, setCurrentChartPage] = React.useState<number>(0)
+    const itemsPerPage = 10
+
+    const handleChartPageChange = (pageNumber: number) => {
+        setCurrentChartPage(pageNumber)
+    }
+
     if (!data || error) {
         return null
     }
@@ -47,6 +56,23 @@ const TermCarousel = () => {
         }]
     }
 
+    const dataForCurrentPage = data.slice(currentChartPage * itemsPerPage, (currentChartPage + 1) * itemsPerPage)
+    const labelsForCurrentPage = dataForCurrentPage.map((obj) => obj.x)
+
+    const totalPageCount = Math.ceil(data.length / itemsPerPage)
+    const paginationItems = []
+    for (let number = 0; number < totalPageCount; number++) {
+        paginationItems.push(
+            <Pagination.Item
+                key={number}
+                active={number === currentChartPage}
+                onClick={() => handleChartPageChange(number)}
+            >
+                {number + 1}
+            </Pagination.Item>
+        )
+    }
+
     const apexColors = ["#59768A", "#035363", "#32B2BF", "#D5E0BE", "#CE9062", "#E0AB86", "#C7CE8A", "#6EB585", "#325951", "#6F9F9D"]
 
     const apexChartOptions: ApexOptions = {
@@ -54,7 +80,7 @@ const TermCarousel = () => {
         theme: {
             mode: theme as ThemeType,
         },
-        labels: chartData.labels,
+        labels: labelsForCurrentPage,
         legend: {
             show: false,
         },
@@ -218,11 +244,14 @@ const TermCarousel = () => {
                 showStatus={false}
                 selectedItem={carouselIndex}
             >
-                <ReactApexChart
-                    options={apexChartOptions}
-                    series={chartData.series}
-                    type={apexChartOptions.chart?.type}
-                />
+                <div>
+                    <ReactApexChart
+                        options={apexChartOptions}
+                        series={[{ ...chartData.series[0], data: dataForCurrentPage }]}
+                        type={apexChartOptions.chart?.type}
+                    />
+                    <Pagination size={'lg'} className={'d-flex justify-content-center'}>{paginationItems}</Pagination>
+                </div>
                 <ReactWordcloud words={cloudData} options={cloudOptions} callbacks={cloudCallbacks} />
             </Carousel>
         </>

@@ -121,7 +121,9 @@ export const drugGroups = {
     }
 }
 
-export const backendUrl = 'http://localhost:16000/api/'
+export const backendUrl = process.env.NODE_ENV === 'development' ?
+    `${window.location.protocol}//${window.location.hostname}:16000/api/` :
+    'https://drugsearch.org/api/'
 
 export const baseFdaUrl = 'https://api.fda.gov/drug/event.json'
 

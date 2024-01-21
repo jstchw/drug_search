@@ -88,7 +88,11 @@ const SearchHistory = ({ setShowOptionModal }: { setShowOptionModal: React.Dispa
                         </ListGroup.Item>
                     );
                 })}
-                    <ListGroup.Item className={'d-flex justify-content-end'}><Button variant={'outline-primary'} className={'d-flex align-items-center'} onClick={clearSearchHistory}><Trash/></Button></ListGroup.Item>
+                    <ListGroup.Item className={'d-flex justify-content-end'}>
+                        <Button variant={'outline-primary'} className={'d-flex align-items-center'} onClick={clearSearchHistory}>
+                            <Trash/>
+                        </Button>
+                    </ListGroup.Item>
                 </ListGroup>
             </div>
         </>

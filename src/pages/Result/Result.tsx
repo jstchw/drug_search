@@ -9,7 +9,6 @@ import DrugPropertyBox from "../../components/DrugPropertyBox/DrugPropertyBox";
 import { SearchHistoryContext } from "../../contexts/SearchHistoryContext";
 import ChartSection from "../../components/ChartSection/ChartSection";
 import {DrugProperties} from "../../types";
-import {Badge} from "react-bootstrap";
 import { PropagateLoader } from "react-spinners";
 
 const Result = () => {
@@ -85,12 +84,12 @@ const Result = () => {
                         {params.searchBy === 'brand_name' ? (
                             Object.entries(groupedByBrandName).map(([brandName, drugs], index) => (
                                 <React.Fragment key={index}>
-                                    <Col xs={12} className={'mb-1 d-flex justify-content-center'}>
-                                        <h1>{brandName}</h1>
+                                    <Col xs={12} className={'mb-1 d-flex flex-column justify-content-center align-items-center'}>
+                                        <div>
+                                            <h1>{brandName}</h1>
+                                            <hr/>
+                                        </div>
                                     </Col>
-                                    <Row className={'d-flex justify-content-center mb-2'}>
-                                        <Badge className={'fst-italic'} style={{width: 'fit-content'}}>Active substances</Badge>
-                                    </Row>
                                     {(drugs as DrugProperties[]).map((drug, index) => (
                                         <Col xs={drugs.length === 1 ? 6 : 4} key={index} className="mb-4">
                                             <DrugPropertyBox drug={drug} isSingle={drugs.length === 1}/>

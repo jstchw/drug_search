@@ -7,18 +7,16 @@
 // // import { Results } from "../../types";
 // // import {searchTypes} from "../../constants";
 
-
 // const WordCloudChart = () => {
-    // const {theme} = React.useContext(ThemeContext);
-    // const [showDemographicModal, setShowDemographicModal] = useState<boolean>(false);
-    // const [selectedWord, setSelectedWord] = useState<string | null>(null);
+// const {theme} = React.useContext(ThemeContext);
+// const [showDemographicModal, setShowDemographicModal] = useState<boolean>(false);
+// const [selectedWord, setSelectedWord] = useState<string | null>(null);
 
-
-    // useEffect(() => {
-    //     if(!showDemographicModal) {
-    //         setSelectedWord(null);
-    //     }
-    // }, [showDemographicModal])
+// useEffect(() => {
+//     if(!showDemographicModal) {
+//         setSelectedWord(null);
+//     }
+// }, [showDemographicModal])
 
 //     return (
 //         <React.Fragment>

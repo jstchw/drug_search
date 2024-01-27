@@ -1,8 +1,8 @@
-$primary: #59768A;
+$primary: #59768a;
 $carousel-transition-duration: 0.3s;
 
 :root {
   --primary: #{$primary};
 }
 
-@import '~bootstrap/scss/bootstrap.scss';
+@import "~bootstrap/scss/bootstrap.scss";

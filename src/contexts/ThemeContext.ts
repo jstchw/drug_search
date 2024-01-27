@@ -1,8 +1,8 @@
-import React from "react"
+import React from "react";
 
 export const ThemeContext = React.createContext({
-    theme: "light",
-    toggleTheme: () => {
-        console.log("toggleTheme")
-    }
-})
+  theme: "light",
+  toggleTheme: () => {
+    console.log("toggleTheme");
+  },
+});

@@ -1,30 +1,37 @@
-import {useEffect, useState} from 'react';
-import {placeholders} from "../constants";
-import {SearchOptionsType} from "../types";
+import { useEffect, useState } from "react";
+import { placeholders } from "../constants";
+import { SearchOptionsType } from "../types";
 
-const useSearchPlaceholder = (duration: number, searchBy: SearchOptionsType) => {
-    const [currentPlaceholder, setCurrentPlaceholder] = useState<string | undefined>(undefined);
-    const [currentIndex, setCurrentIndex] = useState<number>(0); // used to be null
+const useSearchPlaceholder = (
+  duration: number,
+  searchBy: SearchOptionsType,
+) => {
+  const [currentPlaceholder, setCurrentPlaceholder] = useState<
+    string | undefined
+  >(undefined);
+  const [currentIndex, setCurrentIndex] = useState<number>(0); // used to be null
 
-    useEffect(() => {
-        const setRandomPlaceholder = () => {
-            let randomIndex: number;
-            do {
-                randomIndex = Math.floor(Math.random() * (placeholders[searchBy.value]?.length || 1));
-            } while (randomIndex === currentIndex);
+  useEffect(() => {
+    const setRandomPlaceholder = () => {
+      let randomIndex: number;
+      do {
+        randomIndex = Math.floor(
+          Math.random() * (placeholders[searchBy.value]?.length || 1),
+        );
+      } while (randomIndex === currentIndex);
 
-            setCurrentPlaceholder(placeholders[searchBy.value]?.[randomIndex]);
-            setCurrentIndex(randomIndex);
-        };
+      setCurrentPlaceholder(placeholders[searchBy.value]?.[randomIndex]);
+      setCurrentIndex(randomIndex);
+    };
 
-        setRandomPlaceholder(); // set a random placeholder immediately
+    setRandomPlaceholder(); // set a random placeholder immediately
 
-        const interval = setInterval(setRandomPlaceholder, duration); // then update it every `duration` milliseconds
+    const interval = setInterval(setRandomPlaceholder, duration); // then update it every `duration` milliseconds
 
-        return () => clearInterval(interval);
-    }, [duration, searchBy]) // eslint-disable-line react-hooks/exhaustive-deps
+    return () => clearInterval(interval);
+  }, [duration, searchBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return currentPlaceholder;
+  return currentPlaceholder;
 };
 
 export default useSearchPlaceholder;

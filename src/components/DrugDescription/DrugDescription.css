@@ -1,23 +1,23 @@
 .drug-badge {
-    color: gray;
+  color: gray;
 }
 
 .iupac {
-    word-break: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .molecule {
-    background-color: transparent;
-    border: none;
-    width: 20em;
-    height: auto;
+  background-color: transparent;
+  border: none;
+  width: 20em;
+  height: auto;
 }
 
 .drug-description-card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
 }

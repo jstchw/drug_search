@@ -27,6 +27,7 @@ const useDrugInfo = (params: URLParams) => {
   const [drugInfo, setDrugInfo] = useState<DrugProperties[]>([]);
   const [error, setError] = useState<unknown | boolean>(false);
 
+
   const fetchDrugMolecule = async (drug: string) => {
     try {
       const response = await axios.get(
@@ -37,7 +38,7 @@ const useDrugInfo = (params: URLParams) => {
       return URL.createObjectURL(blob);
     } catch (error) {
       console.warn("Error fetching drug molecule:", error);
-      return "";
+      return;
     }
   };
 
@@ -89,9 +90,9 @@ const useDrugInfo = (params: URLParams) => {
         }
       };
 
-      getDrugInfo();
+      void getDrugInfo();
     }
-  }, [JSON.stringify(params.terms)]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(params)]);
 
   return { drugInfo, drugInfoError: error };
 };

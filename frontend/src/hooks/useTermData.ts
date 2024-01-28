@@ -49,7 +49,7 @@ export const useTermData = () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
       if (isMounted) {
-        fetchData();
+        void fetchData();
       }
     };
 
@@ -67,14 +67,14 @@ export const useTermData = () => {
         setData(cachedData);
         setLoading(false);
       } else if (localStorage.getItem("isFetching")) {
-        waitForOtherFetch();
+        void waitForOtherFetch();
       } else {
-        fetchData();
+        void fetchData();
       }
     } else if (localStorage.getItem("isFetching")) {
-      waitForOtherFetch();
+      void waitForOtherFetch();
     } else {
-      fetchData();
+      void fetchData();
     }
 
     return () => {

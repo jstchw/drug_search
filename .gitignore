@@ -22,10 +22,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/api/venv/
-/api/__pycache__/
-/api/data/
-/api/keys/
+/backend/venv/
+/backend/__pycache__/
+/backend/data/
+/backend/keys/
 
 /public/config.js
 

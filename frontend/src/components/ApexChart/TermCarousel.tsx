@@ -12,7 +12,6 @@ import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
 import { useUrlParams } from "../../hooks/useUrlParams";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
-import { isMobile } from "react-device-detect";
 
 const cloudOptions: OptionsProp = {
   enableTooltip: true,
@@ -37,7 +36,7 @@ const TermCarousel = () => {
   const { data, error } = useTermData();
 
   const [currentChartPage, setCurrentChartPage] = React.useState<number>(0);
-  const itemsPerPage = isMobile ? 5 : 10;
+  const itemsPerPage = 10;
 
   const handleChartPageChange = (pageNumber: number) => {
     setCurrentChartPage(pageNumber);
@@ -289,9 +288,7 @@ const TermCarousel = () => {
             type={apexChartOptions.chart?.type}
           />
           <Pagination size={"lg"} className={"d-flex justify-content-center"}>
-            <Pagination.Prev />
             {paginationItems}
-            <Pagination.Next />
           </Pagination>
         </div>
         <ReactWordcloud

@@ -21,6 +21,7 @@ const Result = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = React.useState(true);
+
   const primaryColor = window
     .getComputedStyle(document.documentElement)
     .getPropertyValue("--primary")
@@ -38,6 +39,7 @@ const Result = () => {
       setLoading(false);
     }
   }, [drugInfo, drugInfoError]);
+
 
   // Grouping drugs by brand name only if the search type is brand name (specified in the conditional statement during rendering)
   const groupedByBrandName = React.useMemo(() => {

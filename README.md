@@ -1,4 +1,4 @@
-# <a href="https://drugsearch.org"><img src="src/assets/drugsearch_logo.png" alt="drug_search_logo" width="200px" height="auto" /></a>
+# <a href="https://drugsearch.org"><img src="frontend/src/assets/drugsearch_logo.png" alt="drug_search_logo" width="200px" height="auto" /></a>
 
 **DrugSearch** is a comprehensive tool designed to visualize the adverse effects of various drugs. Not only can users explore the potential side effects of a specific drug, but they can also work the other way around: inputting an adverse effect to discover which drugs might cause it.
 

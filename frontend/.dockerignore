@@ -13,7 +13,7 @@ backup/
 .yarnclean
 
 # Docker
-Dockerfile
+Dockerfile.dev
 compose.yml
 .dockerignore
 

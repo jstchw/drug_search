@@ -31,7 +31,7 @@ const useDrugInfo = (params: URLParams) => {
   const fetchDrugMolecule = async (drug: string) => {
     try {
       const response = await axios.get(
-        `${backendUrl}/get_molecule?drug_name=${drug}`,
+        `${backendUrl}/drug/get_molecule?drug_name=${drug}`,
         { responseType: "arraybuffer" },
       );
       const blob = new Blob([response.data], { type: "image/png" });
@@ -58,7 +58,7 @@ const useDrugInfo = (params: URLParams) => {
         try {
           const promises = params.terms.map((name) =>
             axios.get(
-              `${backendUrl}/get_info?drug_name=${name}&search_type=${params.searchBy}`,
+              `${backendUrl}/drug/get_info?drug_name=${name}&search_type=${params.searchBy}`,
             ),
           );
           const responses = await Promise.all(promises);

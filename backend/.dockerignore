@@ -2,5 +2,5 @@
 venv/
 
 # Docker
-Dockerfile
+Dockerfile.dev
 .dockerignore

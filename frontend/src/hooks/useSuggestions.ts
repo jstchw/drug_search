@@ -12,7 +12,7 @@ export const useSuggestions = (
       try {
         if (searchBy.param !== "side_effect") {
           // Form a URL based on the searchBy parameter and fetch the data
-          const url = `${backendUrl}get_suggestions?searchBy=${encodeURIComponent(searchBy.value)}`;
+          const url = `${backendUrl}/drug/get_suggestions?searchBy=${encodeURIComponent(searchBy.value)}`;
           const response = await fetch(url);
           const data: string[] = await response.json();
           setFuse(new Fuse(data, fuseOptions));

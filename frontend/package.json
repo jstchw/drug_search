@@ -18,6 +18,7 @@
     "react-clamp-lines": "^3.0.3",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
+    "react-highlight-words": "^0.20.0",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.21.2",
     "react-scripts": "5.0.1",

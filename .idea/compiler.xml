@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="TypeScriptCompiler">
-    <option name="nodeInterpreterTextField" value="docker-compose://[C:/Users/hybrid_theory/Desktop/drug_search/compose.yml]:frontend/node" />
     <option name="recompileOnChanges" value="true" />
-    <option name="versionType" value="EMBEDDED" />
   </component>
 </project>

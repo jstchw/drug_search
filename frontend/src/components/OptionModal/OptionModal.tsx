@@ -29,7 +29,7 @@ const OptionModal = (props: {
 }) => {
   useEffect(() => {
     const optionsString = JSON.stringify(props.searchOptions);
-    Cookies.set("searchOptions", optionsString, { expires: 365, secure: true });
+    Cookies.set("searchOptions", optionsString, { expires: 365, secure: true, sameSite: "strict"});
   }, [props.searchOptions]);
 
   const { theme, toggleTheme } = React.useContext(ThemeContext);

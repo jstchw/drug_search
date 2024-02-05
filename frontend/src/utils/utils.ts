@@ -7,6 +7,7 @@ import {
   SearchOptionsType,
 } from "../types";
 import { baseFdaUrl, searchTypes } from "../constants";
+import React from "react";
 
 export const processTermData = (data: ResultItem[]): ChartDataPoint[] => {
   return data.map((item) => ({
@@ -102,3 +103,15 @@ export const mapParamToValue = (
   const option = options.find((option) => option.param === param);
   return option ? option.value : "";
 };
+
+export const highlightWords = (text: string, words: string[]): React.ReactNode => {
+  const regex = new RegExp(`(${words.join('|')})`, 'gi');
+  const parts = text.split(regex);
+
+  return parts.map((part, index) => {
+    const isMatch = words.some(word => new RegExp(word, 'gi').test(part));
+    return isMatch
+      ? React.createElement('mark', { key: index }, part)
+      : part;
+  });
+}

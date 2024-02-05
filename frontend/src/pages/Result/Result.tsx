@@ -12,6 +12,7 @@ import { DrugProperties } from "../../types";
 import { PropagateLoader } from "react-spinners";
 import { Bug } from "@phosphor-icons/react";
 import { isMobile } from "react-device-detect";
+import RelevantArticles from "../../components/RelevantArticles/RelevantArticles";
 
 const Result = () => {
   const { params, paramError } = useUrlParams();
@@ -160,6 +161,12 @@ const Result = () => {
           <Row className={"justify-content-center mx-auto"}>
             <Col xs={isMobile ? 12 : 6} className="mb-4">
               <ChartSection />
+            </Col>
+          </Row>
+
+          <Row className={'justify-content-center mx-auto'}>
+            <Col xs={isMobile ? 12 : 8}>
+              <RelevantArticles />
             </Col>
           </Row>
         </>

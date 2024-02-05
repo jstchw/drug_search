@@ -2,9 +2,8 @@ from flask import Blueprint, jsonify, request, send_file
 import io
 from rdkit import Chem
 from rdkit.Chem import Draw
-from app.utils import search_csv
 from app.services.data_manager import DataManager
-from app.utils import format_json_drug
+from app.utils import format_json_drug, search_json, get_pubmed_metadata
 
 drug_api = Blueprint('drug_api', __name__)
 
@@ -18,7 +17,10 @@ drug_json = data_manager.drug_json
 @drug_api.route('/get_molecule', methods=['GET'])
 def get_molecule():
     drug_name = request.args.get('drug_name')
-    drug_id = search_csv('Common name', drug_name, 'data/suggestions/suggestion_db.csv')
+
+    # Search the json and match the drug name to the drugbank id
+    drug_id = next((row['DrugBank ID'] for row in substances if row['Common name'].lower() == drug_name.lower()), None)
+
     suppl = Chem.SDMolSupplier('data/molecules.sdf')
 
     for mol in suppl:
@@ -74,3 +76,31 @@ def get_info():
                     drug_data_filtered.append(format_json_drug(drug, drug_name.capitalize()))
 
         return jsonify(drug_data_filtered), 200
+
+
+@drug_api.route('/get_articles', methods=['GET'])
+def get_articles():
+    params = {
+        'search_type': request.args.get('search_type'),
+        'terms': request.args.get('term').strip().split(','),
+        'sex': request.args.get('sex'),
+        'age': request.args.get('age'),
+        'country': request.args.get('country')
+    }
+
+    if not params['search_type'] or not params['terms']:
+        return jsonify({"error": "Missing required parameters"}), 400
+
+    results = search_json(params,
+                          json_file_path='data/pubmed_article_data/pubmed_data.json',
+                          limit=10)
+
+    # Form a list of pubmed ids and use it to generate the pubmed url
+    if results:
+        pubmed_ids = [result['pubmed_id'] for result in results]
+
+        article_metadata = get_pubmed_metadata(pubmed_ids)
+
+        return jsonify(article_metadata), 200
+    else:
+        return jsonify({"error": "No articles found"}), 404

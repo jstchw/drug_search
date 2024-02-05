@@ -16,7 +16,7 @@ const App = () => {
   // whenever theme changes, update the document's theme attribute and a cookie
   useEffect(() => {
     document.documentElement.setAttribute("data-bs-theme", theme);
-    Cookies.set("theme", theme);
+    Cookies.set("theme", theme, { sameSite: "strict" });
   }, [theme]);
 
   const toggleTheme = () => {

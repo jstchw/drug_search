@@ -35,7 +35,7 @@ export const SearchHistoryProvider: React.FC<SearchHistoryProviderProps> = ({
       );
 
       const updatedHistory = [newParams, ...newSearchHistory].slice(0, 5); // Keep only the latest 5 entries
-      Cookies.set("searchHistory", JSON.stringify(updatedHistory));
+      Cookies.set("searchHistory", JSON.stringify(updatedHistory), { sameSite: "strict" });
       return updatedHistory;
     });
   }, []);

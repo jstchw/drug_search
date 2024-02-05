@@ -35,4 +35,6 @@ yarn-error.log*
 /Instructions.md
 
 .idea
+frontend/.idea
+backend/.idea
 dist/

@@ -23,7 +23,7 @@ export const useRelevantArticles = () => {
       `term=${params.terms}&` +
       `search_type=${params.searchBy}&` +
       `sex=${params.sex}&` +
-      `age=${params.age}&` +
+      `age=${encodeURIComponent(JSON.stringify(params.age))}&` +
       `country=${params.country}`;
 
     try {

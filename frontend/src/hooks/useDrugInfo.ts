@@ -92,7 +92,7 @@ const useDrugInfo = (params: URLParams) => {
 
       void getDrugInfo();
     }
-  }, [JSON.stringify(params)]);
+  }, [params.searchBy, params.terms]);
 
   return { drugInfo, drugInfoError: error };
 };

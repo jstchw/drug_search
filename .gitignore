@@ -4,12 +4,13 @@
 /frontend/node_modules
 /frontend/.pnp
 /frontend/.pnp.js
+/frontend/.idea
 
 # testing
 /coverage
 
 # production
-frontend/build
+/frontend/build
 
 # misc
 .DS_Store
@@ -29,12 +30,11 @@ yarn-error.log*
 /backend/app/services/__pycache__/
 /backend/data/
 /backend/keys/
+/backend/.idea
 
 /public/config.js
 
 /Instructions.md
 
 .idea
-frontend/.idea
-backend/.idea
 dist/

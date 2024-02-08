@@ -75,20 +75,24 @@ const OptionModal = (props: {
   };
 
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const index = parseInt(e.currentTarget.id);
+    const isNumeric = /^[0-9]*$/.test(e.currentTarget.value);
 
-    const updatedAge = { ...props.searchOptions.age };
+    if(isNumeric) {
+      const index = parseInt(e.currentTarget.id);
 
-    if (index === updatedAge.min.index) {
-      updatedAge.min = { ...updatedAge.min, value: e.currentTarget.value };
-    } else if (index === updatedAge.max.index) {
-      updatedAge.max = { ...updatedAge.max, value: e.currentTarget.value };
+      const updatedAge = { ...props.searchOptions.age };
+
+      if (index === updatedAge.min.index) {
+        updatedAge.min = { ...updatedAge.min, value: e.currentTarget.value };
+      } else if (index === updatedAge.max.index) {
+        updatedAge.max = { ...updatedAge.max, value: e.currentTarget.value };
+      }
+
+      props.setSearchOptions({
+        ...props.searchOptions,
+        age: updatedAge,
+      });
     }
-
-    props.setSearchOptions({
-      ...props.searchOptions,
-      age: updatedAge,
-    });
   };
 
   const handleCountryChange = (value: string) => {
@@ -241,8 +245,6 @@ const OptionModal = (props: {
                       handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
                     }}
                     disabled={!props.searchOptions.age.enabled}
-                    min={0}
-                    max={120}
                     onCopy={(e) => e.preventDefault()}
                     onPaste={(e) => e.preventDefault()}
                   />
@@ -259,8 +261,6 @@ const OptionModal = (props: {
                       handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
                     }}
                     disabled={!props.searchOptions.age.enabled}
-                    min={0}
-                    max={120}
                     onCopy={(e) => e.preventDefault()}
                     onPaste={(e) => e.preventDefault()}
                   />
@@ -346,7 +346,7 @@ const OptionModal = (props: {
               target={"_blank"}
               rel="noreferrer"
             >
-              DrugSearch Alpha 0.1.0
+              DrugSearch Alpha 0.1.1
             </a>
           </FigureCaption>
         </Modal.Body>

@@ -4,6 +4,7 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 from app.services.data_manager import DataManager
 from app.utils import format_json_drug, search_json, get_pubmed_metadata
+import json
 
 drug_api = Blueprint('drug_api', __name__)
 
@@ -81,11 +82,11 @@ def get_info():
 @drug_api.route('/get_articles', methods=['GET'])
 def get_articles():
     params = {
-        'search_type': request.args.get('search_type'),
-        'terms': request.args.get('term').strip().split(','),
-        'sex': request.args.get('sex'),
-        'age': request.args.get('age'),
-        'country': request.args.get('country')
+        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
+        'terms': request.args.get('term').strip().split(',') if request.args.get('term') else None,
+        'sex': request.args.get('sex') if request.args.get('sex') in ['male', 'female'] else None,
+        'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
+        'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
     }
 
     if not params['search_type'] or not params['terms']:

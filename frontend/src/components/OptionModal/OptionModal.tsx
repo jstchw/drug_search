@@ -7,6 +7,8 @@ import {
   Modal,
   Nav,
   ToggleButton,
+  Tooltip,
+  Overlay,
 } from "react-bootstrap";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import {
@@ -29,20 +31,28 @@ const OptionModal = (props: {
 }) => {
   useEffect(() => {
     const optionsString = JSON.stringify(props.searchOptions);
-    Cookies.set("searchOptions", optionsString, { expires: 365, secure: true, sameSite: "strict"});
+    Cookies.set("searchOptions", optionsString, {
+      expires: 365,
+      secure: true,
+      sameSite: "strict",
+    });
   }, [props.searchOptions]);
 
   const { theme, toggleTheme } = React.useContext(ThemeContext);
 
   const [carouselIndex, setCarouselIndex] = React.useState(0);
 
-  // const sanitizeAge = (age) => {
-  //     const lastChar = age.slice(-1); // Get the last character
-  //     if(!/^[0-9]*$/.test(lastChar)) {
-  //         age = age.slice(0, -1); // Remove the last character if it's not a digit
-  //     }
-  //     return age;
-  // }
+  const ageTooltipTarget = React.useRef(null);
+  const [incorrectAge, setIncorrectAge] = React.useState(false);
+
+  const minAgeRef = React.useRef<HTMLInputElement>(null);
+  const maxAgeRef = React.useRef<HTMLInputElement>(null);
+
+  const incorrectAgeTooltip = (
+    <Tooltip id="incorrectAgeTooltip">
+      Invalid age. Please enter a valid number or range.
+    </Tooltip>
+  );
 
   const handleSearchTypeChange = (value: string) => {
     const newSearchType =
@@ -75,9 +85,17 @@ const OptionModal = (props: {
   };
 
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isNumeric = /^[0-9]*$/.test(e.currentTarget.value);
+    const isNumeric = /^\d*$/.test(e.currentTarget.value);
 
-    if(isNumeric) {
+    if (minAgeRef.current && maxAgeRef.current &&
+      parseInt(minAgeRef.current.value) > parseInt(maxAgeRef.current.value)) {
+
+      setIncorrectAge(true);
+    } else {
+      setIncorrectAge(false);
+    }
+
+    if (isNumeric) {
       const index = parseInt(e.currentTarget.id);
 
       const updatedAge = { ...props.searchOptions.age };
@@ -115,7 +133,7 @@ const OptionModal = (props: {
       <Modal
         centered
         show={props.showOptionModal}
-        onHide={() => props.setShowOptionModal(false)}
+        onHide={() => !incorrectAge && props.setShowOptionModal(false)}
       >
         <Modal.Header closeButton>
           {/*Theme change button*/}
@@ -215,7 +233,11 @@ const OptionModal = (props: {
               {/* Age option change */}
               <Form.Group className="mb-3 d-flex align-items-center">
                 <div className={"d-flex align-items-center"}>
+                  <Overlay placement={'left'} show={incorrectAge} target={ageTooltipTarget.current}>
+                    {incorrectAgeTooltip}
+                  </Overlay>
                   <ToggleButton
+                    ref={ageTooltipTarget}
                     id={"age_change_button"}
                     type="checkbox"
                     variant="outline-primary"
@@ -237,6 +259,7 @@ const OptionModal = (props: {
                 {/* Min age input */}
                 <InputGroup className={"mx-3 flex-grow-1"}>
                   <Form.Control
+                    ref={minAgeRef}
                     type="text"
                     placeholder="Min"
                     value={props.searchOptions.age.min.value ?? 0}
@@ -253,6 +276,7 @@ const OptionModal = (props: {
 
                   {/* Max age input */}
                   <Form.Control
+                    ref={maxAgeRef}
                     type="text"
                     placeholder="Max"
                     value={props.searchOptions.age.max.value ?? 0}

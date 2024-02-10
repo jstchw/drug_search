@@ -41,7 +41,6 @@ const Result = () => {
     }
   }, [drugInfo, drugInfoError]);
 
-
   // Grouping drugs by brand name only if the search type is brand name (specified in the conditional statement during rendering)
   const groupedByBrandName = React.useMemo(() => {
     return drugInfo.reduce<Record<string, DrugProperties[]>>((acc, drug) => {
@@ -164,7 +163,7 @@ const Result = () => {
             </Col>
           </Row>
 
-          <Row className={'justify-content-center mx-auto'}>
+          <Row className={"justify-content-center mx-auto"}>
             <Col xs={isMobile ? 12 : 8}>
               <RelevantArticles />
             </Col>

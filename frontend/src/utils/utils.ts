@@ -38,17 +38,20 @@ export const processYearData = (data: TimeEventData[]): ChartDataPoint[] => {
   );
 };
 
-const formatDate = (date: Date) => {
+const formatUpperBoundDate = (date: Date) => {
+  // Subtracting 1 from the year to get the previous year
   const year = date.getFullYear() - 1;
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+
+  // Constants for month and day are set to 12 and 31 respectively (last day of the year)
+  const month = 12;
+  const day = 31;
   return `${year}${month < 10 ? `0${month}` : month}${day < 10 ? `0${day}` : day}`;
 };
 
 export const generatePath = (params: URLParams, countType?: string) => {
   const fromDate = `20040101`;
   const limit = 50;
-  const toDate = formatDate(new Date());
+  const toDate = formatUpperBoundDate(new Date());
   const whatToCount: SearchTypesMap = {
     generic_name: "patient.reaction.reactionmeddrapt.exact",
     brand_name: "patient.reaction.reactionmeddrapt.exact",
@@ -56,10 +59,14 @@ export const generatePath = (params: URLParams, countType?: string) => {
     side_effect: "patient.drug.activesubstance.activesubstancename.exact",
   };
 
+  // Constants for min and max age
+  // They are used when the age range is not fully specified
+  const defaultMinAge = 0;
+  const defaultMaxAge = 120;
+
   const searchParts = [`(receivedate:[${fromDate}+TO+${toDate}])`];
 
-  // After the Search page has been translated to TS, work on the searchBy in params
-  // It needs to be passed as a whole object, not just the value and then the value needs to be extracted
+  // Term formation ----------------
   if (params.terms) {
     const encodedTerms = params.terms.flat().join("+AND+");
     searchParts.push(
@@ -67,20 +74,33 @@ export const generatePath = (params: URLParams, countType?: string) => {
     );
   }
 
+  // Sex formation ----------------
   if (params.sex) {
     searchParts.push(params.sex);
   }
 
-  if (params.age && params.age.min && params.age.max) {
+  // Age formation ----------------
+  if (params.age) {
+    if (!params.age.min) {
+      params.age.min = defaultMinAge.toString();
+    }
+
+    if (!params.age.max) {
+      params.age.max = defaultMaxAge.toString();
+    }
+
     searchParts.push(
       `patient.patientonsetage:[${params.age.min}+TO+${params.age.max}]`,
     );
   }
 
+  // Country formation ----------------
   if (params.country) {
     searchParts.push(`occurcountry:"${params.country}"`);
   }
 
+  // countType is empty when the link is generated for Term Carousel (Feb 10, 2024)
+  // countType is not empty when the link is generated for Time Series Chart (Feb 10, 2024)
   if (countType) {
     return `${baseFdaUrl}?search=${searchParts.join("+AND+")}&count=${whatToCount[countType]}`;
   } else {
@@ -104,14 +124,15 @@ export const mapParamToValue = (
   return option ? option.value : "";
 };
 
-export const highlightWords = (text: string, words: string[]): React.ReactNode => {
-  const regex = new RegExp(`(${words.join('|')})`, 'gi');
+export const highlightWords = (
+  text: string,
+  words: string[],
+): React.ReactNode => {
+  const regex = new RegExp(`(${words.join("|")})`, "gi");
   const parts = text.split(regex);
 
   return parts.map((part, index) => {
-    const isMatch = words.some(word => new RegExp(word, 'gi').test(part));
-    return isMatch
-      ? React.createElement('mark', { key: index }, part)
-      : part;
+    const isMatch = words.some((word) => new RegExp(word, "gi").test(part));
+    return isMatch ? React.createElement("mark", { key: index }, part) : part;
   });
-}
+};

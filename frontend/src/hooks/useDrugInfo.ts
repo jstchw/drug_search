@@ -27,7 +27,6 @@ const useDrugInfo = (params: URLParams) => {
   const [drugInfo, setDrugInfo] = useState<DrugProperties[]>([]);
   const [error, setError] = useState<unknown | boolean>(false);
 
-
   const fetchDrugMolecule = async (drug: string) => {
     try {
       const response = await axios.get(

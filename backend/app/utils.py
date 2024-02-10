@@ -47,8 +47,6 @@ def search_json(params, json_file_path, limit=10):
     country_specified = params.get('country') is not None and params.get('country').strip() != ''
     country_filter = params.get('country').lower() if country_specified else None
 
-    print(country_filter, flush=True)
-
     with open(json_file_path, 'r') as file:
         data = json.load(file)  # Load the entire JSON array
 

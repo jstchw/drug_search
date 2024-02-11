@@ -1,0 +1,6 @@
+Flask==3.0.1
+Flask-Cors==4.0.0
+rdkit==2023.9.4
+Werkzeug==3.0.1
+requests==2.31.0
+biopython==1.83

@@ -1,0 +1,30 @@
+services:
+  frontend:
+    container_name: drug_search_frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./frontend/src:/usr/src/app/src
+      - ./frontend/public:/usr/src/app/public
+      - ./frontend/tsconfig.json:/usr/src/app/tsconfig.json
+    depends_on:
+      - backend
+    networks:
+      - proxy_network
+
+  backend:
+    container_name: drug_search_backend
+    build:
+      context: backend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./backend:/usr/src/app
+    ports:
+      - "16000:16000"
+    environment:
+      - FLASK_DEBUG=0
+
+networks:
+    proxy_network:
+      external: true

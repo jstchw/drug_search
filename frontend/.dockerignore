@@ -1,0 +1,21 @@
+# Git
+.git/
+../.gitignore
+README.md
+
+# Node
+node_modules/
+build/
+dist/
+backup/
+
+# Yarn
+.yarnclean
+
+# Docker
+Dockerfile.dev
+compose.yml
+.dockerignore
+
+# Python
+api/

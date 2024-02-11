@@ -33,7 +33,6 @@ const OptionModal = (props: {
     const optionsString = JSON.stringify(props.searchOptions);
     Cookies.set("searchOptions", optionsString, {
       expires: 365,
-      secure: true,
       sameSite: "strict",
     });
   }, [props.searchOptions]);

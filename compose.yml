@@ -9,6 +9,8 @@ services:
       - ./frontend/src:/usr/src/app/src
       - ./frontend/public:/usr/src/app/public
       - ./frontend/tsconfig.json:/usr/src/app/tsconfig.json
+      - ./frontend/package.json:/usr/src/app/package.json
+      - ./frontend/yarn.lock:/usr/src/app/yarn.lock
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true

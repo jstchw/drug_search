@@ -106,10 +106,19 @@ def search_json(params, json_file_path, limit=10):
             if entry_country is None or country_filter != entry_country.lower():
                 continue
 
+
+
+
         # Relaxed search:
-        # Match even if more drugs are present in the entry
-        if all(any(term.lower() in item.lower() for field in search_fields for item in entry.get(field, [])) for term in params['terms']):
+        # Match even if more drugs or side effects are present in the entry
+        # Regex explanation:
+        # (?:\b|\s) - Match a word boundary or a whitespace character
+        # {} - The search term
+        # (?:\b|\s|$) - Match a word boundary, a whitespace character or the end of the string
+        if all(any(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
+                search_fields for item in entry.get(field, [])) for term in params['terms']):
             matched_entries.append(entry)
+
 
     # Sort the entries by publication date in descending order and apply the limit
     sorted_entries = sorted(matched_entries, key=lambda x: x['pub_date'], reverse=True)[:limit]

@@ -1,5 +1,6 @@
 export type SearchOptions = {
   searchBy: SearchOptionsType;
+  searchMode: SearchOptionsType;
   sex: SearchOptionsType;
   age: AgeOptions;
   country: SearchOptionsType;
@@ -20,6 +21,18 @@ export type AgeOptions = {
   max: SearchOptionsType;
 };
 
+export type URLParams = {
+  terms: string[];
+  searchBy: string;
+  searchMode: string;
+  sex?: string | null;
+  age?: {
+    min: string | null;
+    max: string | null;
+  };
+  country?: string | null;
+};
+
 export type DrugProperties = {
   name: string;
   classification?: string;
@@ -32,17 +45,6 @@ export type DrugProperties = {
   product?: string;
   molecule_url?: string;
   [key: string]: string | string[] | undefined;
-};
-
-export type URLParams = {
-  terms: string[];
-  searchBy: string;
-  sex?: string | null;
-  age?: {
-    min: string | null;
-    max: string | null;
-  };
-  country?: string | null;
 };
 
 export type SearchHistoryContextType = {

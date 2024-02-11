@@ -45,6 +45,7 @@ const SearchHistory = ({
     executeSearch(terms, {
       terms: [],
       searchBy: searchOptions.searchBy,
+      searchMode: searchOptions.searchMode,
       sex: searchOptions.sex,
       age: searchOptions.age,
       country: searchOptions.country,

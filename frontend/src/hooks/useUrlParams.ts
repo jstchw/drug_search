@@ -51,9 +51,11 @@ const parseUrlParams = (
   }
   const query = params.get("query");
   const terms = query ? query.split("-") : [];
+
   return {
     terms: terms,
-    searchBy: params.get("searchBy") as string,
+    searchBy: params.get("searchBy"),
+    searchMode: params.get("searchMode"),
     sex: params.get("sex"),
     age: {
       min: params.get("min_age"),

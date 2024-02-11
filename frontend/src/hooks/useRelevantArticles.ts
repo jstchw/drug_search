@@ -25,7 +25,8 @@ export const useRelevantArticles = () => {
     const fetchRelevantArticles = async () => {
       const url =
         `${backendUrl}/drug/get_articles?` +
-        `term=${params.terms}&` +
+        `terms=${params.terms}&` +
+        `search_mode=${params.searchMode}&` +
         `search_type=${params.searchBy}&` +
         `sex=${params.sex}&` +
         `age=${encodeURIComponent(JSON.stringify(params.age))}&` +
@@ -51,7 +52,7 @@ export const useRelevantArticles = () => {
       }
     };
     void fetchRelevantArticles();
-  }, [params.age, params.country, params.searchBy, params.sex, params.terms]);
+  }, [params]);
 
   return { relevantArticles, relevantArticlesError };
 };

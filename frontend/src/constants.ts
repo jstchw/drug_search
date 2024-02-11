@@ -25,6 +25,23 @@ export const searchTypes: SearchOptionsType[] = [
     param: "side_effect",
   },
 ];
+
+export const searchModes: SearchOptionsType[] = [
+  {
+    value: "relaxed",
+    index: 0,
+    label: "Relaxed",
+    type: "searchMode",
+    param: "relaxed",
+  },
+  {
+    value: "strict",
+    index: 1,
+    label: "Strict",
+    type: "searchMode",
+    param: "strict",
+  },
+];
 export const searchSex: SearchOptionsType[] = [
   {
     value: "patient.patientsex:1",
@@ -71,6 +88,7 @@ export const searchCountry: SearchOptionsType[] = Object.entries(countries).map(
 
 export const defaultSearchOptions = {
   searchBy: { ...(searchTypes[0] as SearchOptionsType), enabled: true },
+  searchMode: { ...searchModes[0], enabled: true},
   sex: searchSex[0],
   age: searchAgeRange,
   country: searchCountry.find(

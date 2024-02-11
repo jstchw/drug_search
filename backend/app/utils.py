@@ -119,7 +119,6 @@ def search_json(params, json_file_path, limit=10):
                 search_fields for item in entry.get(field, [])) for term in params['terms']):
             matched_entries.append(entry)
 
-
     # Sort the entries by publication date in descending order and apply the limit
     sorted_entries = sorted(matched_entries, key=lambda x: x['pub_date'], reverse=True)[:limit]
 

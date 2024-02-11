@@ -18,7 +18,7 @@ import {
   ClockCounterClockwise,
 } from "@phosphor-icons/react";
 import Cookies from "js-cookie";
-import { searchCountry, searchSex, searchTypes } from "../../constants";
+import { searchCountry, searchSex, searchTypes, searchModes } from "../../constants";
 import { SearchOptions, SearchOptionsType } from "../../types";
 import SearchHistory from "../SearchHistory/SearchHistory";
 import { Carousel } from "react-responsive-carousel";
@@ -69,6 +69,21 @@ const OptionModal = (props: {
       },
     });
   };
+
+  const handleSearchModeChange = (value: string) => {
+    const newSearchMode =
+      (searchModes.find(
+        (searchMode) => searchMode.value === value,
+      ) as SearchOptionsType) || searchModes[0];
+
+    props.setSearchOptions({
+      ...props.searchOptions,
+      searchMode: {
+        ...newSearchMode,
+        enabled: props.searchOptions.searchMode.enabled ?? true,
+      },
+    });
+  }
 
   const handleSexChange = (value: string) => {
     const newSearchSex =
@@ -186,6 +201,40 @@ const OptionModal = (props: {
                     {searchTypes.map((searchType, index) => (
                       <option key={index} value={searchType.value}>
                         {searchType.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
+              </Form.Group>
+
+              {/* Search mode change */}
+              <Form.Group className="mb-3 d-flex align-items-center">
+                <div className={"d-flex align-items-center"}>
+                  <ToggleButton
+                    id={'search_mode_button'}
+                    type="checkbox"
+                    variant="outline-primary"
+                    checked={true}
+                    value="1"
+                    disabled={true}
+                  >
+                    Search mode
+                  </ToggleButton>
+                </div>
+                <InputGroup
+                  className={"flex-grow-1 mx-3"}
+                  style={{ width: "auto" }}
+                >
+                  <Form.Select
+                    onChange={(e) =>
+                      handleSearchModeChange(e.currentTarget.value)
+                    }
+                    value={props.searchOptions.searchMode.value}
+                    style={{ width: "auto" }}
+                  >
+                    {searchModes.map((searchMode, index) => (
+                      <option key={index} value={searchMode.value}>
+                        {searchMode.label}
                       </option>
                     ))}
                   </Form.Select>

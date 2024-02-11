@@ -23,6 +23,16 @@ def format_json_drug(drug, product_name=None):
     }
 
 
+def strict_search(entry, params, search_fields):
+    matched_entries = []
+
+    if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
+            search_fields for item in entry.get(field, []) for term in params['terms']):
+        matched_entries.append(entry)
+
+    return matched_entries
+
+
 def search_json(params, json_file_path, limit=10):
     start_time = time.time()
     matched_entries = []
@@ -109,15 +119,29 @@ def search_json(params, json_file_path, limit=10):
 
 
 
-        # Relaxed search:
-        # Match even if more drugs or side effects are present in the entry
-        # Regex explanation:
-        # (?:\b|\s) - Match a word boundary or a whitespace character
-        # {} - The search term
-        # (?:\b|\s|$) - Match a word boundary, a whitespace character or the end of the string
-        if all(any(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
-                search_fields for item in entry.get(field, [])) for term in params['terms']):
-            matched_entries.append(entry)
+        if params['search_mode'] == 'strict':
+            # Strict search:
+            # Match only if all drugs or side effects are present in the entry
+            # NOW WORKS ONLY WITH GENERIC NAME OR BRAND NAME
+            # DOES NOT WORK WITH SIDE EFFECTS!!!
+            for field in search_fields:
+                items = entry.get(field, [])
+                if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for item in
+                       items for term in params['terms']):
+                    # Check if the drug is exclusive in the entry
+                    if len(items) == len(params['terms']):
+                        matched_entries.append(entry)
+        else:
+            # Relaxed search:
+            # Match even if more drugs or side effects are present in the entry
+            # Regex explanation:
+            # (?:\b|\s) - Match a word boundary or a whitespace character
+            # {} - The search term
+            # (?:\b|\s|$) - Match a word boundary, a whitespace character or the end of the string
+            if all(any(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
+                    search_fields for item in entry.get(field, [])) for term in params['terms']):
+                matched_entries.append(entry)
+
 
     # Sort the entries by publication date in descending order and apply the limit
     sorted_entries = sorted(matched_entries, key=lambda x: x['pub_date'], reverse=True)[:limit]

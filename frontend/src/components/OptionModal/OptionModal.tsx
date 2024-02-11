@@ -50,7 +50,9 @@ const OptionModal = (props: {
 
   const incorrectAgeTooltip = (
     <Tooltip id="incorrectAgeTooltip">
-      Invalid age. Please enter a valid number or range.
+      <span>
+        Invalid age. Please enter a valid number or range.
+      </span>
     </Tooltip>
   );
 
@@ -233,7 +235,11 @@ const OptionModal = (props: {
               {/* Age option change */}
               <Form.Group className="mb-3 d-flex align-items-center">
                 <div className={"d-flex align-items-center"}>
-                  <Overlay placement={'left'} show={incorrectAge} target={ageTooltipTarget.current}>
+                  <Overlay
+                    placement={'left'}
+                    show={incorrectAge}
+                    target={ageTooltipTarget.current}
+                  >
                     {incorrectAgeTooltip}
                   </Overlay>
                   <ToggleButton

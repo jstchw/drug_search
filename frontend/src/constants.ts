@@ -88,7 +88,7 @@ export const searchCountry: SearchOptionsType[] = Object.entries(countries).map(
 
 export const defaultSearchOptions = {
   searchBy: { ...(searchTypes[0] as SearchOptionsType), enabled: true },
-  searchMode: { ...searchModes[0], enabled: true},
+  searchMode: { ...searchModes[0], enabled: true },
   sex: searchSex[0],
   age: searchAgeRange,
   country: searchCountry.find(

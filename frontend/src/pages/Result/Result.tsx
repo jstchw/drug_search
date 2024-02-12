@@ -13,6 +13,7 @@ import { PropagateLoader } from "react-spinners";
 import { Bug } from "@phosphor-icons/react";
 import { isMobile } from "react-device-detect";
 import RelevantArticles from "../../components/RelevantArticles/RelevantArticles";
+import InfoCard from "../../components/InfoCard/InfoCard";
 
 const Result = () => {
   const { params, paramError } = useUrlParams();
@@ -77,6 +78,7 @@ const Result = () => {
 
   return (
     <>
+      <InfoCard />
       <div className="d-flex flex-column justify-content-center align-items-center">
         <Row className={"mb-4 mt-5"}>
           <Header />

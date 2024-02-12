@@ -6,8 +6,9 @@ import {
   URLParams,
   SearchOptionsType,
 } from "../types";
-import { baseFdaUrl, searchTypes } from "../constants";
+import { baseFdaUrl, searchModes, searchSex, searchTypes } from "../constants";
 import React from "react";
+import { Baby } from "@phosphor-icons/react";
 
 export const processTermData = (data: ResultItem[]): ChartDataPoint[] => {
   return data.map((item) => ({
@@ -114,6 +115,51 @@ export const mapParamToLabel = (
 ): string => {
   const option = options.find((option) => option.param === param);
   return option ? option.label : "Not Specified";
+};
+
+export const mapParamArrayToLabels = (
+  params: URLParams,
+): Record<string, string> => {
+  const paramLabels: Record<string, string> = {};
+
+  const assignMappedLabel = (
+    param: string | null,
+    optionsArray: SearchOptionsType[],
+    paramName: string,
+  ) => {
+    const option = optionsArray.find((option) => option.param === param);
+    if (option) {
+      paramLabels[paramName] = option.label;
+    }
+  };
+
+  if (params.searchBy) {
+    assignMappedLabel(params.searchBy, searchTypes, "Search type");
+  }
+
+  if (params.searchMode) {
+    assignMappedLabel(params.searchMode, searchModes, "Search mode");
+  }
+
+  if (params.sex) {
+    assignMappedLabel(params.sex, searchSex, "Sex");
+  }
+
+  if (params.age) {
+    if (params.age.max && params.age.min) {
+      paramLabels["Age"] = `${params.age.min} - ${params.age.max}`;
+    } else if (params.age.max && !params.age.min) {
+      paramLabels["Age"] = `Up to ${params.age.max}`;
+    } else if (params.age.min && !params.age.max) {
+      paramLabels["Age"] = `From ${params.age.min}`;
+    }
+  }
+
+  if (params.country) {
+    paramLabels["Country"] = params.country;
+  }
+
+  return paramLabels;
 };
 
 export const mapParamToValue = (

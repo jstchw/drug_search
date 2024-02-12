@@ -18,7 +18,12 @@ import {
   ClockCounterClockwise,
 } from "@phosphor-icons/react";
 import Cookies from "js-cookie";
-import { searchCountry, searchSex, searchTypes, searchModes } from "../../constants";
+import {
+  searchCountry,
+  searchSex,
+  searchTypes,
+  searchModes,
+} from "../../constants";
 import { SearchOptions, SearchOptionsType } from "../../types";
 import SearchHistory from "../SearchHistory/SearchHistory";
 import { Carousel } from "react-responsive-carousel";
@@ -49,9 +54,7 @@ const OptionModal = (props: {
 
   const incorrectAgeTooltip = (
     <Tooltip id="incorrectAgeTooltip">
-      <span>
-        Invalid age. Please enter a valid number or range.
-      </span>
+      <span>Invalid age. Please enter a valid number or range.</span>
     </Tooltip>
   );
 
@@ -83,7 +86,7 @@ const OptionModal = (props: {
         enabled: props.searchOptions.searchMode.enabled ?? true,
       },
     });
-  }
+  };
 
   const handleSexChange = (value: string) => {
     const newSearchSex =
@@ -103,9 +106,11 @@ const OptionModal = (props: {
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isNumeric = /^\d*$/.test(e.currentTarget.value);
 
-    if (minAgeRef.current && maxAgeRef.current &&
-      parseInt(minAgeRef.current.value) > parseInt(maxAgeRef.current.value)) {
-
+    if (
+      minAgeRef.current &&
+      maxAgeRef.current &&
+      parseInt(minAgeRef.current.value) > parseInt(maxAgeRef.current.value)
+    ) {
       setIncorrectAge(true);
     } else {
       setIncorrectAge(false);
@@ -211,7 +216,7 @@ const OptionModal = (props: {
               <Form.Group className="mb-3 d-flex align-items-center">
                 <div className={"d-flex align-items-center"}>
                   <ToggleButton
-                    id={'search_mode_button'}
+                    id={"search_mode_button"}
                     type="checkbox"
                     variant="outline-primary"
                     checked={true}
@@ -284,7 +289,7 @@ const OptionModal = (props: {
               <Form.Group className="mb-3 d-flex align-items-center">
                 <div className={"d-flex align-items-center"}>
                   <Overlay
-                    placement={'left'}
+                    placement={"left"}
                     show={incorrectAge}
                     target={ageTooltipTarget.current}
                   >

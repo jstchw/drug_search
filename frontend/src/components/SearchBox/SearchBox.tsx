@@ -14,12 +14,15 @@ import CreatableSelect from "react-select/creatable";
 import Cookies from "js-cookie";
 import { useSearch } from "../../hooks/useSearch";
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
+import { ThemeContext } from "../../contexts/ThemeContext";
 
 type SearchBoxProps = {
   passedInput?: string[];
 };
 
 const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
+  const { theme } = React.useContext(ThemeContext);
+
   const initialSearchOptionsState = () => {
     const optionsString = Cookies.get("searchOptions");
     if (optionsString) {
@@ -145,12 +148,15 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
                 IndicatorSeparator: () => null,
               }}
               placeholder={searchPlaceholder}
-              styles={{
-                // Needs fixing !!!
-                control: (provided) => ({
-                  ...provided,
-                  backgroundColor: "transparent",
-                }),
+              classNames={{
+                control: () => "bg-transparent border-secondary rounded-0",
+                menu: () => (theme === "dark" ? "bg-dark text-light" : ""),
+                input: () =>
+                  theme === "dark" ? "bg-transparent text-light" : "",
+                option: (state) =>
+                  state.isFocused && theme === "dark" ? "text-dark" : "",
+                multiValue: () => "bg-secondary-subtle",
+                multiValueLabel: () => theme === "dark" ? "text-light" : "",
               }}
             />
 

@@ -8,7 +8,6 @@ import {
 } from "../types";
 import { baseFdaUrl, searchModes, searchSex, searchTypes } from "../constants";
 import React from "react";
-import { Baby } from "@phosphor-icons/react";
 
 export const processTermData = (data: ResultItem[]): ChartDataPoint[] => {
   return data.map((item) => ({

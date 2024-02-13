@@ -10,8 +10,6 @@ const InfoCard = () => {
 
   const constraints = mapParamArrayToLabels(params);
 
-  console.log(constraints)
-
   return (
     <ToastContainer
       className={"patient-card m-3"}
@@ -33,8 +31,8 @@ const InfoCard = () => {
                       "fs-5 d-flex justify-content-start align-items-center"
                     }
                   >
-                    <span className={'text-secondary'}>{key}</span>
-                    <div className={'vr mx-2'} />
+                    <span className={"text-secondary"}>{key}</span>
+                    <div className={"vr mx-2"} />
                     <span>{value}</span>
                   </Col>
                 )}

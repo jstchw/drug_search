@@ -9,6 +9,7 @@ import {
   ToggleButton,
   Tooltip,
   Overlay,
+  ButtonGroup
 } from "react-bootstrap";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import {
@@ -23,6 +24,7 @@ import {
   searchSex,
   searchTypes,
   searchModes,
+  searchAgeGroups,
 } from "../../constants";
 import { SearchOptions, SearchOptionsType } from "../../types";
 import SearchHistory from "../SearchHistory/SearchHistory";
@@ -51,6 +53,15 @@ const OptionModal = (props: {
 
   const minAgeRef = React.useRef<HTMLInputElement>(null);
   const maxAgeRef = React.useRef<HTMLInputElement>(null);
+  const ageGroupRef = React.useRef<HTMLSelectElement>(null);
+
+  const [savedAgeRef, setSavedAgeRef] = React.useState([minAgeRef, maxAgeRef]);
+  const [savedAgeGroupRef, setSavedAgeGroupRef] = React.useState(ageGroupRef);
+
+  React.useEffect(() => {
+    setSavedAgeRef([minAgeRef, maxAgeRef]);
+    setSavedAgeGroupRef(ageGroupRef);
+  }, [minAgeRef, maxAgeRef, ageGroupRef]);
 
   const incorrectAgeTooltip = (
     <Tooltip id="incorrectAgeTooltip">
@@ -104,19 +115,27 @@ const OptionModal = (props: {
   };
 
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isNumeric = /^\d*$/.test(e.currentTarget.value);
-
-    if (
-      minAgeRef.current &&
-      maxAgeRef.current &&
-      parseInt(minAgeRef.current.value) > parseInt(maxAgeRef.current.value)
+    if (props.searchOptions.age.ageGroupsEnabled) {
+      const [min, max] = e.currentTarget.value.split("-");
+      const updatedAge = { ...props.searchOptions.age };
+      updatedAge.min = { ...updatedAge.min, value: min as string };
+      updatedAge.max = { ...updatedAge.max, value: max as string };
+      props.setSearchOptions({
+        ...props.searchOptions,
+        age: updatedAge,
+      });
+    } else {
+      const isNumeric = /^\d*$/.test(e.currentTarget.value);
+      if (
+        minAgeRef.current &&
+        maxAgeRef.current &&
+        parseInt(minAgeRef.current.value) > parseInt(maxAgeRef.current.value)
     ) {
       setIncorrectAge(true);
     } else {
       setIncorrectAge(false);
     }
-
-    if (isNumeric) {
+      if (isNumeric) {
       const index = parseInt(e.currentTarget.id);
 
       const updatedAge = { ...props.searchOptions.age };
@@ -132,7 +151,42 @@ const OptionModal = (props: {
         age: updatedAge,
       });
     }
+    }
   };
+
+  const handleAgeGroupToggle = () => {
+    if (props.searchOptions.age.ageGroupsEnabled && ageGroupRef.current) {
+      const syntheticEvent = {
+        currentTarget: {
+          value: ageGroupRef.current.value
+        }
+      }
+
+      handleAgeChange(syntheticEvent as unknown as React.ChangeEvent<HTMLInputElement>);
+    } else if (!props.searchOptions.age.ageGroupsEnabled && minAgeRef.current && maxAgeRef.current) {
+      const syntheticEventMin = {
+        currentTarget: {
+          id: "0",
+          value: minAgeRef.current
+        }
+      }
+      handleAgeChange(syntheticEventMin as unknown as React.ChangeEvent<HTMLInputElement>);
+
+      const syntheticEventMax = {
+        currentTarget: {
+          id: "1",
+          value: maxAgeRef.current
+        }
+      }
+      handleAgeChange(syntheticEventMax as unknown as React.ChangeEvent<HTMLInputElement>);
+    }
+  }
+
+  React.useEffect(() => {
+    handleAgeGroupToggle();
+  }, [props.searchOptions.age.ageGroupsEnabled]);
+
+  console.log(props.searchOptions.age.min.value, props.searchOptions.age.max.value)
 
   const handleCountryChange = (value: string) => {
     const newSearchCountry =
@@ -295,59 +349,106 @@ const OptionModal = (props: {
                   >
                     {incorrectAgeTooltip}
                   </Overlay>
-                  <ToggleButton
-                    ref={ageTooltipTarget}
-                    id={"age_change_button"}
-                    type="checkbox"
-                    variant="outline-primary"
-                    checked={props.searchOptions.age.enabled}
-                    value="1"
-                    onClick={() => {
-                      const newSearchOptions = { ...props.searchOptions };
-                      newSearchOptions.age = {
-                        ...props.searchOptions.age,
-                        enabled: !props.searchOptions.age.enabled,
-                      };
-                      props.setSearchOptions(newSearchOptions);
-                    }}
-                  >
-                    Age
-                  </ToggleButton>
+                  <ButtonGroup>
+                    <ToggleButton
+                      ref={ageTooltipTarget}
+                      id={"age_change_button"}
+                      type="checkbox"
+                      variant="outline-primary"
+                      checked={props.searchOptions.age.enabled}
+                      value="1"
+                      onClick={() => {
+                        const newSearchOptions = { ...props.searchOptions };
+                        newSearchOptions.age = {
+                          ...props.searchOptions.age,
+                          enabled: !props.searchOptions.age.enabled,
+                        };
+                        props.setSearchOptions(newSearchOptions);
+                      }}
+                    >
+                      Age
+                    </ToggleButton>
+                    <ToggleButton
+                      id={"age_range_button"}
+                      type="checkbox"
+                      variant="outline-primary"
+                      disabled={!props.searchOptions.age.enabled}
+                      checked={!props.searchOptions.age.ageGroupsEnabled}
+                      value="1"
+                      onClick={() => {
+                        const newSearchOptions = { ...props.searchOptions };
+                        newSearchOptions.age = {
+                          ...props.searchOptions.age,
+                          ageGroupsEnabled: !props.searchOptions.age
+                            .ageGroupsEnabled,
+                        };
+                        props.setSearchOptions(newSearchOptions);
+                      }}
+                    >
+                      Advanced
+                    </ToggleButton>
+                  </ButtonGroup>
                 </div>
 
-                {/* Min age input */}
-                <InputGroup className={"mx-3 flex-grow-1"}>
-                  <Form.Control
-                    ref={minAgeRef}
-                    type="text"
-                    placeholder="Min"
-                    value={props.searchOptions.age.min.value ?? 0}
-                    id={"0"}
+                {/* Age groups input */}
+                {props.searchOptions.age.ageGroupsEnabled && (
+                  <InputGroup className={"mx-3 flex-grow-1"}>
+                  <Form.Select
+                    ref={ageGroupRef}
+                    disabled={
+                      !props.searchOptions.age.enabled ||
+                      !props.searchOptions.age.ageGroupsEnabled
+                    }
                     onChange={(e) => {
-                      handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
+                      handleAgeChange(e as unknown as React.ChangeEvent<HTMLInputElement>);
                     }}
-                    disabled={!props.searchOptions.age.enabled}
-                    onCopy={(e) => e.preventDefault()}
-                    onPaste={(e) => e.preventDefault()}
-                  />
-
-                  <InputGroup.Text>-</InputGroup.Text>
-
-                  {/* Max age input */}
-                  <Form.Control
-                    ref={maxAgeRef}
-                    type="text"
-                    placeholder="Max"
-                    value={props.searchOptions.age.max.value ?? 0}
-                    id={"1"}
-                    onChange={(e) => {
-                      handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
-                    }}
-                    disabled={!props.searchOptions.age.enabled}
-                    onCopy={(e) => e.preventDefault()}
-                    onPaste={(e) => e.preventDefault()}
-                  />
+                  >
+                    {Object.entries(searchAgeGroups).map(([key, { min, max }], index) => (
+                      <option key={index} value={`${ min }-${ max }`}>
+                        { key }
+                      </option>
+                    ))}
+                  </Form.Select>
                 </InputGroup>
+                )}
+
+                {!props.searchOptions.age.ageGroupsEnabled && (
+                  <>
+                    {/* Min age input */}
+                    <InputGroup className={"mx-3 flex-grow-1"}>
+                      <Form.Control
+                        ref={minAgeRef}
+                        type="text"
+                        placeholder="Min"
+                        value={props.searchOptions.age.min.value ?? 0}
+                        id={"0"}
+                        onChange={(e) => {
+                          handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
+                        }}
+                        disabled={!props.searchOptions.age.enabled}
+                        onCopy={(e) => e.preventDefault()}
+                        onPaste={(e) => e.preventDefault()}
+                      />
+
+                      <InputGroup.Text>-</InputGroup.Text>
+
+                      {/* Max age input */}
+                      <Form.Control
+                        ref={maxAgeRef}
+                        type="text"
+                        placeholder="Max"
+                        value={props.searchOptions.age.max.value ?? 0}
+                        id={"1"}
+                        onChange={(e) => {
+                          handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
+                        }}
+                        disabled={!props.searchOptions.age.enabled}
+                        onCopy={(e) => e.preventDefault()}
+                        onPaste={(e) => e.preventDefault()}
+                      />
+                    </InputGroup>
+                  </>
+                  )}
               </Form.Group>
 
               {/* Country option change */}

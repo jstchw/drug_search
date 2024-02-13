@@ -17,8 +17,16 @@ export type SearchOptionsType = {
 
 export type AgeOptions = {
   enabled: boolean;
+  ageGroupsEnabled: boolean;
   min: SearchOptionsType;
   max: SearchOptionsType;
+};
+
+export type AgeGroups = {
+  [key: string]: {
+    min: number;
+    max: number;
+  };
 };
 
 export type URLParams = {

@@ -1,6 +1,6 @@
 // Search types that can be selected in the popover
 import countries from "./assets/countries.json";
-import { PlaceholderType, SearchOptionsType, AgeOptions } from "./types";
+import { PlaceholderType, SearchOptionsType, AgeOptions, AgeGroups } from "./types";
 
 export const searchTypes: SearchOptionsType[] = [
   {
@@ -61,6 +61,7 @@ export const searchSex: SearchOptionsType[] = [
 
 export const searchAgeRange: AgeOptions = {
   enabled: false,
+  ageGroupsEnabled: true,
   min: {
     value: "0",
     index: 0,
@@ -69,13 +70,41 @@ export const searchAgeRange: AgeOptions = {
     param: "min_age",
   },
   max: {
-    value: "100",
+    value: "120",
     index: 1,
     label: "Maximum Age",
     type: "age",
     param: "max_age",
   },
 };
+
+export const searchAgeGroups: AgeGroups = {
+  "0-2": {
+    min: 0,
+    max: 2,
+  },
+  "3-11": {
+    min: 3,
+    max: 11,
+  },
+  "12-17": {
+    min: 12,
+    max: 17,
+  },
+  "18-64": {
+    min: 18,
+    max: 64,
+  },
+  "65-85": {
+    min: 65,
+    max: 85,
+  },
+  "85+": {
+    min: 85,
+    max: 120,
+  },
+}
+
 export const searchCountry: SearchOptionsType[] = Object.entries(countries).map(
   ([value, label], index) => ({
     value,

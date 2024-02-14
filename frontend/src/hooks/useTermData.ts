@@ -3,8 +3,21 @@ import { generatePath, processTermData } from "../utils/utils";
 import { useEffect, useState } from "react";
 import { ChartDataPoint, FDARawData, ResultItem } from "../types";
 
-export const useTermData = () => {
-  const { params } = useUrlParams();
+export const useTermData = (noFilterRequest = false) => {
+  let { params } = useUrlParams();
+
+  if (noFilterRequest) {
+    params = {
+      ...params,
+      sex: null,
+      age: {
+        min: null,
+        max: null,
+      },
+      country: null,
+    };
+  }
+
   const url = generatePath(params);
 
   const [data, setData] = useState<ChartDataPoint[] | null>(null);
@@ -16,7 +29,6 @@ export const useTermData = () => {
     let isMounted = true; // Flag to check if component is still mounted
 
     const fetchData = async () => {
-      localStorage.setItem("isFetching", "true"); // Set fetching flag
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -40,16 +52,6 @@ export const useTermData = () => {
         if (isMounted) {
           setLoading(false);
         }
-        localStorage.removeItem("isFetching"); // Clear fetching flag
-      }
-    };
-
-    const waitForOtherFetch = async () => {
-      while (localStorage.getItem("isFetching")) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      if (isMounted) {
-        void fetchData();
       }
     };
 
@@ -66,13 +68,9 @@ export const useTermData = () => {
       ) {
         setData(cachedData);
         setLoading(false);
-      } else if (localStorage.getItem("isFetching")) {
-        void waitForOtherFetch();
       } else {
         void fetchData();
       }
-    } else if (localStorage.getItem("isFetching")) {
-      void waitForOtherFetch();
     } else {
       void fetchData();
     }
@@ -80,7 +78,7 @@ export const useTermData = () => {
     return () => {
       isMounted = false; // Clean up to avoid setting state on unmounted component
     };
-  }, [params, url]);
+  }, [url]);
 
   return { data, error, loading };
 };

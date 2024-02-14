@@ -9,7 +9,6 @@ import { Carousel } from "react-responsive-carousel";
 import { Nav, OverlayTrigger, Popover, Pagination } from "react-bootstrap";
 import { Cloud, List, Pill } from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
-import { useUrlParams } from "../../hooks/useUrlParams";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 
@@ -28,12 +27,51 @@ const cloudOptions: OptionsProp = {
   transitionDuration: 1000,
 };
 
-const TermCarousel = () => {
+export const getChartWarning = (params: URLParams) => {
+    const popover = (
+      <Popover>
+        <Popover.Body>
+          <div className={"d-flex align-items-center justify-content-center"}>
+            <ChartLine weight={"light"} />
+            <div className={"vr mx-2"} />
+            Correlation does not imply causation.
+          </div>
+        </Popover.Body>
+      </Popover>
+    );
+
+    return (
+      <OverlayTrigger
+        trigger={["hover", "focus"]}
+        placement={"bottom"}
+        overlay={popover}
+      >
+        <div style={{ cursor: "default" }}>
+          {params.searchBy !== "side_effect" ? (
+            <span className={"d-inline-flex align-items-center"}>
+              <SmileyNervous className={"text-secondary"} weight={"light"} />
+              <SealWarning className={"text-secondary"} weight={"light"} />
+              <div className={"vr mx-2"} />
+              <span>Side Effects</span>
+            </span>
+          ) : (
+            <span className={"d-inline-flex align-items-center"}>
+              <Pill className={"text-secondary"} weight={"light"} />
+              <SealWarning className={"text-secondary"} weight={"light"} />
+              <div className={"vr mx-2"} />
+              <span>Substances</span>
+            </span>
+          )}
+        </div>
+      </OverlayTrigger>
+    );
+  };
+
+const TermCarousel = ({ noFilterRequest = false}) => {
   const { theme } = React.useContext(ThemeContext);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
-  const { params } = useUrlParams();
 
-  const { data, error } = useTermData();
+  const { data, error } = useTermData(noFilterRequest);
 
   const [currentChartPage, setCurrentChartPage] = React.useState<number>(0);
   const itemsPerPage = 10;
@@ -203,51 +241,8 @@ const TermCarousel = () => {
     // }
   };
 
-  const getChartWarning = (params: URLParams) => {
-    const popover = (
-      <Popover>
-        <Popover.Body>
-          <div className={"d-flex align-items-center justify-content-center"}>
-            <ChartLine weight={"light"} />
-            <div className={"vr mx-2"} />
-            Correlation does not imply causation.
-          </div>
-        </Popover.Body>
-      </Popover>
-    );
-
-    return (
-      <OverlayTrigger
-        trigger={["hover", "focus"]}
-        placement={"bottom"}
-        overlay={popover}
-      >
-        <div style={{ cursor: "default" }}>
-          {params.searchBy !== "side_effect" ? (
-            <span className={"d-inline-flex align-items-center"}>
-              <SmileyNervous className={"text-secondary"} weight={"light"} />
-              <SealWarning className={"text-secondary"} weight={"light"} />
-              <div className={"vr mx-2"} />
-              <span>Side Effects</span>
-            </span>
-          ) : (
-            <span className={"d-inline-flex align-items-center"}>
-              <Pill className={"text-secondary"} weight={"light"} />
-              <SealWarning className={"text-secondary"} weight={"light"} />
-              <div className={"vr mx-2"} />
-              <span>Substances</span>
-            </span>
-          )}
-        </div>
-      </OverlayTrigger>
-    );
-  };
-
   return (
     <>
-      <h3 className={"d-flex justify-content-center"}>
-        {getChartWarning(params)}
-      </h3>
       <Nav variant="tabs" defaultActiveKey={carouselIndex} className={"mt-3"}>
         <Nav.Item>
           <Nav.Link

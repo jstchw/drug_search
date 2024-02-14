@@ -1,17 +1,14 @@
 import React from "react";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { ThemeType } from "../../types";
-// import {ApexOptions} from "apexcharts";
-// import ReactApexChart from "react-apexcharts";
 import { useTimeSeriesData } from "../../hooks/useTimeSeriesData";
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
-import { Clock } from "@phosphor-icons/react";
 
-const CasesTimeSeriesChart = () => {
+const CasesTimeSeriesChart = ({ noFilterRequest = false }) => {
   const { theme } = React.useContext(ThemeContext);
 
-  const { data, error } = useTimeSeriesData();
+  const { data, error } = useTimeSeriesData(noFilterRequest);
 
   if (!data || error) {
     return null;
@@ -75,7 +72,7 @@ const CasesTimeSeriesChart = () => {
           colors: theme === "dark" ? "#ACB5BD" : "",
         },
         formatter: (value) => {
-          return value.toLocaleString("en-US");
+          return value.toLocaleString();
         },
       },
     },
@@ -83,11 +80,6 @@ const CasesTimeSeriesChart = () => {
 
   return (
     <>
-      <h3 className={"d-flex justify-content-center align-items-center"}>
-        <Clock weight={"light"} className={"text-secondary"} />
-        <div className={"vr mx-2"} />
-        Reports over time
-      </h3>
       <ReactApexChart
         options={options}
         series={chartData.series}

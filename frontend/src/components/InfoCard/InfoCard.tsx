@@ -16,7 +16,7 @@ const InfoCard = () => {
       position={"bottom-end"}
       containerPosition={"fixed"}
     >
-      <Toast show={show} delay={3000} style={{width: "fit-content"}}>
+      <Toast show={show} delay={3000} style={{ width: "fit-content" }}>
         <Toast.Header className={"justify-content-end"} closeButton={false}>
           <span>Info Card</span>
         </Toast.Header>

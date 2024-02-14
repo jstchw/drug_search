@@ -160,9 +160,7 @@ const Result = () => {
           )}
 
           <Row className={"justify-content-center mx-auto"}>
-            <Col xs={isMobile ? 12 : 6} className="mb-4">
-              <ChartSection />
-            </Col>
+            <ChartSection />
           </Row>
 
           <Row className={"justify-content-center mx-auto"}>

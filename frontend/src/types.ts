@@ -1,3 +1,6 @@
+import React from "react";
+import { IconProps } from "@phosphor-icons/react";
+
 export type SearchOptions = {
   searchBy: SearchOptionsType;
   searchMode: SearchOptionsType;
@@ -39,6 +42,7 @@ export type URLParams = {
     max: string | null;
   };
   country?: string | null;
+  [key: string]: any;
 };
 
 export type DrugProperties = {
@@ -71,10 +75,6 @@ export type SearchTypesMap = {
 
 export type PlaceholderType = {
   [key: string]: string[];
-};
-
-export type Results = {
-  [key: string]: number;
 };
 
 export type ResultItem = {
@@ -110,3 +110,12 @@ export type DemographicGroups = {
   age: [number, number];
   def: string;
 };
+
+export interface DrugGroupConfig {
+  [key: string]: {
+    label: string;
+    variant: string;
+    description: string;
+    IconComponent: React.ForwardRefExoticComponent<IconProps>;
+  };
+}

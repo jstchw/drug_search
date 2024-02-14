@@ -9,7 +9,7 @@ import {
   ToggleButton,
   Tooltip,
   Overlay,
-  ButtonGroup
+  ButtonGroup,
 } from "react-bootstrap";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import {
@@ -25,6 +25,7 @@ import {
   searchTypes,
   searchModes,
   searchAgeGroups,
+  versionInfo,
 } from "../../constants";
 import { SearchOptions, SearchOptionsType } from "../../types";
 import SearchHistory from "../SearchHistory/SearchHistory";
@@ -54,23 +55,32 @@ const OptionModal = (props: {
   const minAgeRef = React.useRef<HTMLInputElement>(null);
   const maxAgeRef = React.useRef<HTMLInputElement>(null);
 
-  const [selectedAgeGroup, setSelectedAgeGroup] = React.useState<string>(`${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`);
+  const [selectedAgeGroup, setSelectedAgeGroup] = React.useState<string>(
+    `${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`,
+  );
   // Custom value for the age group input if the selected age doesn't match any of the predefined age groups
   const [customAgeGroup, setCustomAgeGroup] = React.useState<string>("");
 
   // Trigger the update of the selected age group when the min and max age values change
   React.useEffect(() => {
-    setCustomAgeGroup(`${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`)
-    setSelectedAgeGroup(`${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`)
+    setCustomAgeGroup(
+      `${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`,
+    );
+    setSelectedAgeGroup(
+      `${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`,
+    );
   }, [props.searchOptions.age.min.value, props.searchOptions.age.max.value]);
-
 
   // Function to compare the selected age group with the predefined age groups
   // If the group doesn't exist -> false
-  const doesAgeGroupExist = Object.values(searchAgeGroups).some(({ min, max }) => {
-    return min === parseInt(props.searchOptions.age.min.value) && max === parseInt(props.searchOptions.age.max.value);
-  });
-
+  const doesAgeGroupExist = Object.values(searchAgeGroups).some(
+    ({ min, max }) => {
+      return (
+        min === parseInt(props.searchOptions.age.min.value) &&
+        max === parseInt(props.searchOptions.age.max.value)
+      );
+    },
+  );
 
   const incorrectAgeTooltip = (
     <Tooltip id="incorrectAgeTooltip">
@@ -143,27 +153,27 @@ const OptionModal = (props: {
         minAgeRef.current &&
         maxAgeRef.current &&
         parseInt(minAgeRef.current.value) > parseInt(maxAgeRef.current.value)
-    ) {
-      setIncorrectAge(true);
-    } else {
-      setIncorrectAge(false);
-    }
-      if (isNumeric) {
-      const index = parseInt(e.currentTarget.id);
-
-      const updatedAge = { ...props.searchOptions.age };
-
-      if (index === updatedAge.min.index) {
-        updatedAge.min = { ...updatedAge.min, value: e.currentTarget.value };
-      } else if (index === updatedAge.max.index) {
-        updatedAge.max = { ...updatedAge.max, value: e.currentTarget.value };
+      ) {
+        setIncorrectAge(true);
+      } else {
+        setIncorrectAge(false);
       }
+      if (isNumeric) {
+        const index = parseInt(e.currentTarget.id);
 
-      props.setSearchOptions({
-        ...props.searchOptions,
-        age: updatedAge,
-      });
-    }
+        const updatedAge = { ...props.searchOptions.age };
+
+        if (index === updatedAge.min.index) {
+          updatedAge.min = { ...updatedAge.min, value: e.currentTarget.value };
+        } else if (index === updatedAge.max.index) {
+          updatedAge.max = { ...updatedAge.max, value: e.currentTarget.value };
+        }
+
+        props.setSearchOptions({
+          ...props.searchOptions,
+          age: updatedAge,
+        });
+      }
     }
   };
 
@@ -172,15 +182,20 @@ const OptionModal = (props: {
       const syntheticEvent = {
         currentTarget: {
           value: selectedAgeGroup,
-        }
-      }
-      handleAgeChange(syntheticEvent as unknown as React.ChangeEvent<HTMLInputElement>);
+        },
+      };
+      handleAgeChange(
+        syntheticEvent as unknown as React.ChangeEvent<HTMLInputElement>,
+      );
     }
-  }
+  };
 
   React.useEffect(() => {
     handleAgeGroupToggle();
-  }, [props.searchOptions.age.ageGroupsEnabled, props.searchOptions.age.enabled]);
+  }, [
+    props.searchOptions.age.ageGroupsEnabled,
+    props.searchOptions.age.enabled,
+  ]);
 
   const handleCountryChange = (value: string) => {
     const newSearchCountry =
@@ -373,8 +388,8 @@ const OptionModal = (props: {
                         const newSearchOptions = { ...props.searchOptions };
                         newSearchOptions.age = {
                           ...props.searchOptions.age,
-                          ageGroupsEnabled: !props.searchOptions.age
-                            .ageGroupsEnabled,
+                          ageGroupsEnabled:
+                            !props.searchOptions.age.ageGroupsEnabled,
                         };
                         props.setSearchOptions(newSearchOptions);
                       }}
@@ -387,29 +402,33 @@ const OptionModal = (props: {
                 {/* Age groups input */}
                 {props.searchOptions.age.ageGroupsEnabled && (
                   <InputGroup className={"mx-3 flex-grow-1"}>
-                  <Form.Select
-                    value={selectedAgeGroup}
-                    disabled={
-                      !props.searchOptions.age.enabled ||
-                      !props.searchOptions.age.ageGroupsEnabled
-                    }
-                    onChange={(e) => {
-                      handleAgeChange(e as unknown as React.ChangeEvent<HTMLInputElement>);
-                      setIncorrectAge(false);
-                    }}
-                  >
-                    {Object.entries(searchAgeGroups).map(([key, { min, max }], index) => (
-                      <option key={index} value={`${ min }-${ max }`}>
-                        { key }
-                      </option>
-                    ))}
-                    {!doesAgeGroupExist && (
-                      <option value={customAgeGroup}>
-                        Custom: {customAgeGroup}
-                      </option>
-                    )}
-                  </Form.Select>
-                </InputGroup>
+                    <Form.Select
+                      value={selectedAgeGroup}
+                      disabled={
+                        !props.searchOptions.age.enabled ||
+                        !props.searchOptions.age.ageGroupsEnabled
+                      }
+                      onChange={(e) => {
+                        handleAgeChange(
+                          e as unknown as React.ChangeEvent<HTMLInputElement>,
+                        );
+                        setIncorrectAge(false);
+                      }}
+                    >
+                      {Object.entries(searchAgeGroups).map(
+                        ([key, { min, max }], index) => (
+                          <option key={index} value={`${min}-${max}`}>
+                            {key}
+                          </option>
+                        ),
+                      )}
+                      {!doesAgeGroupExist && (
+                        <option value={customAgeGroup}>
+                          Custom: {customAgeGroup}
+                        </option>
+                      )}
+                    </Form.Select>
+                  </InputGroup>
                 )}
 
                 {!props.searchOptions.age.ageGroupsEnabled && (
@@ -423,7 +442,9 @@ const OptionModal = (props: {
                         value={props.searchOptions.age.min.value ?? 0}
                         id={"0"}
                         onChange={(e) => {
-                          handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
+                          handleAgeChange(
+                            e as React.ChangeEvent<HTMLInputElement>,
+                          );
                         }}
                         disabled={!props.searchOptions.age.enabled}
                         onCopy={(e) => e.preventDefault()}
@@ -440,7 +461,9 @@ const OptionModal = (props: {
                         value={props.searchOptions.age.max.value ?? 0}
                         id={"1"}
                         onChange={(e) => {
-                          handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
+                          handleAgeChange(
+                            e as React.ChangeEvent<HTMLInputElement>,
+                          );
                         }}
                         disabled={!props.searchOptions.age.enabled}
                         onCopy={(e) => e.preventDefault()}
@@ -448,7 +471,7 @@ const OptionModal = (props: {
                       />
                     </InputGroup>
                   </>
-                  )}
+                )}
               </Form.Group>
 
               {/* Country option change */}
@@ -530,7 +553,7 @@ const OptionModal = (props: {
               target={"_blank"}
               rel="noreferrer"
             >
-              DrugSearch Alpha 0.1.1
+              {versionInfo.appName} {versionInfo.tag} {versionInfo.number}
             </a>
           </FigureCaption>
         </Modal.Body>

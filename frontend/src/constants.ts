@@ -1,6 +1,22 @@
 // Search types that can be selected in the popover
 import countries from "./assets/countries.json";
-import { PlaceholderType, SearchOptionsType, AgeOptions, AgeGroups } from "./types";
+import {
+  PlaceholderType,
+  SearchOptionsType,
+  AgeOptions,
+  AgeGroups,
+  DrugGroupConfig,
+} from "./types";
+import {
+  Prescription,
+  MagnifyingGlass,
+  PawPrint,
+  Trash,
+  Carrot,
+  Flask,
+  X,
+  SmileyNervous,
+} from "@phosphor-icons/react";
 
 export const searchTypes: SearchOptionsType[] = [
   {
@@ -103,7 +119,7 @@ export const searchAgeGroups: AgeGroups = {
     min: 85,
     max: 120,
   },
-}
+};
 
 export const searchCountry: SearchOptionsType[] = Object.entries(countries).map(
   ([value, label], index) => ({
@@ -124,6 +140,12 @@ export const defaultSearchOptions = {
     ({ value }) => value === "US",
   ) as SearchOptionsType,
 };
+
+export const optionalURLParams = [
+  "sex",
+  "age",
+  "country",
+]
 
 // redo the placeholder data structure
 export const placeholders: PlaceholderType = {
@@ -214,40 +236,60 @@ export const placeholders: PlaceholderType = {
   ],
 };
 
-export const drugGroups = {
+export const drugGroupConfig: DrugGroupConfig = {
   approved: {
+    label: "Approved",
+    variant: "success",
     description:
       "Has been approved in at least one jurisdiction, at some point in time.",
-    badgeVariant: "success",
+    IconComponent: Prescription,
   },
   investigational: {
+    label: "Investigational",
+    variant: "warning",
     description:
       "Undergoing evaluation in the drug approval process in at least one jurisdiction.",
-    badgeVariant: "warning",
+    IconComponent: MagnifyingGlass,
   },
   illicit: {
+    label: "Illicit",
+    variant: "danger",
     description:
       "Deemed illegal in at least one jurisdiction, at some point in time.",
-    badgeVariant: "danger",
+    IconComponent: X,
   },
   vet_approved: {
+    label: "Vet Approved",
+    variant: "info",
     description:
       "Approved for veterinary use in at least one jurisdiction, at some point in time.",
-    badgeVariant: "info",
+    IconComponent: PawPrint,
   },
   withdrawn: {
+    label: "Withdrawn",
+    variant: "secondary",
     description:
       "Has been withdrawn from the market in at least one jurisdiction, at some point in time.",
-    badgeVariant: "secondary",
+    IconComponent: Trash,
   },
   nutraceutical: {
+    label: "Nutraceutical",
+    variant: "light",
     description:
       "Pharmaceutical-grade nutrient with potential health benefits.",
-    badgeVariant: "light",
+    IconComponent: Carrot,
   },
   experimental: {
+    label: "Experimental",
+    variant: "dark",
     description: "Shown to bind specific proteins in experimental settings.",
-    badgeVariant: "dark",
+    IconComponent: Flask,
+  },
+  side_effect: {
+    label: "Side Effect",
+    variant: "primary",
+    description: "Has been reported as a side effect.",
+    IconComponent: SmileyNervous,
   },
 };
 
@@ -262,4 +304,10 @@ export const fuseOptions = {
   keys: ["name"],
   threshold: 0.4,
   minMatchCharLength: 2,
+};
+
+export const versionInfo = {
+  appName: "DrugSearch",
+  tag: "Alpha",
+  number: "0.1.2",
 };

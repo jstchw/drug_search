@@ -1,83 +1,7 @@
 import React from "react";
 import { Popover, OverlayTrigger, Badge } from "react-bootstrap";
-import {
-  IconProps,
-  Prescription,
-  MagnifyingGlass,
-  PawPrint,
-  Trash,
-  Carrot,
-  Flask,
-  X,
-  SmileyNervous,
-} from "@phosphor-icons/react";
 import { useUrlParams } from "../../hooks/useUrlParams";
-
-interface DrugGroupConfig {
-  [key: string]: {
-    label: string;
-    variant: string;
-    description: string;
-    IconComponent: React.ForwardRefExoticComponent<IconProps>;
-  };
-}
-
-const groupConfig: DrugGroupConfig = {
-  approved: {
-    label: "Approved",
-    variant: "success",
-    description:
-      "Has been approved in at least one jurisdiction, at some point in time.",
-    IconComponent: Prescription,
-  },
-  investigational: {
-    label: "Investigational",
-    variant: "warning",
-    description:
-      "Undergoing evaluation in the drug approval process in at least one jurisdiction.",
-    IconComponent: MagnifyingGlass,
-  },
-  illicit: {
-    label: "Illicit",
-    variant: "danger",
-    description:
-      "Deemed illegal in at least one jurisdiction, at some point in time.",
-    IconComponent: X,
-  },
-  vet_approved: {
-    label: "Vet Approved",
-    variant: "info",
-    description:
-      "Approved for veterinary use in at least one jurisdiction, at some point in time.",
-    IconComponent: PawPrint,
-  },
-  withdrawn: {
-    label: "Withdrawn",
-    variant: "secondary",
-    description:
-      "Has been withdrawn from the market in at least one jurisdiction, at some point in time.",
-    IconComponent: Trash,
-  },
-  nutraceutical: {
-    label: "Nutraceutical",
-    variant: "light",
-    description:
-      "Pharmaceutical-grade nutrient with potential health benefits.",
-    IconComponent: Carrot,
-  },
-  experimental: {
-    label: "Experimental",
-    variant: "dark",
-    description: "Shown to bind specific proteins in experimental settings.",
-    IconComponent: Flask,
-  },
-  side_effect: {
-    label: "Side Effect",
-    variant: "primary",
-    description: "Has been reported as a side effect.",
-    IconComponent: SmileyNervous,
-  },
-};
+import { drugGroupConfig } from "../../constants";
 
 interface DrugGroupsProps {
   drugGroups: string[];
@@ -87,7 +11,7 @@ const DrugGroups: React.FC<DrugGroupsProps> = ({ drugGroups }) => {
   const { params } = useUrlParams();
   const processDrugGroups = (groups: string[]) => {
     return groups.map((group, index) => {
-      const groupData = groupConfig[group];
+      const groupData = drugGroupConfig[group];
 
       if (!groupData) {
         throw new Error(`No data found for group ${group}`);

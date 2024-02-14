@@ -171,7 +171,6 @@ const TermCarousel = () => {
   });
 
   const cloudCallbacks = {
-    // Fix this later type
     getWordColor: (word: { text: string; value: number }) => {
       const maxFrequency = Math.max(...cloudData.map((w) => w.value));
       const frequencyRatio = word.value / maxFrequency;

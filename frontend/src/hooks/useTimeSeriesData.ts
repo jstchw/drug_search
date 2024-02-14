@@ -4,8 +4,21 @@ import { useUrlParams } from "./useUrlParams";
 import { ChartDataPoint, FDARawData, TimeEventData } from "../types";
 import { processYearData } from "../utils/utils";
 
-export const useTimeSeriesData = () => {
-  const { params } = useUrlParams();
+export const useTimeSeriesData = (noFilterRequest = false) => {
+  let { params } = useUrlParams();
+
+  if (noFilterRequest) {
+    params = {
+      ...params,
+      sex: null,
+      age: {
+        min: null,
+        max: null,
+      },
+      country: null,
+    };
+  }
+
   const url = generatePath(params, "receiveDate");
 
   const [data, setData] = useState<ChartDataPoint[] | null>(null);
@@ -33,7 +46,7 @@ export const useTimeSeriesData = () => {
       }
     };
 
-    fetchData();
+    void fetchData();
   }, [url]); // Dependency array with url to re-run effect when url changes
 
   return { data, loading, error };

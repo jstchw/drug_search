@@ -156,7 +156,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
                 option: (state) =>
                   state.isFocused && theme === "dark" ? "text-dark" : "",
                 multiValue: () => "bg-secondary-subtle",
-                multiValueLabel: () => theme === "dark" ? "text-light" : "",
+                multiValueLabel: () => (theme === "dark" ? "text-light" : ""),
               }}
             />
 

@@ -133,11 +133,11 @@ export const mapParamArrayToLabels = (
   };
 
   if (params.searchBy) {
-    assignMappedLabel(params.searchBy, searchTypes, "Search type");
+    assignMappedLabel(params.searchBy, searchTypes, "Type");
   }
 
   if (params.searchMode) {
-    assignMappedLabel(params.searchMode, searchModes, "Search mode");
+    assignMappedLabel(params.searchMode, searchModes, "Mode");
   }
 
   if (params.sex) {

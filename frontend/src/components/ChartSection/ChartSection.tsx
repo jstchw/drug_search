@@ -8,6 +8,7 @@ import { isMobile } from "react-device-detect";
 import { useAreParamsFiltered } from "../../hooks/useAreParamsFiltered";
 import { getChartWarning } from "../ApexChart/TermCarousel";
 import { useUrlParams } from "../../hooks/useUrlParams";
+import { AnimatePresence } from "framer-motion";
 
 type ViewUnfilteredButtonProps = {
   noFilterRequest: boolean;
@@ -87,6 +88,7 @@ const ChartSection = () => {
             </>
           )}
 
+          <AnimatePresence>
           <Row className={"mb-4"}>
             <Col>
               {noFilterTimeSeriesRequest && (
@@ -95,6 +97,7 @@ const ChartSection = () => {
                 </h5>
               )}
               <CasesTimeSeriesChart
+                key={'genericTimeSeries'}
                 onRender={() => handleChildRender("timeSeries")}
               />
             </Col>
@@ -105,12 +108,14 @@ const ChartSection = () => {
                   Unfiltered data
                 </h5>
                 <CasesTimeSeriesChart
+                  key={'unfilteredTimeSeries'}
                   noFilterRequest={true}
                   onRender={() => handleChildRender("timeSeries")}
                 />
               </Col>
             )}
           </Row>
+          </AnimatePresence>
         </Col>
       </Row>
 
@@ -139,6 +144,7 @@ const ChartSection = () => {
             </>
           )}
 
+          <AnimatePresence>
           <Row>
             <Col xs={noFilterTermCarouselRequest ? 6 : 12}>
               {noFilterTermCarouselRequest && (
@@ -163,6 +169,7 @@ const ChartSection = () => {
               </Col>
             )}
           </Row>
+          </AnimatePresence>
         </Col>
       </Row>
     </div>

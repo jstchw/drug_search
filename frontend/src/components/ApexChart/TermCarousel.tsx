@@ -11,6 +11,7 @@ import { Cloud, List, Pill } from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
+import { motion } from "framer-motion";
 
 const cloudOptions: OptionsProp = {
   enableTooltip: true,
@@ -256,7 +257,13 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
   };
 
   return (
-    <>
+    <motion.div
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0 }}
+    >
       <Nav variant="tabs" defaultActiveKey={carouselIndex} className={"mt-3"}>
         <Nav.Item>
           <Nav.Link
@@ -305,7 +312,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
           callbacks={cloudCallbacks}
         />
       </Carousel>
-    </>
+    </motion.div>
   );
 };
 

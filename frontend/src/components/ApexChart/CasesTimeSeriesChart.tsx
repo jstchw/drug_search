@@ -4,6 +4,7 @@ import { ThemeType } from "../../types";
 import { useTimeSeriesData } from "../../hooks/useTimeSeriesData";
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
+import { motion } from "framer-motion";
 
 interface CasesTimeSeriesChartProps {
   noFilterRequest?: boolean;
@@ -93,13 +94,19 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
   };
 
   return (
-    <>
+    <motion.div
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0 }}
+    >
       <ReactApexChart
         options={options}
         series={chartData.series}
         type={options.chart?.type}
       />
-    </>
+    </motion.div>
   );
 };
 

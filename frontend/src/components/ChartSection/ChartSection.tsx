@@ -112,7 +112,7 @@ const ChartSection = () => {
           })}
 
           <Row>
-            <Col xs={6}>
+            <Col xs={noFilterTermCarouselRequest ? 6 : 12}>
               {noFilterTermCarouselRequest && (
                 <h5 className={"d-flex justify-content-center mt-3"}>
                   Filtered data

@@ -141,11 +141,7 @@ export const defaultSearchOptions = {
   ) as SearchOptionsType,
 };
 
-export const optionalURLParams = [
-  "sex",
-  "age",
-  "country",
-]
+export const optionalURLParams = ["sex", "age", "country"];
 
 // redo the placeholder data structure
 export const placeholders: PlaceholderType = {

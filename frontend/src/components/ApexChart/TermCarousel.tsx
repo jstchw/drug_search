@@ -28,50 +28,64 @@ const cloudOptions: OptionsProp = {
 };
 
 export const getChartWarning = (params: URLParams) => {
-    const popover = (
-      <Popover>
-        <Popover.Body>
-          <div className={"d-flex align-items-center justify-content-center"}>
-            <ChartLine weight={"light"} />
-            <div className={"vr mx-2"} />
-            Correlation does not imply causation.
-          </div>
-        </Popover.Body>
-      </Popover>
-    );
-
-    return (
-      <OverlayTrigger
-        trigger={["hover", "focus"]}
-        placement={"bottom"}
-        overlay={popover}
-      >
-        <div style={{ cursor: "default" }}>
-          {params.searchBy !== "side_effect" ? (
-            <span className={"d-inline-flex align-items-center"}>
-              <SmileyNervous className={"text-secondary"} weight={"light"} />
-              <SealWarning className={"text-secondary"} weight={"light"} />
-              <div className={"vr mx-2"} />
-              <span>Side Effects</span>
-            </span>
-          ) : (
-            <span className={"d-inline-flex align-items-center"}>
-              <Pill className={"text-secondary"} weight={"light"} />
-              <SealWarning className={"text-secondary"} weight={"light"} />
-              <div className={"vr mx-2"} />
-              <span>Substances</span>
-            </span>
-          )}
+  const popover = (
+    <Popover>
+      <Popover.Body>
+        <div className={"d-flex align-items-center justify-content-center"}>
+          <ChartLine weight={"light"} />
+          <div className={"vr mx-2"} />
+          Correlation does not imply causation.
         </div>
-      </OverlayTrigger>
-    );
-  };
+      </Popover.Body>
+    </Popover>
+  );
 
-const TermCarousel = ({ noFilterRequest = false}) => {
+  return (
+    <OverlayTrigger
+      trigger={["hover", "focus"]}
+      placement={"bottom"}
+      overlay={popover}
+    >
+      <div style={{ cursor: "default" }}>
+        {params.searchBy !== "side_effect" ? (
+          <span className={"d-inline-flex align-items-center"}>
+            <SmileyNervous className={"text-secondary"} weight={"light"} />
+            <SealWarning className={"text-secondary"} weight={"light"} />
+            <div className={"vr mx-2"} />
+            <span>Side Effects</span>
+          </span>
+        ) : (
+          <span className={"d-inline-flex align-items-center"}>
+            <Pill className={"text-secondary"} weight={"light"} />
+            <SealWarning className={"text-secondary"} weight={"light"} />
+            <div className={"vr mx-2"} />
+            <span>Substances</span>
+          </span>
+        )}
+      </div>
+    </OverlayTrigger>
+  );
+};
+
+interface TermCarouselProps {
+  noFilterRequest?: boolean;
+  onRender: () => void;
+}
+
+const TermCarousel: React.FC<TermCarouselProps> = ({
+  noFilterRequest = false,
+  onRender,
+}) => {
   const { theme } = React.useContext(ThemeContext);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
   const { data, error } = useTermData(noFilterRequest);
+
+  React.useEffect(() => {
+    if (data && !error) {
+      onRender();
+    }
+  }, [data, error]);
 
   const [currentChartPage, setCurrentChartPage] = React.useState<number>(0);
   const itemsPerPage = 10;

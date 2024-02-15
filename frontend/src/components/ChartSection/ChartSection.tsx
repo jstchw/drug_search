@@ -47,27 +47,45 @@ const ChartSection = () => {
   const [noFilterTermCarouselRequest, setNoFilterTermCarouselRequest] =
     React.useState<boolean>(false);
 
+  const [childrenRendered, setChildrenRendered] = React.useState({
+    timeSeries: false,
+    termCarousel: false,
+  });
+
+  const handleChildRender = (child: string) => {
+    setChildrenRendered((prev) => ({ ...prev, [child]: true }));
+  };
+
   return (
     <div className={"mt-4"}>
+      {/* Time series section */}
       <Row className={"d-flex justify-content-center"}>
         <Col
           xs={isMobile || noFilterTimeSeriesRequest ? 12 : 6}
           className="mb-4"
         >
-          <Row>
-            <h3 className={"d-flex justify-content-center align-items-center"}>
-              <Clock weight={"light"} className={"text-secondary"} />
-              <div className={"vr mx-2"} />
-              Reports over time
-            </h3>
-          </Row>
+          {/* If the children are rendered, show the title */}
+          {childrenRendered.timeSeries && (
+            <>
+              <Row>
+                <h3
+                  className={"d-flex justify-content-center align-items-center"}
+                >
+                  <Clock weight={"light"} className={"text-secondary"} />
+                  <div className={"vr mx-2"} />
+                  Reports over time
+                </h3>
+              </Row>
 
-          {areParamsFiltered && viewUnfilteredButton({
-            noFilterRequest: noFilterTimeSeriesRequest,
-            setNoFilterRequest: setNoFilterTimeSeriesRequest,
-            id: "unfilteredTimeSeries",
-            value: "unfilteredTimeSeries",
-          })}
+              {areParamsFiltered &&
+                viewUnfilteredButton({
+                  noFilterRequest: noFilterTimeSeriesRequest,
+                  setNoFilterRequest: setNoFilterTimeSeriesRequest,
+                  id: "unfilteredTimeSeries",
+                  value: "unfilteredTimeSeries",
+                })}
+            </>
+          )}
 
           <Row className={"mb-4"}>
             <Col>
@@ -76,7 +94,9 @@ const ChartSection = () => {
                   Filtered data
                 </h5>
               )}
-              <CasesTimeSeriesChart />
+              <CasesTimeSeriesChart
+                onRender={() => handleChildRender("timeSeries")}
+              />
             </Col>
 
             {noFilterTimeSeriesRequest && (
@@ -84,11 +104,13 @@ const ChartSection = () => {
                 <h5 className={"d-flex justify-content-center mt-3"}>
                   Unfiltered data
                 </h5>
-                <CasesTimeSeriesChart noFilterRequest={true} />
+                <CasesTimeSeriesChart
+                  noFilterRequest={true}
+                  onRender={() => handleChildRender("timeSeries")}
+                />
               </Col>
             )}
           </Row>
-
         </Col>
       </Row>
 
@@ -96,20 +118,26 @@ const ChartSection = () => {
       <Row className={"d-flex justify-content-center mb-4"}>
         <Col
           xs={isMobile || noFilterTermCarouselRequest ? 12 : 6}
-          className="mb-4">
+          className="mb-4"
+        >
+          {/* If the children are rendered, show the title */}
+          {childrenRendered.termCarousel && (
+            <>
+              <Row>
+                <h3 className={"d-flex justify-content-center"}>
+                  {getChartWarning(params)}
+                </h3>
+              </Row>
 
-          <Row>
-            <h3 className={"d-flex justify-content-center"}>
-              {getChartWarning(params)}
-            </h3>
-          </Row>
-
-          {areParamsFiltered && viewUnfilteredButton({
-            noFilterRequest: noFilterTermCarouselRequest,
-            setNoFilterRequest: setNoFilterTermCarouselRequest,
-            id: "unfilteredTermCarousel",
-            value: "unfilteredTermCarousel",
-          })}
+              {areParamsFiltered &&
+                viewUnfilteredButton({
+                  noFilterRequest: noFilterTermCarouselRequest,
+                  setNoFilterRequest: setNoFilterTermCarouselRequest,
+                  id: "unfilteredTermCarousel",
+                  value: "unfilteredTermCarousel",
+                })}
+            </>
+          )}
 
           <Row>
             <Col xs={noFilterTermCarouselRequest ? 6 : 12}>
@@ -118,7 +146,9 @@ const ChartSection = () => {
                   Filtered data
                 </h5>
               )}
-              <TermCarousel />
+              <TermCarousel
+                onRender={() => handleChildRender("termCarousel")}
+              />
             </Col>
 
             {noFilterTermCarouselRequest && (
@@ -126,7 +156,10 @@ const ChartSection = () => {
                 <h5 className={"d-flex justify-content-center mt-3"}>
                   Unfiltered data
                 </h5>
-                <TermCarousel noFilterRequest={true} />
+                <TermCarousel
+                  noFilterRequest={true}
+                  onRender={() => handleChildRender("termCarousel")}
+                />
               </Col>
             )}
           </Row>

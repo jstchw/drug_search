@@ -5,10 +5,24 @@ import { useTimeSeriesData } from "../../hooks/useTimeSeriesData";
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
 
-const CasesTimeSeriesChart = ({ noFilterRequest = false }) => {
+interface CasesTimeSeriesChartProps {
+  noFilterRequest?: boolean;
+  onRender: () => void;
+}
+
+const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
+  noFilterRequest = false,
+  onRender,
+}) => {
   const { theme } = React.useContext(ThemeContext);
 
   const { data, error } = useTimeSeriesData(noFilterRequest);
+
+  React.useEffect(() => {
+    if (data && !error) {
+      onRender();
+    }
+  }, [data, error]);
 
   if (!data || error) {
     return null;

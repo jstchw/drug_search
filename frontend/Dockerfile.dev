@@ -1,5 +1,7 @@
 FROM node:21-slim
 
+RUN yarn set version stable
+
 WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./

@@ -9,8 +9,6 @@ import { Carousel } from "react-responsive-carousel";
 import { Nav, OverlayTrigger, Popover, Pagination } from "react-bootstrap";
 import { Cloud, List, Pill } from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
-import "tippy.js/dist/tippy.css";
-import "tippy.js/animations/scale.css";
 import { motion } from "framer-motion";
 
 const cloudOptions: OptionsProp = {

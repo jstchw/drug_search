@@ -11,9 +11,10 @@ services:
       - ./frontend/tsconfig.json:/usr/src/app/tsconfig.json
       - ./frontend/package.json:/usr/src/app/package.json
       - ./frontend/yarn.lock:/usr/src/app/yarn.lock
+      - ./frontend/vite.config.mts:/usr/src/app/vite.config.mts
+      - /usr/src/app/node_modules
     environment:
       - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
   backend:

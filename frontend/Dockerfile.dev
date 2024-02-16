@@ -9,8 +9,9 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY src ./src
-COPY public ./public
 COPY tsconfig.json ./
+COPY vite.config.mts ./
+COPY index.html ./
 
 EXPOSE 3000
 

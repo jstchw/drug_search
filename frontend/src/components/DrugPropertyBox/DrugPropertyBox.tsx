@@ -4,6 +4,9 @@ import { Col, Row } from "react-bootstrap";
 import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 import { useUrlParams } from "../../hooks/useUrlParams";
+import DemographicModal from "../DemographicModal/DemographicModal";
+import { Button } from "react-bootstrap";
+import { IdentificationCard } from "@phosphor-icons/react";
 
 const DrugPropertyBox = (props: {
   drug: DrugProperties;
@@ -23,11 +26,17 @@ const DrugPropertyBox = (props: {
         ) : (
           <h3>{props.drug.name}</h3>
         )}
-        <Row className="justify-content-center mb-4">
+        <Row className="justify-content-center mb-2">
           <Col xs={12} md={8}>
             <DrugGroups drugGroups={props.drug.groups || []} />
           </Col>
         </Row>
+        <Button
+          variant="primary"
+          className={"mb-4"}
+        >
+          <IdentificationCard weight={'light'} className={'fs-3'}/>
+        </Button>
         {props.isSingle ? (
           // For a single drug, put DrugDescription and DrugAccordion side by side
           <Row className="justify-content-center">

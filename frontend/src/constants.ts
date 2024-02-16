@@ -289,10 +289,7 @@ export const drugGroupConfig: DrugGroupConfig = {
   },
 };
 
-export const backendUrl =
-  process.env.NODE_ENV === "development"
-    ? `${window.location.protocol}//${window.location.hostname}:16000/api`
-    : "https://drugsearch.org/api";
+export const backendUrl = `${window.location.protocol}//${window.location.hostname}:16000/api`;
 
 export const baseFdaUrl = "https://api.fda.gov/drug/event.json";
 

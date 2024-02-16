@@ -89,32 +89,32 @@ const ChartSection = () => {
           )}
 
           <AnimatePresence>
-          <Row className={"mb-4"}>
-            <Col>
-              {noFilterTimeSeriesRequest && (
-                <h5 className={"d-flex justify-content-center mt-3"}>
-                  Filtered data
-                </h5>
-              )}
-              <CasesTimeSeriesChart
-                key={'genericTimeSeries'}
-                onRender={() => handleChildRender("timeSeries")}
-              />
-            </Col>
-
-            {noFilterTimeSeriesRequest && (
+            <Row className={"mb-4"}>
               <Col>
-                <h5 className={"d-flex justify-content-center mt-3"}>
-                  Unfiltered data
-                </h5>
+                {noFilterTimeSeriesRequest && (
+                  <h5 className={"d-flex justify-content-center mt-3"}>
+                    Filtered data
+                  </h5>
+                )}
                 <CasesTimeSeriesChart
-                  key={'unfilteredTimeSeries'}
-                  noFilterRequest={true}
+                  key={"genericTimeSeries"}
                   onRender={() => handleChildRender("timeSeries")}
                 />
               </Col>
-            )}
-          </Row>
+
+              {noFilterTimeSeriesRequest && (
+                <Col>
+                  <h5 className={"d-flex justify-content-center mt-3"}>
+                    Unfiltered data
+                  </h5>
+                  <CasesTimeSeriesChart
+                    key={"unfilteredTimeSeries"}
+                    noFilterRequest={true}
+                    onRender={() => handleChildRender("timeSeries")}
+                  />
+                </Col>
+              )}
+            </Row>
           </AnimatePresence>
         </Col>
       </Row>
@@ -145,30 +145,30 @@ const ChartSection = () => {
           )}
 
           <AnimatePresence>
-          <Row>
-            <Col xs={noFilterTermCarouselRequest ? 6 : 12}>
-              {noFilterTermCarouselRequest && (
-                <h5 className={"d-flex justify-content-center mt-3"}>
-                  Filtered data
-                </h5>
-              )}
-              <TermCarousel
-                onRender={() => handleChildRender("termCarousel")}
-              />
-            </Col>
-
-            {noFilterTermCarouselRequest && (
-              <Col xs={6}>
-                <h5 className={"d-flex justify-content-center mt-3"}>
-                  Unfiltered data
-                </h5>
+            <Row>
+              <Col xs={noFilterTermCarouselRequest ? 6 : 12}>
+                {noFilterTermCarouselRequest && (
+                  <h5 className={"d-flex justify-content-center mt-3"}>
+                    Filtered data
+                  </h5>
+                )}
                 <TermCarousel
-                  noFilterRequest={true}
                   onRender={() => handleChildRender("termCarousel")}
                 />
               </Col>
-            )}
-          </Row>
+
+              {noFilterTermCarouselRequest && (
+                <Col xs={6}>
+                  <h5 className={"d-flex justify-content-center mt-3"}>
+                    Unfiltered data
+                  </h5>
+                  <TermCarousel
+                    noFilterRequest={true}
+                    onRender={() => handleChildRender("termCarousel")}
+                  />
+                </Col>
+              )}
+            </Row>
           </AnimatePresence>
         </Col>
       </Row>

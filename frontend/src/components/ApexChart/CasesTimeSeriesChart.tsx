@@ -1,10 +1,11 @@
 import React from "react";
-import { ThemeContext } from "../../contexts/ThemeContext";
-import { ThemeType } from "../../types";
 import { useTimeSeriesData } from "../../hooks/useTimeSeriesData";
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
 import { motion } from "framer-motion";
+import { getTimeSeriesOptions } from "./chartOptions";
+import { ThemeContext } from "../../contexts/ThemeContext";
+import { ThemeType } from "src/types";
 
 interface CasesTimeSeriesChartProps {
   noFilterRequest?: boolean;
@@ -38,60 +39,9 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
     ],
   };
 
-  const options: ApexOptions = {
-    theme: {
-      mode: theme as ThemeType,
-    },
-    colors: ["#59768A"],
-    legend: {
-      show: true,
-      position: "bottom",
-    },
-    chart: {
-      type: "area",
-      toolbar: {
-        show: false,
-        tools: {
-          zoom: false,
-          zoomin: false,
-          zoomout: false,
-        },
-      },
-      background: theme === "dark" ? "#212529" : "",
-    },
-    stroke: {
-      curve: "smooth",
-    },
-    fill: {
-      type: "gradient",
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      type: "category",
-      labels: {
-        style: {
-          fontSize: "14px",
-          colors: theme === "dark" ? "#ACB5BD" : "",
-        },
-      },
-      tooltip: {
-        enabled: false,
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          fontSize: "14px",
-          colors: theme === "dark" ? "#ACB5BD" : "",
-        },
-        formatter: (value) => {
-          return value.toLocaleString();
-        },
-      },
-    },
-  };
+  const options: ApexOptions = getTimeSeriesOptions(theme as ThemeType);
+
+  console.log("CasesTimeSeriesChart.tsx: options", options);
 
   return (
     <motion.div

@@ -48,9 +48,13 @@ const formatUpperBoundDate = (date: Date) => {
   return `${year}${month < 10 ? `0${month}` : month}${day < 10 ? `0${day}` : day}`;
 };
 
-export const generatePath = (params: URLParams, countType?: string) => {
+export const generatePath = (
+  params: URLParams,
+  countType?: string,
+  limitProp?: number,
+) => {
   const fromDate = `20040101`;
-  const limit = 50;
+  const limit = limitProp ? limitProp : 50;
   const toDate = formatUpperBoundDate(new Date());
   const whatToCount: SearchTypesMap = {
     generic_name: "patient.reaction.reactionmeddrapt.exact",

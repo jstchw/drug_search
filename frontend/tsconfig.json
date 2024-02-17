@@ -2,12 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "outDir": "./dist",
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "node",
     "allowJs": false,
-    "checkJs": true,
+    "checkJs": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -22,14 +21,11 @@
     "isolatedModules": true,
     "noEmitOnError": false,
     "noEmit": false,
-    "types": ["vite/client", "vite-plugin-svgr/client"],
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "node_modules/@types"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
   "exclude": [
+    "node_modules",
     "build",
     "dist",
     "src/**/*.test.ts",

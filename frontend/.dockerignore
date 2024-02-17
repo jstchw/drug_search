@@ -14,8 +14,13 @@ backup/
 
 # Docker
 Dockerfile.dev
+Dockerfile.prod
 compose.yml
 .dockerignore
 
 # Python
 api/
+
+# Prettier
+.prettierignore
+.prettierrc

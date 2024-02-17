@@ -7,6 +7,7 @@ import { useUrlParams } from "../../hooks/useUrlParams";
 import DemographicModal from "../DemographicModal/DemographicModal";
 import { Button } from "react-bootstrap";
 import { IdentificationCard } from "@phosphor-icons/react";
+import React from "react";
 
 const DrugPropertyBox = (props: {
   drug: DrugProperties;
@@ -17,6 +18,8 @@ const DrugPropertyBox = (props: {
   if (params.searchBy === "side_effect") {
     props.drug.groups = ["side_effect"];
   }
+
+  const [showDemographic, setShowDemographic] = React.useState(false);
 
   return (
     <>
@@ -31,12 +34,23 @@ const DrugPropertyBox = (props: {
             <DrugGroups drugGroups={props.drug.groups || []} />
           </Col>
         </Row>
+
         <Button
           variant="primary"
           className={"mb-4"}
+          onClick={() => setShowDemographic(!showDemographic)}
         >
-          <IdentificationCard weight={'light'} className={'fs-3'}/>
+          <IdentificationCard weight={"light"} className={"fs-3"} />
         </Button>
+        {/* Load the DemographicModal when the button is clicked to avoid unnecessary slowdowns */}
+        {showDemographic && (
+          <DemographicModal
+            show={showDemographic}
+            setShow={setShowDemographic}
+            term={[props.drug.name]}
+          />
+        )}
+
         {props.isSingle ? (
           // For a single drug, put DrugDescription and DrugAccordion side by side
           <Row className="justify-content-center">

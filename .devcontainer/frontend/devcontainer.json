@@ -1,0 +1,6 @@
+{
+    "name": "DrugSearch Frontend",
+    "dockerComposeFile": "../../compose.yml",
+    "service": "frontend",
+    "workspaceFolder": "/usr/src/app"
+}

@@ -10,6 +10,7 @@ import { Nav, OverlayTrigger, Popover, Pagination } from "react-bootstrap";
 import { Cloud, List, Pill } from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
+import { getTermCarouselOptions } from "./chartOptions";
 
 const cloudOptions: OptionsProp = {
   enableTooltip: true,
@@ -129,75 +130,9 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     );
   }
 
-  const apexColors = [
-    "#59768A",
-    "#035363",
-    "#32B2BF",
-    "#D5E0BE",
-    "#CE9062",
-    "#E0AB86",
-    "#C7CE8A",
-    "#6EB585",
-    "#325951",
-    "#6F9F9D",
-  ];
-
   const apexChartOptions: ApexOptions = {
-    colors: apexColors,
-    theme: {
-      mode: theme as ThemeType,
-    },
+    ...getTermCarouselOptions(theme as ThemeType),
     labels: labelsForCurrentPage,
-    legend: {
-      show: false,
-    },
-    chart: {
-      type: "bar",
-      width: "100%",
-      toolbar: {
-        show: false,
-      },
-      background: theme === "dark" ? "#212529" : "",
-      dropShadow: {
-        enabled: true,
-        top: 1,
-        left: 1,
-        blur: 2,
-        color: theme === "dark" ? "#000" : "#000",
-        opacity: 0.2,
-      },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        distributed: true,
-        barHeight: "100%",
-      },
-    },
-    grid: {
-      show: false,
-    },
-    yaxis: {
-      labels: {
-        show: true,
-        style: {
-          fontSize: "14px",
-          colors: theme === "dark" ? "#ACB5BD" : "",
-        },
-        formatter: (value: number) => {
-          const stringValue = String(value);
-          return (
-            stringValue.charAt(0).toUpperCase() +
-            stringValue.slice(1).toLowerCase()
-          );
-        },
-      },
-    },
-    xaxis: {
-      labels: {
-        show: false,
-      },
-    },
     dataLabels: {
       enabled: true,
       // Converts the value to a percentage
@@ -212,7 +147,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
         },
       },
     },
-  };
+  }
 
   const cloudData = data.map((item) => {
     return {

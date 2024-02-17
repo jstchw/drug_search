@@ -41,8 +41,6 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
 
   const options: ApexOptions = getTimeSeriesOptions(theme as ThemeType);
 
-  console.log("CasesTimeSeriesChart.tsx: options", options);
-
   return (
     <motion.div
       layout

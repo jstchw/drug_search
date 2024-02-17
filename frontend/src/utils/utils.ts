@@ -80,7 +80,10 @@ export const generatePath = (
 
   // Sex formation ----------------
   if (params.sex) {
-    searchParts.push(params.sex);
+    const sex = searchSex.find((option) => option.param === params.sex);
+    if (sex) {
+      searchParts.push(sex.value);
+    }
   }
 
   // Age formation ----------------

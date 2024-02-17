@@ -1,5 +1,6 @@
 import { ApexOptions } from "apexcharts";
 import { ThemeType } from "../../types";
+import _ from "lodash";
 
 const getCommonOptions = (theme: ThemeType) => {
   return {
@@ -13,7 +14,7 @@ const getCommonOptions = (theme: ThemeType) => {
           zoom: false,
           zoomin: false,
           zoomout: false,
-        }
+        },
       },
       background: theme === "dark" ? "#212529" : "",
     },
@@ -25,7 +26,7 @@ const getCommonOptions = (theme: ThemeType) => {
         },
       },
     },
-  }
+  };
 };
 
 const barColors = [
@@ -42,9 +43,9 @@ const barColors = [
 ];
 
 export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
-  console.log(getCommonOptions(theme));
+  const commonOptions = getCommonOptions(theme);
 
-  return {
+  const specificOptions = {
     colors: barColors,
     legend: {
       show: false,
@@ -95,13 +96,15 @@ export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
         show: false,
       },
     },
-  }
+  };
+
+  return _.merge({}, commonOptions, specificOptions) as ApexOptions;
 };
 
-
 export const getTimeSeriesOptions = (theme: ThemeType): ApexOptions => {
-  return {
-    ...getCommonOptions(theme),
+  const commonOptions = getCommonOptions(theme);
+
+  const specificOptions = {
     colors: ["#59768A"],
     legend: {
       show: true,
@@ -137,10 +140,12 @@ export const getTimeSeriesOptions = (theme: ThemeType): ApexOptions => {
           fontSize: "14px",
           colors: theme === "dark" ? "#ACB5BD" : "",
         },
-        formatter: (value) => {
+        formatter: (value: number) => {
           return value.toLocaleString();
         },
       },
     },
-  }
+  };
+
+  return _.merge({}, commonOptions, specificOptions) as ApexOptions;
 };

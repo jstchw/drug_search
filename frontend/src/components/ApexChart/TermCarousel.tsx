@@ -11,6 +11,8 @@ import { Cloud, List, Pill } from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { getTermCarouselOptions } from "./chartOptions";
+import "tippy.js/dist/tippy.css";
+import "tippy.js/animations/scale.css";
 
 const cloudOptions: OptionsProp = {
   enableTooltip: true,
@@ -81,6 +83,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
 
   const { data, error } = useTermData(noFilterRequest);
 
+  // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
     if (data && !error) {
       onRender();
@@ -147,7 +150,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
         },
       },
     },
-  }
+  };
 
   const cloudData = data.map((item) => {
     return {

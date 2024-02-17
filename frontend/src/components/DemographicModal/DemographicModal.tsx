@@ -6,7 +6,7 @@ import { searchAgeGroups, searchSex } from "../../constants";
 import SimpleTermChart from "../ApexChart/SimpleTermChart";
 import React from "react";
 
-const getDemographicData = (
+const getParamsArray = (
   term: string[],
   searchBy: string,
   searchMode: string,
@@ -56,7 +56,7 @@ const DemographicModal: React.FC<DemographicModalProps> = ({
     params: { searchBy, searchMode },
   } = useUrlParams();
 
-  const paramsArray = getDemographicData(term, searchBy, searchMode);
+  const paramsArray = getParamsArray(term, searchBy, searchMode);
 
   const { paramDataArray, error, loading } = useTermDataBatch(paramsArray);
 

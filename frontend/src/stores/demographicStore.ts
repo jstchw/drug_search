@@ -20,7 +20,8 @@ const useDemographicStore = create<Store>((set) => ({
   demographicTerm: "",
   setDemographicTerm: (term: string) => set({ demographicTerm: term }),
   demographicType: "",
-  setDemographicType: (searchedType: string) => set({ demographicType: searchedType }),
+  setDemographicType: (searchedType: string) =>
+    set({ demographicType: searchedType }),
 }));
 
 export default useDemographicStore;

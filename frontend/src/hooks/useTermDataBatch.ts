@@ -48,6 +48,7 @@ export const useTermDataBatch = (
     isLoading,
   } = useQuery(queryKey, () => fetchBatchData(paramsArray), {
     staleTime: 3600000,
+    retry: false,
   });
 
   const isError = !!error;

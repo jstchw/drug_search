@@ -35,9 +35,9 @@ const DrugPropertyBox = (props: {
             <DrugGroups drugGroups={props.drug.groups || []} />
           </Col>
         </Row>
-        
+
         <DemographicButton term={props.drug.name} />
-        
+
         {/* Load the DemographicModal when the button is clicked to avoid unnecessary slowdowns */}
         {showDemographic && <DemographicModal />}
 

@@ -88,7 +88,7 @@ const determineDisplayType = (searchBy: string) => {
   } else {
     return "";
   }
-}
+};
 
 interface TermCarouselProps {
   noFilterRequest?: boolean;
@@ -99,16 +99,24 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
   noFilterRequest = false,
   onRender,
 }) => {
-  const { params: { searchBy }} = useUrlParams();
+  const {
+    params: { searchBy },
+  } = useUrlParams();
 
   const { theme } = React.useContext(ThemeContext);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
   const { data, error } = useTermData(noFilterRequest);
 
-  const setShowDemographic = useDemographicStore((state) => state.setShowDemographic);
-  const setDemographicTerm = useDemographicStore((state) => state.setDemographicTerm);
-  const setDemographicType = useDemographicStore((state) => state.setDemographicType);
+  const setShowDemographic = useDemographicStore(
+    (state) => state.setShowDemographic,
+  );
+  const setDemographicTerm = useDemographicStore(
+    (state) => state.setDemographicTerm,
+  );
+  const setDemographicType = useDemographicStore(
+    (state) => state.setDemographicType,
+  );
 
   // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
@@ -163,7 +171,6 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     );
   }
 
-
   /* Apex Chart declarations */
   const termCarouselBaseOptions = getTermCarouselOptions(theme as ThemeType);
 
@@ -176,8 +183,8 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
           setDemographicTerm(capitalizeFirstLetter(term));
           setDemographicType(determineDisplayType(searchBy));
           setShowDemographic(true);
-        }
-      }
+        },
+      },
     },
     dataLabels: {
       enabled: true,
@@ -196,8 +203,10 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
   };
 
   // Deep merge the base options with the specific options (to avoid overwriting the base options with the specific options)
-  const apexChartOptions = _.merge(termCarouselBaseOptions, termCarouselSpecificOptions) as ApexOptions;
-
+  const apexChartOptions = _.merge(
+    termCarouselBaseOptions,
+    termCarouselSpecificOptions,
+  ) as ApexOptions;
 
   /* Word Cloud declarations*/
   const cloudData = data.map((item) => {
@@ -231,11 +240,11 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
         return `rgb(${redComponent}, 0, 0)`;
       }
     },
-    onWordClick: (word: { text: string; }) => {
-        setDemographicTerm(capitalizeFirstLetter(word.text));
-        setDemographicType(determineDisplayType(searchBy));
-        setShowDemographic(true);
-    }
+    onWordClick: (word: { text: string }) => {
+      setDemographicTerm(capitalizeFirstLetter(word.text));
+      setDemographicType(determineDisplayType(searchBy));
+      setShowDemographic(true);
+    },
   };
 
   return (

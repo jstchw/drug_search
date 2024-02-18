@@ -57,8 +57,6 @@ const DemographicModal = () => {
     params: { searchMode },
   } = useUrlParams();
 
-
-
   const paramsArray = getParamsArray(term, searchBy, searchMode);
 
   const { paramDataArray, error, isLoading } = useTermDataBatch(paramsArray);
@@ -81,10 +79,7 @@ const DemographicModal = () => {
                         "d-flex align-items-center justify-content-center text-center"
                       }
                     >
-                      <Row
-                        className={"rounded shadow p-2"}
-                        style={{ width: "fit-content" }}
-                      >
+                      <Row style={{ width: "fit-content" }}>
                         <div className={"fs-4"}>{value.params["Sex"]}</div>
                         <div className={"fs-5"}>{value.params["Age"]}</div>
                       </Row>

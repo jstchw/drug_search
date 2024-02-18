@@ -1,58 +1,49 @@
 import { FDARawData, URLParams } from "../types";
-import { useEffect, useState } from "react";
 import { ChartDataPoint, ResultItem } from "../types";
-import { generatePath, processTermData } from "../utils/utils";
+import { generatePath, mapParamArrayToLabels, processTermData } from "../utils/utils";
+import { useQuery } from "react-query";
 
-export const useTermDataBatch = (paramsArray: URLParams[]) => {
-  const [paramDataArray, setParamDataArray] = useState<
-    { params: URLParams; data: ChartDataPoint[] }[] | null
-  >(null);
-  const [error, setError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    setError(false);
-    let isMounted = true; // Flag to check if component is still mounted
+type BatchData = {
+  params: Record<string, string>;
+  data: ChartDataPoint[];
+};
 
-    const fetchData = async () => {
-      try {
-        const fetchPromises = paramsArray.map((params) => {
-          const url = generatePath(params, undefined, 10);
-          return fetch(url)
-            .then((response) => {
-              if (!response.ok)
-                throw new Error(`HTTP error: ${response.status}`);
-              return response.json();
-            })
-            .then((result: FDARawData) => ({
-              params,
-              data: processTermData(result.results as ResultItem[]),
-            }));
-        });
+type UseTermDataBatchReturnType = {
+  paramDataArray: BatchData[] | undefined;
+  error: boolean;
+  isLoading: boolean;
+};
 
-        const results = await Promise.all(fetchPromises);
+const fetchBatchData = async (paramsArray: URLParams[]): Promise<BatchData[]> => {
+  const fetchPromises = paramsArray.map((params) => {
+    const url = generatePath(params, undefined, 10);
+    return fetch(url)
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+        return response.json();
+      })
+      .then((result: FDARawData) => ({
+        params: mapParamArrayToLabels(params),
+        data: processTermData(result.results as ResultItem[]),
+      }));
+  });
 
-        if (isMounted) {
-          setParamDataArray(results);
-          setError(false);
-        }
-      } catch (e: unknown) {
-        if (isMounted) {
-          setError(true);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
+  return Promise.all(fetchPromises);
+}
 
-    void fetchData();
+export const useTermDataBatch = (paramsArray: URLParams[]): UseTermDataBatchReturnType => {
+  const queryKey = ['termDataBatch', JSON.stringify(paramsArray)];
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { data: paramDataArray, error, isLoading } = useQuery(
+    queryKey,
+    () => fetchBatchData(paramsArray),
+    {
+      staleTime: 3600000,
+    },
+  );
 
-  return { paramDataArray, error, loading };
+  const isError = !!error;
+
+  return { paramDataArray, error: isError, isLoading };
 };

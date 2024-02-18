@@ -15,6 +15,7 @@ import useDemographicStore from "../../stores/demographicStore";
 import { useUrlParams } from "../../hooks/useUrlParams";
 import { searchTypes } from "../../constants";
 import { capitalizeFirstLetter } from "../../utils/utils";
+import _ from "lodash";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 
@@ -127,8 +128,10 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     return null;
   }
 
+  // Calculate the total number of side effects
   const totalSideEffectCount = data.reduce((acc, obj) => acc + obj.y, 0);
 
+  // Apex Chart data
   const chartData = {
     labels: data.map((obj) => obj.x),
     series: [
@@ -139,6 +142,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     ],
   };
 
+  // Pagination items
   const dataForCurrentPage = data.slice(
     currentChartPage * itemsPerPage,
     (currentChartPage + 1) * itemsPerPage,
@@ -159,9 +163,22 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     );
   }
 
-  const apexChartOptions: ApexOptions = {
-    ...getTermCarouselOptions(theme as ThemeType),
+
+  /* Apex Chart declarations */
+  const termCarouselBaseOptions = getTermCarouselOptions(theme as ThemeType);
+
+  const termCarouselSpecificOptions: ApexOptions = {
     labels: labelsForCurrentPage,
+    chart: {
+      events: {
+        dataPointSelection: (_, __, config) => {
+          const term = config.w.config.labels[config.dataPointIndex];
+          setDemographicTerm(capitalizeFirstLetter(term));
+          setDemographicType(determineDisplayType(searchBy));
+          setShowDemographic(true);
+        }
+      }
+    },
     dataLabels: {
       enabled: true,
       // Converts the value to a percentage
@@ -178,6 +195,11 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     },
   };
 
+  // Deep merge the base options with the specific options (to avoid overwriting the base options with the specific options)
+  const apexChartOptions = _.merge(termCarouselBaseOptions, termCarouselSpecificOptions) as ApexOptions;
+
+
+  /* Word Cloud declarations*/
   const cloudData = data.map((item) => {
     return {
       text: item.x,

@@ -1,8 +1,11 @@
 import { FDARawData, URLParams } from "../types";
 import { ChartDataPoint, ResultItem } from "../types";
-import { generatePath, mapParamArrayToLabels, processTermData } from "../utils/utils";
+import {
+  generatePath,
+  mapParamArrayToLabels,
+  processTermData,
+} from "../utils/utils";
 import { useQuery } from "react-query";
-
 
 type BatchData = {
   params: Record<string, string>;
@@ -15,7 +18,9 @@ type UseTermDataBatchReturnType = {
   isLoading: boolean;
 };
 
-const fetchBatchData = async (paramsArray: URLParams[]): Promise<BatchData[]> => {
+const fetchBatchData = async (
+  paramsArray: URLParams[],
+): Promise<BatchData[]> => {
   const fetchPromises = paramsArray.map((params) => {
     const url = generatePath(params, undefined, 10);
     return fetch(url)
@@ -30,18 +35,20 @@ const fetchBatchData = async (paramsArray: URLParams[]): Promise<BatchData[]> =>
   });
 
   return Promise.all(fetchPromises);
-}
+};
 
-export const useTermDataBatch = (paramsArray: URLParams[]): UseTermDataBatchReturnType => {
-  const queryKey = ['termDataBatch', JSON.stringify(paramsArray)];
+export const useTermDataBatch = (
+  paramsArray: URLParams[],
+): UseTermDataBatchReturnType => {
+  const queryKey = ["termDataBatch", JSON.stringify(paramsArray)];
 
-  const { data: paramDataArray, error, isLoading } = useQuery(
-    queryKey,
-    () => fetchBatchData(paramsArray),
-    {
-      staleTime: 3600000,
-    },
-  );
+  const {
+    data: paramDataArray,
+    error,
+    isLoading,
+  } = useQuery(queryKey, () => fetchBatchData(paramsArray), {
+    staleTime: 3600000,
+  });
 
   const isError = !!error;
 

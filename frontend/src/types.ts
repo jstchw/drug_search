@@ -15,7 +15,7 @@ export type SearchOptionsType = {
   label: string;
   type: string;
   enabled?: boolean;
-  param?: string;
+  param: string;
 };
 
 export type AgeOptions = {

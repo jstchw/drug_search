@@ -188,3 +188,7 @@ export const highlightWords = (
     return isMatch ? React.createElement("mark", { key: index }, part) : part;
   });
 };
+
+export const capitalizeFirstLetter = (string: string): string => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}

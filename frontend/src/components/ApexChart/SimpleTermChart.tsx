@@ -8,9 +8,7 @@ interface SimpleTermChartProps {
   data: ChartDataPoint[];
 }
 
-const SimpleTermChart: React.FC<SimpleTermChartProps> = ({
-  data,
-}) => {
+const SimpleTermChart: React.FC<SimpleTermChartProps> = ({ data }) => {
   const { theme } = React.useContext(ThemeContext);
 
   const chartData = {
@@ -26,13 +24,13 @@ const SimpleTermChart: React.FC<SimpleTermChartProps> = ({
 
   return (
     <>
-    <div className={"mb-3"}>
-      <ReactApexChart
-        options={simpleChartOptions}
-        type="bar"
-        series={chartData.series}
-      />
-    </div>
+      <div className={"mb-3"}>
+        <ReactApexChart
+          options={simpleChartOptions}
+          type="bar"
+          series={chartData.series}
+        />
+      </div>
     </>
   );
 };

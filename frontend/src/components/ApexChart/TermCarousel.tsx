@@ -11,6 +11,10 @@ import { Cloud, List, Pill } from "@phosphor-icons/react";
 import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { getTermCarouselOptions } from "./chartOptions";
+import useDemographicStore from "../../stores/demographicStore";
+import { useUrlParams } from "../../hooks/useUrlParams";
+import { searchTypes } from "../../constants";
+import { capitalizeFirstLetter } from "../../utils/utils";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 
@@ -69,6 +73,22 @@ export const getChartWarning = (params: URLParams) => {
   );
 };
 
+// Determine the display type based on the searchBy parameter
+const determineDisplayType = (searchBy: string) => {
+  if (searchTypes[0] !== undefined && searchTypes[2] !== undefined) {
+    // If the search parameter is not a side effect (generic or brand name)
+    // Return the opposite of the search parameter (to query API for side effects)
+    // Otherwise, return the generic name (to query API for generic names)
+    if (searchBy !== searchTypes[2].param) {
+      return searchTypes[2].param;
+    } else {
+      return searchTypes[0].param;
+    }
+  } else {
+    return "";
+  }
+}
+
 interface TermCarouselProps {
   noFilterRequest?: boolean;
   onRender: () => void;
@@ -78,10 +98,16 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
   noFilterRequest = false,
   onRender,
 }) => {
+  const { params: { searchBy }} = useUrlParams();
+
   const { theme } = React.useContext(ThemeContext);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
   const { data, error } = useTermData(noFilterRequest);
+
+  const setShowDemographic = useDemographicStore((state) => state.setShowDemographic);
+  const setDemographicTerm = useDemographicStore((state) => state.setDemographicTerm);
+  const setDemographicType = useDemographicStore((state) => state.setDemographicType);
 
   // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
@@ -183,13 +209,11 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
         return `rgb(${redComponent}, 0, 0)`;
       }
     },
-    // Fix this later type
-    // onWordClick: (word: { text: string; }) => {
-    //     if(props.searchOptions.searchBy === searchTypes[2]) {
-    //         setSelectedWord(word.text);
-    //         setShowDemographicModal(true);
-    //     }
-    // }
+    onWordClick: (word: { text: string; }) => {
+        setDemographicTerm(capitalizeFirstLetter(word.text));
+        setDemographicType(determineDisplayType(searchBy));
+        setShowDemographic(true);
+    }
   };
 
   return (

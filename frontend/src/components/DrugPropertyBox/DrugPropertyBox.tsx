@@ -5,9 +5,8 @@ import DrugDescription from "../DrugDescription/DrugDescription";
 import DrugAccordion from "../DrugAccordion/DrugAccordion";
 import { useUrlParams } from "../../hooks/useUrlParams";
 import DemographicModal from "../DemographicModal/DemographicModal";
-import { Button } from "react-bootstrap";
-import { IdentificationCard } from "@phosphor-icons/react";
-import React from "react";
+import useDemographicStore from "../../stores/demographicStore";
+import DemographicButton from "../DemographicModal/DemographicButton";
 
 const DrugPropertyBox = (props: {
   drug: DrugProperties;
@@ -19,7 +18,9 @@ const DrugPropertyBox = (props: {
     props.drug.groups = ["side_effect"];
   }
 
-  const [showDemographic, setShowDemographic] = React.useState(false);
+  const [showDemographic] = useDemographicStore((state) => [
+    state.showDemographic,
+  ]);
 
   return (
     <>
@@ -34,22 +35,11 @@ const DrugPropertyBox = (props: {
             <DrugGroups drugGroups={props.drug.groups || []} />
           </Col>
         </Row>
-
-        <Button
-          variant="primary"
-          className={"mb-4"}
-          onClick={() => setShowDemographic(!showDemographic)}
-        >
-          <IdentificationCard weight={"light"} className={"fs-3"} />
-        </Button>
+        
+        <DemographicButton term={props.drug.name} />
+        
         {/* Load the DemographicModal when the button is clicked to avoid unnecessary slowdowns */}
-        {showDemographic && (
-          <DemographicModal
-            show={showDemographic}
-            setShow={setShowDemographic}
-            term={[props.drug.name]}
-          />
-        )}
+        {showDemographic && <DemographicModal />}
 
         {props.isSingle ? (
           // For a single drug, put DrugDescription and DrugAccordion side by side

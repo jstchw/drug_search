@@ -13,9 +13,7 @@ const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <SearchHistoryProvider>
-            {children}
-          </SearchHistoryProvider>
+        <SearchHistoryProvider>{children}</SearchHistoryProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

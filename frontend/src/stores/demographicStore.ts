@@ -1,0 +1,26 @@
+import { create } from "zustand";
+
+interface StoreStates {
+  showDemographic: boolean;
+  demographicTerm: string;
+  demographicType: string;
+}
+
+interface StoreActions {
+  setShowDemographic: (showDemographic: boolean) => void;
+  setDemographicTerm: (term: string) => void;
+  setDemographicType: (searchedType: string) => void;
+}
+
+type Store = StoreStates & StoreActions;
+
+const useDemographicStore = create<Store>((set) => ({
+  showDemographic: false,
+  setShowDemographic: (showDemographic: boolean) => set({ showDemographic }),
+  demographicTerm: "",
+  setDemographicTerm: (term: string) => set({ demographicTerm: term }),
+  demographicType: "",
+  setDemographicType: (searchedType: string) => set({ demographicType: searchedType }),
+}));
+
+export default useDemographicStore;

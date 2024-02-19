@@ -119,3 +119,13 @@ export interface DrugGroupConfig {
     IconComponent: React.ForwardRefExoticComponent<IconProps>;
   };
 }
+
+type PercentageIntensityColor = {
+  percentageRange: [number, number];
+  color: string;
+};
+
+export type PercentageIntensityColors = Record<
+  string,
+  PercentageIntensityColor
+>;

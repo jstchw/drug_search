@@ -5,8 +5,15 @@ import {
   TimeEventData,
   URLParams,
   SearchOptionsType,
+  PercentageIntensityColors,
 } from "../types";
-import { baseFdaUrl, searchModes, searchSex, searchTypes } from "../constants";
+import {
+  baseFdaUrl,
+  searchModes,
+  searchSex,
+  searchTypes,
+  percentageIntensityColors,
+} from "../constants";
 import React from "react";
 
 export const processTermData = (data: ResultItem[]): ChartDataPoint[] => {
@@ -191,4 +198,31 @@ export const highlightWords = (
 
 export const capitalizeFirstLetter = (string: string): string => {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
+
+export const getColorFromPercentage = (percentage: number) => {
+  for (const key in percentageIntensityColors) {
+    if (percentageIntensityColors.hasOwnProperty(key)) {
+      const category =
+        percentageIntensityColors[key as keyof PercentageIntensityColors];
+      if (category && category.percentageRange && category.color) {
+        if (
+          percentage > category.percentageRange[0] &&
+          percentage <= category.percentageRange[1]
+        ) {
+          return category.color;
+        }
+      }
+    }
+  }
+
+  return "#FFFFFF";
+};
+
+export const percentageToValue = (percentage: number, total: number) => {
+  return (percentage / 100) * total;
+};
+
+export const valueToPercentage = (value: number, total: number) => {
+  return (value / total) * 100;
 };

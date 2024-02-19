@@ -29,24 +29,23 @@ const getCommonOptions = (theme: ThemeType) => {
   };
 };
 
-const barColors = [
-  "#59768A",
-  "#035363",
-  "#32B2BF",
-  "#D5E0BE",
-  "#CE9062",
-  "#E0AB86",
-  "#C7CE8A",
-  "#6EB585",
-  "#325951",
-  "#6F9F9D",
-];
+// const barColors = [
+//   "#59768A",
+//   "#035363",
+//   "#32B2BF",
+//   "#D5E0BE",
+//   "#CE9062",
+//   "#E0AB86",
+//   "#C7CE8A",
+//   "#6EB585",
+//   "#325951",
+//   "#6F9F9D",
+// ];
 
 export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
   const commonOptions = getCommonOptions(theme);
 
   const specificOptions = {
-    colors: barColors,
     legend: {
       show: false,
     },
@@ -69,7 +68,9 @@ export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
       bar: {
         horizontal: true,
         distributed: true,
-        barHeight: "100%",
+        barHeight: "80%",
+        borderRadius: 4,
+        borderRadiusApplication: "end",
       },
     },
     grid: {

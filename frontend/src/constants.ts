@@ -6,6 +6,7 @@ import {
   AgeOptions,
   AgeGroups,
   DrugGroupConfig,
+  PercentageIntensityColors,
 } from "./types";
 import {
   Prescription,
@@ -303,4 +304,55 @@ export const versionInfo = {
   appName: "DrugSearch",
   tag: "Alpha",
   number: "0.1.2",
+};
+
+export const percentageIntensityColors: PercentageIntensityColors = {
+  extremelyCommon: {
+    percentageRange: [50, 100],
+    color: "#B71C1C", // Deep Red
+  },
+  veryCommon: {
+    percentageRange: [20, 50],
+    color: "#C62828", // Strong Red
+  },
+  moderatelyCommon: {
+    percentageRange: [10, 20],
+    color: "#D32F2F", // Muted Red
+  },
+  common: {
+    percentageRange: [5, 10],
+    color: "#FFA000", // Amber
+  },
+  lessCommon: {
+    percentageRange: [4, 5],
+    color: "#FFB300", // Slightly darker Amber
+  },
+  common3: {
+    percentageRange: [3, 4],
+    color: "#FFC107", // Standard Amber
+  },
+  common2: {
+    percentageRange: [2, 3],
+    color: "#AED581", // Light Green
+  },
+  common1: {
+    percentageRange: [1, 2],
+    color: "#81C784", // Medium Light Green
+  },
+  uncommon: {
+    percentageRange: [0.5, 1],
+    color: "#4DB6AC", // Teal Green
+  },
+  rare: {
+    percentageRange: [0.1, 0.5],
+    color: "#26A69A", // Darker Teal
+  },
+  veryRare: {
+    percentageRange: [0.01, 0.1],
+    color: "#00897B", // Deep Teal
+  },
+  extremelyRare: {
+    percentageRange: [0, 0.01],
+    color: "#757575", // Grey
+  },
 };

@@ -14,7 +14,11 @@ import { getTermCarouselOptions } from "./chartOptions";
 import useDemographicStore from "../../stores/demographicStore";
 import { useUrlParams } from "../../hooks/useUrlParams";
 import { searchTypes } from "../../constants";
-import { capitalizeFirstLetter } from "../../utils/utils";
+import {
+  capitalizeFirstLetter,
+  getColorFromPercentage,
+  valueToPercentage,
+} from "../../utils/utils";
 import _ from "lodash";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
@@ -171,6 +175,13 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     );
   }
 
+  const coloredDataForCurrentPage = dataForCurrentPage.map((obj) => ({
+    ...obj,
+    fillColor: getColorFromPercentage(
+      valueToPercentage(obj.y, totalSideEffectCount),
+    ),
+  }));
+
   /* Apex Chart declarations */
   const termCarouselBaseOptions = getTermCarouselOptions(theme as ThemeType);
 
@@ -290,7 +301,12 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
         <div>
           <ReactApexChart
             options={apexChartOptions}
-            series={[{ ...chartData.series[0], data: dataForCurrentPage }]}
+            series={[
+              {
+                ...chartData.series[0],
+                data: coloredDataForCurrentPage,
+              },
+            ]}
             type={apexChartOptions.chart?.type}
           />
           <Pagination size={"lg"} className={"d-flex justify-content-center"}>

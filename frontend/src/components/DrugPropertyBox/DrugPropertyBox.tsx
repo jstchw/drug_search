@@ -36,7 +36,9 @@ const DrugPropertyBox = (props: {
           </Col>
         </Row>
 
-        <DemographicButton term={props.drug.name} />
+        <Row className={"d-flex justify-content-center"}>
+          <DemographicButton term={props.drug.name} />
+        </Row>
 
         {/* Load the DemographicModal when the button is clicked to avoid unnecessary slowdowns */}
         {showDemographic && <DemographicModal />}

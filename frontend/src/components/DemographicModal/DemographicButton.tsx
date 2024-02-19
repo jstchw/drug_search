@@ -29,11 +29,14 @@ const DemographicButton: React.FC<{ term: string }> = ({ term }) => {
 
   return (
     <Button
-      variant="primary"
-      className={"mb-4"}
+      variant="outline-primary"
+      className={"mb-4 d-flex align-items-center"}
+      style={{ width: "fit-content" }}
       onClick={handleShowDemographic}
     >
       <IdentificationCard weight={"light"} className={"fs-3"} />
+      <div className={"vr mx-2"} />
+      Demographic breakdown
     </Button>
   );
 };

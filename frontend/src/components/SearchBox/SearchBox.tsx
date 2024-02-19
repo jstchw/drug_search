@@ -112,6 +112,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
                 variant="outline-secondary"
                 id="button-filters"
                 onClick={() => setShowOptionModal(true)}
+                className={"d-flex align-items-center"}
               >
                 <FilterLeftIcon />
               </Button>
@@ -160,7 +161,12 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
               }}
             />
 
-            <Button variant="outline-primary" id="button-submit" type="submit">
+            <Button
+              variant="outline-primary"
+              id="button-submit"
+              type="submit"
+              className={"d-flex align-items-center"}
+            >
               <SearchIcon />
             </Button>
           </InputGroup>

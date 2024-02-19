@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 import { backendUrl, searchTypes } from "../constants";
 import { DrugProperties, URLParams } from "../types";
@@ -29,14 +28,19 @@ const useDrugInfo = (params: URLParams) => {
 
   const fetchDrugMolecule = async (drug: string) => {
     try {
-      const response = await axios.get(
-        `${backendUrl}/drug/get_molecule?drug_name=${drug}`,
-        { responseType: "arraybuffer" },
-      );
-      const blob = new Blob([response.data], { type: "image/png" });
+      const response = await fetch(`${backendUrl}/drug/get_molecule?drug_name=${drug}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.arrayBuffer();
+      const blob = new Blob([data], { type: "image/png" });
       return URL.createObjectURL(blob);
     } catch (error) {
-      console.warn("Error fetching drug molecule:", error);
+      if (error instanceof Error) {
+        console.warn("Error fetching drug molecule:", error.message);
+      } else {
+        console.warn("Error fetching drug molecule: Unknown error");
+      }
       return;
     }
   };
@@ -56,15 +60,19 @@ const useDrugInfo = (params: URLParams) => {
       const getDrugInfo = async () => {
         try {
           const promises = params.terms.map((name) =>
-            axios.get(
-              `${backendUrl}/drug/get_info?drug_name=${name}&search_type=${params.searchBy}`,
-            ),
+            fetch(`${backendUrl}/drug/get_info?drug_name=${name}&search_type=${params.searchBy}`)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // Assuming the response is JSON. Use .text() or another method if not.
+              })
           );
           const responses = await Promise.all(promises);
 
           const infoPromises = responses.flatMap((response) => {
-            if (response.data.length > 0) {
-              return response.data.map(async (drug: DrugProperties) => ({
+            if (response.length > 0) {
+              return response.map(async (drug: DrugProperties) => ({
                 name: drug.name || "",
                 classification: drug.classification || "",
                 groups: drug.groups || "",

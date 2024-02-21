@@ -93,7 +93,10 @@ const DemographicModal = () => {
         <Nav
           variant={"pills"}
           className="justify-content-center align-items-center"
-          onSelect={(index) => setAggregateType(index as string)}
+          onSelect={(index) => {
+            setAggregateType(index as string)
+            setCarouselIndex(0)
+          }}
           defaultActiveKey={aggregateType}
         >
           <span className={"me-2"}>Group by:</span>
@@ -113,7 +116,7 @@ const DemographicModal = () => {
             variant={"pills"} 
             className="justify-content-center mb-3" 
             onSelect={(index) => setCarouselIndex(parseInt(index as string))}
-            defaultActiveKey={carouselIndex}
+            activeKey={carouselIndex}
             >
               {Object.keys(aggregatedData).map((key, index) => (
                 <Nav.Item key={index}>

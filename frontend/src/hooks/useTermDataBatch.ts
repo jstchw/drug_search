@@ -1,5 +1,5 @@
 import { FDARawData, URLParams } from "../types";
-import { ChartDataPoint, ResultItem } from "../types";
+import { ResultItem, DemographicData } from "../types";
 import {
   generatePath,
   mapParamArrayToLabels,
@@ -7,20 +7,15 @@ import {
 } from "../utils/utils";
 import { useQuery } from "react-query";
 
-type BatchData = {
-  params: Record<string, string>;
-  data: ChartDataPoint[];
-};
-
 type UseTermDataBatchReturnType = {
-  paramDataArray: BatchData[] | undefined;
+  paramDataArray: DemographicData[] | undefined;
   error: boolean;
   isLoading: boolean;
 };
 
 const fetchBatchData = async (
   paramsArray: URLParams[],
-): Promise<BatchData[]> => {
+): Promise<DemographicData[]> => {
   const fetchPromises = paramsArray.map((params) => {
     const url = generatePath(params, undefined, 10);
     return fetch(url)

@@ -1,11 +1,13 @@
-import { Modal, Col, Row, Placeholder } from "react-bootstrap";
+import { Modal, Col, Row, Placeholder, Nav } from "react-bootstrap";
 import { useTermDataBatch } from "../../hooks/useTermDataBatch";
 import { useUrlParams } from "../../hooks/useUrlParams";
-import { URLParams } from "../../types";
+import { URLParams, DemographicData } from "../../types";
 import { searchAgeGroups, searchSex } from "../../constants";
 import SimpleTermChart from "../ApexChart/SimpleTermChart";
 import { Bug } from "@phosphor-icons/react";
 import useDemographicStore from "../../stores/demographicStore";
+import { Carousel } from "react-responsive-carousel";
+import React from "react";
 
 const getParamsArray = (
   term: string,
@@ -33,11 +35,25 @@ const getParamsArray = (
   return paramList;
 };
 
+const filterData = (data: DemographicData[], filterType: keyof DemographicData['params']) => {
+  const aggreagateData: Record<string, DemographicData[]> = {};
+
+  data.forEach((entry) => {
+    const key = entry.params[filterType];
+    if (key) {
+      aggreagateData[key] = aggreagateData[key] || [];
+      aggreagateData[key]!.push(entry);
+    }
+  });
+
+  return aggreagateData;
+}
+
 const ChartPlaceholder = () => {
   return (
-    <Placeholder as="div" animation="glow">
+    <Placeholder className={"d-flex flex-column align-items-center"} as="div" animation="glow">
       <Placeholder as={"h2"} xs={4} bg="dark" />
-      <Placeholder as={"div"} xs={12} bg="dark" style={{ height: "20vw" }} />
+      <Placeholder as={"div"} xs={12} bg="dark" style={{ height: "45vw" }} />
     </Placeholder>
   );
 };
@@ -61,41 +77,70 @@ const DemographicModal = () => {
 
   const { paramDataArray, error, isLoading } = useTermDataBatch(paramsArray);
 
+  const [aggregateType, setAggregateType] = React.useState<string>("Age");
+
+  const aggregatedData = filterData(paramDataArray || [], aggregateType);
+
+  const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
+
   return (
     <Modal show={show} onHide={() => setShow(!show)} centered size={"xl"}>
       <Modal.Header closeButton>
         <Modal.Title>{term}</Modal.Title>
         <div className={"mx-2 vr"} />
         <span className={"text-secondary"}>Demographic breakdown</span>
+        <div className={"mx-2 vr"} />
+        <Nav
+          variant={"pills"}
+          className="justify-content-center align-items-center"
+          onSelect={(index) => setAggregateType(index as string)}
+          defaultActiveKey={aggregateType}
+        >
+          <span className={"me-2"}>Group by:</span>
+          <Nav.Item>
+            <Nav.Link eventKey={"Age"}>Age</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey={"Sex"}>Sex</Nav.Link>
+          </Nav.Item>
+        </Nav>
       </Modal.Header>
       <Modal.Body>
         <Row>
-          {paramDataArray !== undefined
-            ? Object.entries(paramDataArray).map(([key, value]) => {
-                return (
-                  <Col key={key} md={6}>
-                    <Row
-                      className={
-                        "d-flex align-items-center justify-content-center text-center"
-                      }
-                    >
-                      <Row style={{ width: "fit-content" }}>
-                        <div className={"fs-4"}>{value.params["Sex"]}</div>
-                        <div className={"fs-5"}>{value.params["Age"]}</div>
-                      </Row>
-                    </Row>
-                    <Row>
-                      <SimpleTermChart data={value.data} />
-                    </Row>
-                  </Col>
-                );
-              })
-            : isLoading
-              ? Array.from({ length: 6 }).map((_, i) => (
-                  <Col key={i} md={6} className={"my-2"}>
-                    <ChartPlaceholder />
-                  </Col>
-                ))
+          {Object.entries(aggregatedData).length !== 0 && (
+            <>
+            <Nav 
+            variant={"pills"} 
+            className="justify-content-center mb-3" 
+            onSelect={(index) => setCarouselIndex(parseInt(index as string))}
+            defaultActiveKey={carouselIndex}
+            >
+              {Object.keys(aggregatedData).map((key, index) => (
+                <Nav.Item key={index}>
+                  <Nav.Link eventKey={index}>{key}</Nav.Link>
+                </Nav.Item>
+              ))}
+            </Nav>
+              <Carousel
+                showThumbs={false}
+                showIndicators={false}
+                showArrows={false}
+                showStatus={false}
+                selectedItem={carouselIndex}
+                swipeable={false}
+              >
+                {Object.values(aggregatedData).map((data, index) => (
+                  <Row key={index}>
+                    <SimpleTermChart data={data} aggregateType={aggregateType}/>
+                  </Row>
+                ))}
+              </Carousel>
+            </>
+            )
+          }
+          { isLoading
+              ? 
+              <ChartPlaceholder />
               : error && (
                   <Col md={12} className={"text-center"}>
                     <Bug

@@ -7,6 +7,7 @@ import {
   AgeGroups,
   DrugGroupConfig,
   PercentageIntensityColors,
+  SearchTypesMap,
 } from "./types";
 import {
   Prescription,
@@ -96,23 +97,23 @@ export const searchAgeRange: AgeOptions = {
 };
 
 export const searchAgeGroups: AgeGroups = {
-  "0-2": {
+  "0 - 2": {
     min: 0,
     max: 2,
   },
-  "3-11": {
+  "3 - 11": {
     min: 3,
     max: 11,
   },
-  "12-17": {
+  "12 - 17": {
     min: 12,
     max: 17,
   },
-  "18-64": {
+  "18 - 64": {
     min: 18,
     max: 64,
   },
-  "65-85": {
+  "65 - 85": {
     min: 65,
     max: 85,
   },
@@ -120,6 +121,30 @@ export const searchAgeGroups: AgeGroups = {
     min: 85,
     max: 120,
   },
+};
+
+export const ageGroupsFDA: Record<string, string> = {
+  1: "Neonate",
+  2: "Infant",
+  3: "Child",
+  4: "Adolescent",
+  5: "Adult",
+  6: "Elderly",
+};
+
+export const sexGroupsFDA: Record<string, string> = {
+  0: "Unknown",
+  1: "Male",
+  2: "Female",
+};
+
+export const whatToCount: SearchTypesMap = {
+  generic_name: "patient.reaction.reactionmeddrapt.exact",
+  brand_name: "patient.reaction.reactionmeddrapt.exact",
+  receiveDate: "receivedate",
+  side_effect: "patient.drug.activesubstance.activesubstancename.exact",
+  age_group: "patient.patientagegroup",
+  patient_sex: "patient.patientsex",
 };
 
 export const searchCountry: SearchOptionsType[] = Object.entries(countries).map(
@@ -355,4 +380,22 @@ export const percentageIntensityColors: PercentageIntensityColors = {
     percentageRange: [0, 0.01],
     color: "#757575", // Grey
   },
+};
+
+export const chartColors = [
+  "#59768A",
+  "#035363",
+  "#32B2BF",
+  "#D5E0BE",
+  "#CE9062",
+  "#E0AB86",
+  "#C7CE8A",
+  "#6EB585",
+  "#325951",
+  "#6F9F9D",
+];
+
+export const oppositeAggregation: Record<string, string> = {
+  Age: "Sex",
+  Sex: "Age",
 };

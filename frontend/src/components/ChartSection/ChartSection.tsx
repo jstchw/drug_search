@@ -28,7 +28,7 @@ const viewUnfilteredButton = ({
       id={id}
       value={value}
       variant={"outline-primary"}
-      className={"d-flex justify-content-center align-items-center"}
+      className={"d-flex justify-content-center align-items-center my-2"}
       type={"checkbox"}
       checked={noFilterRequest}
       onChange={() => setNoFilterRequest(!noFilterRequest)}
@@ -132,6 +132,9 @@ const ChartSection = () => {
                 <h3 className={"d-flex justify-content-center"}>
                   {getChartWarning(params)}
                 </h3>
+              </Row>
+              <Row className={"d-flex justify-content-center text-secondary"}>
+                Percentage is calculated using only the presented data.
               </Row>
 
               {areParamsFiltered &&

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { getTimeSeriesOptions } from "./chartOptions";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { ThemeType } from "src/types";
+import { Row } from "react-bootstrap";
 
 interface CasesTimeSeriesChartProps {
   noFilterRequest?: boolean;
@@ -18,15 +19,16 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
 }) => {
   const { theme } = React.useContext(ThemeContext);
 
-  const { data, error } = useTimeSeriesData(noFilterRequest);
+  const { timeSeriesData, timeSeriesCount, isError } =
+    useTimeSeriesData(noFilterRequest);
 
   React.useEffect(() => {
-    if (data && !error) {
+    if (timeSeriesData && !isError) {
       onRender();
     }
-  }, [data, error]);
+  }, [timeSeriesData, isError]);
 
-  if (!data || error) {
+  if (!timeSeriesData || isError) {
     return null;
   }
 
@@ -34,7 +36,7 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
     series: [
       {
         name: "Reports",
-        data: data,
+        data: timeSeriesData,
       },
     ],
   };
@@ -42,19 +44,28 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
   const options: ApexOptions = getTimeSeriesOptions(theme as ThemeType);
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      exit={{ opacity: 0 }}
-    >
-      <ReactApexChart
-        options={options}
-        series={chartData.series}
-        type={options.chart?.type}
-      />
-    </motion.div>
+    <>
+      {timeSeriesCount !== undefined && (
+        <Row className={"text-center"}>
+          <span className={"text-secondary"}>
+            {timeSeriesCount.toLocaleString()} reports in total
+          </span>
+        </Row>
+      )}
+      <motion.div
+        layout
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        exit={{ opacity: 0 }}
+      >
+        <ReactApexChart
+          options={options}
+          series={chartData.series}
+          type={options.chart?.type}
+        />
+      </motion.div>
+    </>
   );
 };
 

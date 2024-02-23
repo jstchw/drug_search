@@ -1,61 +1,15 @@
-import { Modal, Col, Row, Placeholder, Nav } from "react-bootstrap";
-import { useTermDataBatch } from "../../hooks/useTermDataBatch";
-import { useUrlParams } from "../../hooks/useUrlParams";
-import { URLParams, DemographicData } from "../../types";
+import { Modal, Col, Row, Nav } from "react-bootstrap";
 import { searchAgeGroups, searchSex } from "../../constants";
 import SimpleTermChart from "../ApexChart/SimpleTermChart";
-import { Bug } from "@phosphor-icons/react";
 import useDemographicStore from "../../stores/demographicStore";
-import { Carousel } from "react-responsive-carousel";
 import React from "react";
+import DonutChart from "../ApexChart/DonutChart";
 
-const getParamsArray = (
-  term: string,
-  searchBy: string,
-  searchMode: string,
-): URLParams[] => {
-  const paramList: URLParams[] = [];
+type AggregateType = "Sex" | "Age";
 
-  Object.entries(searchAgeGroups).forEach(([_, ageGroup]) => {
-    searchSex.forEach((sexOption) => {
-      const params: URLParams = {
-        terms: [term],
-        searchBy,
-        searchMode,
-        sex: sexOption.param,
-        age: {
-          min: ageGroup.min.toString(),
-          max: ageGroup.max.toString(),
-        },
-      };
-      paramList.push(params);
-    });
-  });
-
-  return paramList;
-};
-
-const filterData = (data: DemographicData[], filterType: keyof DemographicData['params']) => {
-  const aggreagateData: Record<string, DemographicData[]> = {};
-
-  data.forEach((entry) => {
-    const key = entry.params[filterType];
-    if (key) {
-      aggreagateData[key] = aggreagateData[key] || [];
-      aggreagateData[key]!.push(entry);
-    }
-  });
-
-  return aggreagateData;
-}
-
-const ChartPlaceholder = () => {
-  return (
-    <Placeholder className={"d-flex flex-column align-items-center"} as="div" animation="glow">
-      <Placeholder as={"h2"} xs={4} bg="dark" />
-      <Placeholder as={"div"} xs={12} bg="dark" style={{ height: "45vw" }} />
-    </Placeholder>
-  );
+const defaultPageKeys: Record<AggregateType, string> = {
+  Sex: searchSex[0]!.label,
+  Age: Object.keys(searchAgeGroups)[0]!,
 };
 
 const DemographicModal = () => {
@@ -67,21 +21,17 @@ const DemographicModal = () => {
 
   const term = useDemographicStore((state) => state.demographicTerm);
 
-  const searchBy = useDemographicStore((state) => state.demographicType);
+  const groupPageKeys = useDemographicStore((state) => state.groupPageKeys);
 
-  const {
-    params: { searchMode },
-  } = useUrlParams();
+  // Aggregatation states
+  const [aggregateType, setAggregateType] =
+    React.useState<AggregateType>("Sex"); // default
 
-  const paramsArray = getParamsArray(term, searchBy, searchMode);
+  const [currentPageKey, setCurrentPageKey] = React.useState<string>("");
 
-  const { paramDataArray, error, isLoading } = useTermDataBatch(paramsArray);
-
-  const [aggregateType, setAggregateType] = React.useState<string>("Age");
-
-  const aggregatedData = filterData(paramDataArray || [], aggregateType);
-
-  const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
+  React.useEffect(() => {
+    setCurrentPageKey(defaultPageKeys[aggregateType]);
+  }, [aggregateType]);
 
   return (
     <Modal show={show} onHide={() => setShow(!show)} centered size={"xl"}>
@@ -89,73 +39,65 @@ const DemographicModal = () => {
         <Modal.Title>{term}</Modal.Title>
         <div className={"mx-2 vr"} />
         <span className={"text-secondary"}>Demographic breakdown</span>
-        <div className={"mx-2 vr"} />
-        <Nav
-          variant={"pills"}
-          className="justify-content-center align-items-center"
-          onSelect={(index) => {
-            setAggregateType(index as string)
-            setCarouselIndex(0)
-          }}
-          defaultActiveKey={aggregateType}
-        >
-          <span className={"me-2"}>Group by:</span>
-          <Nav.Item>
-            <Nav.Link eventKey={"Age"}>Age</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey={"Sex"}>Sex</Nav.Link>
-          </Nav.Item>
-        </Nav>
       </Modal.Header>
       <Modal.Body>
+        <Row className={"mb-3 text-center"}>
+          <span className={"fs-2 fw-light"}>Report statistics</span>
+        </Row>
         <Row>
-          {Object.entries(aggregatedData).length !== 0 && (
-            <>
-            <Nav 
-            variant={"pills"} 
-            className="justify-content-center mb-3" 
-            onSelect={(index) => setCarouselIndex(parseInt(index as string))}
-            activeKey={carouselIndex}
+          <Col className={"mb-3 text-center"}>
+            <span className={"fs-4 fw-normal"}>Age distribution</span>
+            <DonutChart type={"age_group"} />
+          </Col>
+          <Col className={"mb-3 text-center"}>
+            <span className={"fs-4 fw-normal"}>Sex distribution</span>
+            <DonutChart type={"patient_sex"} />
+          </Col>
+        </Row>
+        <Row className={"text-center my-4"}>
+          <span className={"fs-2 fw-light"}>Demographic breakdown</span>
+        </Row>
+          <Row className={"text-center mb-2"}>
+            <span className={"text-secondary"}>Group by:</span>
+          </Row>
+          <Row>
+            <Nav
+              variant={"pills"}
+              className="justify-content-center align-items-center mb-3"
+              onSelect={(index) => {
+                setAggregateType(index as AggregateType);
+              }}
+              defaultActiveKey={aggregateType}
             >
-              {Object.keys(aggregatedData).map((key, index) => (
-                <Nav.Item key={index}>
-                  <Nav.Link eventKey={index}>{key}</Nav.Link>
-                </Nav.Item>
-              ))}
+              <Nav.Item className={"mx-1"}>
+                <Nav.Link eventKey={"Sex"}>Sex</Nav.Link>
+              </Nav.Item>
+              <Nav.Item className={"mx-1"}>
+                <Nav.Link eventKey={"Age"}>Age</Nav.Link>
+              </Nav.Item>
             </Nav>
-              <Carousel
-                showThumbs={false}
-                showIndicators={false}
-                showArrows={false}
-                showStatus={false}
-                selectedItem={carouselIndex}
-                swipeable={false}
-              >
-                {Object.values(aggregatedData).map((data, index) => (
-                  <Row key={index}>
-                    <SimpleTermChart data={data} aggregateType={aggregateType}/>
-                  </Row>
-                ))}
-              </Carousel>
-            </>
-            )
-          }
-          { isLoading
-              ? 
-              <ChartPlaceholder />
-              : error && (
-                  <Col md={12} className={"text-center"}>
-                    <Bug
-                      className={"mx-auto display-1 text-secondary"}
-                      weight={"light"}
-                    />
-                    <div className={"display-4"}>Sorry!</div>
-                    <div className={"display-6 text-secondary"}>
-                      We couldn't find any data for this term.
-                    </div>
-                  </Col>
-                )}
+          </Row>
+        <Row>
+          <Nav variant={"pills"} className="justify-content-center mb-3">
+            {groupPageKeys.map((key, index) => (
+              <Nav.Item key={index} className={"mx-1"}>
+                <Nav.Link
+                  eventKey={index}
+                  active={currentPageKey === key}
+                  onClick={() => setCurrentPageKey(key)}
+                  className={"outline-primary"}
+                >
+                  {key}
+                </Nav.Link>
+              </Nav.Item>
+            ))}
+          </Nav>
+        </Row>
+        <Row>
+          <SimpleTermChart
+            aggregateType={aggregateType}
+            currentPageKey={currentPageKey}
+          />
         </Row>
       </Modal.Body>
     </Modal>

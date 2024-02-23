@@ -1,4 +1,4 @@
-import { FDARawData, URLParams } from "../types";
+import { URLParams } from "../types";
 import { ResultItem, DemographicData } from "../types";
 import {
   generatePath,
@@ -9,30 +9,28 @@ import { useQuery } from "react-query";
 
 type UseTermDataBatchReturnType = {
   paramDataArray: DemographicData[] | undefined;
-  error: boolean;
+  isError: boolean;
   isLoading: boolean;
 };
 
-const fetchBatchData = async (
+const fetchDemographicData = async (
   paramsArray: URLParams[],
 ): Promise<DemographicData[]> => {
-  const fetchPromises = paramsArray.map((params) => {
+  const fetchPromises = paramsArray.map(async (params) => {
     const url = generatePath(params, undefined, 10);
-    return fetch(url)
-      .then((response) => {
-        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-        return response.json();
-      })
-      .then((result: FDARawData) => ({
-        params: mapParamArrayToLabels(params),
-        data: processTermData(result.results as ResultItem[]),
-      }));
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+    const result_1 = await response.json();
+    return {
+      params: mapParamArrayToLabels(params),
+      data: processTermData(result_1.results as ResultItem[]),
+    };
   });
 
   return Promise.all(fetchPromises);
 };
 
-export const useTermDataBatch = (
+export const useDemographicData = (
   paramsArray: URLParams[],
 ): UseTermDataBatchReturnType => {
   const queryKey = ["termDataBatch", JSON.stringify(paramsArray)];
@@ -41,12 +39,12 @@ export const useTermDataBatch = (
     data: paramDataArray,
     error,
     isLoading,
-  } = useQuery(queryKey, () => fetchBatchData(paramsArray), {
+  } = useQuery(queryKey, () => fetchDemographicData(paramsArray), {
     staleTime: 3600000,
     retry: false,
   });
 
   const isError = !!error;
 
-  return { paramDataArray, error: isError, isLoading };
+  return { paramDataArray, isError, isLoading };
 };

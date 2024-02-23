@@ -88,6 +88,9 @@ export type FDARawData = {
     terms: string;
     license: string;
     last_updated: string;
+    results?: {
+      total: number;
+    };
   };
   results: ResultItem[] | TimeEventData[];
 };

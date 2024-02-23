@@ -29,18 +29,18 @@ const getCommonOptions = (theme: ThemeType) => {
   };
 };
 
-// const barColors = [
-//   "#59768A",
-//   "#035363",
-//   "#32B2BF",
-//   "#D5E0BE",
-//   "#CE9062",
-//   "#E0AB86",
-//   "#C7CE8A",
-//   "#6EB585",
-//   "#325951",
-//   "#6F9F9D",
-// ];
+const colors = [
+  "#59768A",
+  "#035363",
+  "#32B2BF",
+  "#D5E0BE",
+  "#CE9062",
+  "#E0AB86",
+  "#C7CE8A",
+  "#6EB585",
+  "#325951",
+  "#6F9F9D",
+];
 
 export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
   const commonOptions = getCommonOptions(theme);
@@ -144,6 +144,31 @@ export const getTimeSeriesOptions = (theme: ThemeType): ApexOptions => {
         formatter: (value: number) => {
           return value.toLocaleString();
         },
+      },
+    },
+  };
+
+  return _.merge({}, commonOptions, specificOptions) as ApexOptions;
+};
+
+export const getDonutChartOptions = (theme: ThemeType): ApexOptions => {
+  const commonOptions = getCommonOptions(theme);
+
+  const specificOptions = {
+    colors: colors,
+    legend: {
+      show: true,
+      position: "bottom",
+    },
+    tooltip: {
+      y: {
+        formatter: (val: number) => {
+          return val.toLocaleString();
+        },
+      },
+      style: {
+        fontSize: "16px",
+        background: theme === "dark" ? "#343A40" : "#fff",
       },
     },
   };

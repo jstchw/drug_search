@@ -28,7 +28,9 @@ const useDrugInfo = (params: URLParams) => {
 
   const fetchDrugMolecule = async (drug: string) => {
     try {
-      const response = await fetch(`${backendUrl}/drug/get_molecule?drug_name=${drug}`);
+      const response = await fetch(
+        `${backendUrl}/drug/get_molecule?drug_name=${drug}`,
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -60,13 +62,14 @@ const useDrugInfo = (params: URLParams) => {
       const getDrugInfo = async () => {
         try {
           const promises = params.terms.map((name) =>
-            fetch(`${backendUrl}/drug/get_info?drug_name=${name}&search_type=${params.searchBy}`)
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json(); // Assuming the response is JSON. Use .text() or another method if not.
-              })
+            fetch(
+              `${backendUrl}/drug/get_info?drug_name=${name}&search_type=${params.searchBy}`,
+            ).then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json(); // Assuming the response is JSON. Use .text() or another method if not.
+            }),
           );
           const responses = await Promise.all(promises);
 

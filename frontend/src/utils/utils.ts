@@ -1,11 +1,11 @@
 import {
   ChartDataPoint,
   ResultItem,
-  SearchTypesMap,
   TimeEventData,
   URLParams,
   SearchOptionsType,
   PercentageIntensityColors,
+  FDARawData,
 } from "../types";
 import {
   baseFdaUrl,
@@ -13,6 +13,7 @@ import {
   searchSex,
   searchTypes,
   percentageIntensityColors,
+  whatToCount,
 } from "../constants";
 import React from "react";
 
@@ -59,16 +60,11 @@ export const generatePath = (
   params: URLParams,
   countType?: string,
   limitProp?: number,
+  returnReportCount: boolean = false,
 ) => {
   const fromDate = `20040101`;
   const limit = limitProp ? limitProp : 50;
   const toDate = formatUpperBoundDate(new Date());
-  const whatToCount: SearchTypesMap = {
-    generic_name: "patient.reaction.reactionmeddrapt.exact",
-    brand_name: "patient.reaction.reactionmeddrapt.exact",
-    receiveDate: "receivedate",
-    side_effect: "patient.drug.activesubstance.activesubstancename.exact",
-  };
 
   // Constants for min and max age
   // They are used when the age range is not fully specified
@@ -113,6 +109,11 @@ export const generatePath = (
     searchParts.push(`occurcountry:"${params.country}"`);
   }
 
+  // If the parameter is set to return the report count, return the count of the reports only
+  if (returnReportCount) {
+    return `${baseFdaUrl}?search=${searchParts.join("+AND+")}&limit=1`;
+  }
+
   // countType is empty when the link is generated for Term Carousel (Feb 10, 2024)
   // countType is not empty when the link is generated for Time Series Chart (Feb 10, 2024)
   if (countType) {
@@ -120,6 +121,14 @@ export const generatePath = (
   } else {
     return `${baseFdaUrl}?search=${searchParts.join("+AND+")}&count=${whatToCount[params.searchBy]}&limit=${limit}`;
   }
+};
+
+export const fetchData = async (url: string): Promise<FDARawData> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error: ${response.status}`);
+  }
+  return response.json();
 };
 
 export const mapParamToLabel = (

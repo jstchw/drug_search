@@ -110,7 +110,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
   const { theme } = React.useContext(ThemeContext);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
-  const { data, error } = useTermData(noFilterRequest);
+  const { reportData, isError } = useTermData(noFilterRequest);
 
   const setShowDemographic = useDemographicStore(
     (state) => state.setShowDemographic,
@@ -124,10 +124,10 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
 
   // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
-    if (data && !error) {
+    if (reportData && !isError) {
       onRender();
     }
-  }, [data, error]);
+  }, [reportData, isError]);
 
   const [currentChartPage, setCurrentChartPage] = React.useState<number>(0);
   const itemsPerPage = 10;
@@ -136,32 +136,32 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     setCurrentChartPage(pageNumber);
   };
 
-  if (!data || error) {
+  if (!reportData || isError) {
     return null;
   }
 
   // Calculate the total number of side effects
-  const totalSideEffectCount = data.reduce((acc, obj) => acc + obj.y, 0);
+  const totalSideEffectCount = reportData.reduce((acc, obj) => acc + obj.y, 0);
 
   // Apex Chart data
   const chartData = {
-    labels: data.map((obj) => obj.x),
+    labels: reportData.map((obj) => obj.x),
     series: [
       {
         name: "Events",
-        data: data,
+        data: reportData,
       },
     ],
   };
 
   // Pagination items
-  const dataForCurrentPage = data.slice(
+  const dataForCurrentPage = reportData.slice(
     currentChartPage * itemsPerPage,
     (currentChartPage + 1) * itemsPerPage,
   );
   const labelsForCurrentPage = dataForCurrentPage.map((obj) => obj.x);
 
-  const totalPageCount = Math.ceil(data.length / itemsPerPage);
+  const totalPageCount = Math.ceil(reportData.length / itemsPerPage);
   const paginationItems = [];
   for (let number = 0; number < totalPageCount; number++) {
     paginationItems.push(
@@ -220,7 +220,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
   ) as ApexOptions;
 
   /* Word Cloud declarations*/
-  const cloudData = data.map((item) => {
+  const cloudData = reportData.map((item) => {
     return {
       text: item.x,
       value: item.y,

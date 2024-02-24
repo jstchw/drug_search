@@ -14,6 +14,8 @@ import { Bug } from "@phosphor-icons/react";
 import { isMobile } from "react-device-detect";
 import RelevantArticles from "../../components/RelevantArticles/RelevantArticles";
 import InfoCard from "../../components/InfoCard/InfoCard";
+import useOnScreen from "../../hooks/useOnScreen";
+import Scrollbar from "../../components/Scrollbar/Scrollbar";
 
 const Result = () => {
   const { params, paramError } = useUrlParams();
@@ -76,10 +78,19 @@ const Result = () => {
     }
   }, [drugInfo, params, updateSearchHistory]);
 
+  const [showNavbar, setShowNavbar] = React.useState(false);
+  const searchBoxSectionRef = React.useRef<HTMLDivElement>(null);
+  const isOnScreen = useOnScreen(searchBoxSectionRef);
+
+  React.useEffect(() => {
+    setShowNavbar(!!!isOnScreen);
+  }, [isOnScreen]);
+
   return (
     <>
       <InfoCard />
-      <div className="d-flex flex-column justify-content-center align-items-center">
+
+      <div ref={searchBoxSectionRef} className="d-flex flex-column justify-content-center align-items-center sticky-top">
         <Row className={"mb-4 mt-5"}>
           <Header />
         </Row>

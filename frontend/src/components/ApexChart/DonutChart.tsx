@@ -16,7 +16,7 @@ type RadarChartReturnType = {
   isLoading: boolean;
 };
 
-const fetchTreeMapData = (type: string): RadarChartReturnType => {
+const fetchDistributionData = (type: string): RadarChartReturnType => {
   const term = useDemographicStore((state) => state.demographicTerm);
   const searchBy = useDemographicStore((state) => state.demographicType);
   const {
@@ -39,7 +39,7 @@ const fetchTreeMapData = (type: string): RadarChartReturnType => {
   return { data, isError, isLoading };
 };
 
-const augmentDonutData = (data: ChartDataPoint[], type: string) => {
+const augmentDistributionData = (data: ChartDataPoint[], type: string) => {
   const dataLabels = data.map((entry) => {
     switch (type) {
       case "age_group":
@@ -56,15 +56,26 @@ const augmentDonutData = (data: ChartDataPoint[], type: string) => {
   return { dataLabels, dataSeries };
 };
 
-const DonutChart = ({ type }: { type: string }) => {
+interface DonutChartProps {
+  type: string;
+  onDataStatusChange: (status: boolean) => void;
+}
+
+const DonutChart: React.FC<DonutChartProps> = ({ type, onDataStatusChange }) => {
   const { theme } = React.useContext(ThemeContext);
-  const { data, isError } = fetchTreeMapData(type);
+  const { data, isError } = fetchDistributionData(type);
+
+  const hasData = React.useMemo(() => !!(data && !isError && data.length !== 0), [data, isError]);
+
+  React.useEffect(() => {
+    onDataStatusChange(hasData);
+  }, [hasData]);
 
   if (!data || isError) {
     return;
   }
 
-  const { dataLabels, dataSeries } = augmentDonutData(data, type);
+  const { dataLabels, dataSeries } = augmentDistributionData(data, type);
 
   const reportCount = dataSeries.reduce((acc, curr) => acc + curr, 0);
 
@@ -78,6 +89,11 @@ const DonutChart = ({ type }: { type: string }) => {
 
   return (
     <div className={"d-flex flex-column"}>
+        {type === "age_group" ? (
+          <span className={"fs-4 fw-light mb-1"}>Age distribution</span>
+        ) : (
+          <span className={"fs-4 fw-light mb-1"}>Sex distribution</span>
+        )}
       <span className={"text-secondary mb-2"}>
         From {reportCount.toLocaleString()} reports
       </span>

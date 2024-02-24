@@ -81,14 +81,16 @@ const transformData = (data: DemographicData[], aggregateType: string) => {
   return { series, labels };
 };
 
-interface SimpleTermChartProps {
+interface DemographicComparsionChartTypes {
   aggregateType: string;
   currentPageKey: string;
+  onDataStatusChange: (status: boolean) => void;
 }
 
-const SimpleTermChart: React.FC<SimpleTermChartProps> = ({
+const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   aggregateType,
   currentPageKey,
+  onDataStatusChange,
 }) => {
   const { theme } = React.useContext(ThemeContext);
 
@@ -104,6 +106,12 @@ const SimpleTermChart: React.FC<SimpleTermChartProps> = ({
 
   const { paramDataArray, isError } = useDemographicData(paramsArray);
 
+  const hasData = React.useMemo(() => !!(paramDataArray && !isError && paramDataArray.length !== 0), [paramDataArray, isError]);
+
+  React.useEffect(() => {
+    onDataStatusChange(hasData);
+  }, [hasData]);
+
   const aggregatedData = React.useMemo(() => {
     if (!paramDataArray || isError) {
       return {};
@@ -118,6 +126,10 @@ const SimpleTermChart: React.FC<SimpleTermChartProps> = ({
       setGroupPageKeys(newKeys);
     }
   }, [aggregatedData, groupPageKeys, setGroupPageKeys]);
+
+  if (!hasData) {
+    return null;
+  }
 
   const aggregatedDataForKey = aggregatedData[currentPageKey];
   const { series, labels } = transformData(
@@ -184,4 +196,4 @@ const SimpleTermChart: React.FC<SimpleTermChartProps> = ({
   );
 };
 
-export default SimpleTermChart;
+export default DemographicComparsionChart;

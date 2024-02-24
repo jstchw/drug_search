@@ -4,7 +4,7 @@ import { Search as SearchIcon } from "react-bootstrap-icons";
 
 const Header = () => {
   return (
-    <div className={"navbar-container"}>
+    <div className={"navbar-container p-0"}>
       <Badge
         className={"p-2"}
         style={{ cursor: "pointer" }}

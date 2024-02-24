@@ -14,9 +14,9 @@ import { Bug } from "@phosphor-icons/react";
 import { isMobile } from "react-device-detect";
 import RelevantArticles from "../../components/RelevantArticles/RelevantArticles";
 import InfoCard from "../../components/InfoCard/InfoCard";
-import useOnScreen from "../../hooks/useOnScreen";
 import Scrollbar from "../../components/Scrollbar/Scrollbar";
 import useSearchStore from "../../stores/searchStore";
+import { AnimatePresence, useInView } from "framer-motion";
 
 const Result = () => {
   const { params, paramError } = useUrlParams();
@@ -93,19 +93,17 @@ const Result = () => {
 
   const [showNavbar, setShowNavbar] = React.useState(false);
   const searchBoxSectionRef = React.useRef<HTMLDivElement>(null);
-  const isOnScreen = useOnScreen(searchBoxSectionRef);
+  const isSearchBoxInView = useInView(searchBoxSectionRef);
 
   React.useEffect(() => {
-    setShowNavbar(!!!isOnScreen);
-  }, [isOnScreen]);
+    setShowNavbar(!!!isSearchBoxInView);
+  }, [isSearchBoxInView]);
 
   return (
     <>
-      {showNavbar && (
-        <Scrollbar>
-          <SearchBox />
-        </Scrollbar>
-      )}
+      <AnimatePresence>
+        {showNavbar && <Scrollbar key={"scrollbar"} />}
+      </AnimatePresence>
 
       <InfoCard />
 

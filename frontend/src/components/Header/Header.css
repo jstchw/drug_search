@@ -1,7 +1,7 @@
 .version-sticker {
   position: absolute;
   top: -0.7rem;
-  right: -0.7rem;
+  right: -1.5rem;
   z-index: 1000;
   transform: rotate(30deg);
   background: #f00 !important;
@@ -15,6 +15,9 @@
 }
 
 .navbar-container {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
   position: relative;
   z-index: 999;
 }

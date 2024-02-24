@@ -23,17 +23,19 @@ const DemographicModal = () => {
 
   const groupPageKeys = useDemographicStore((state) => state.groupPageKeys);
 
-  const [hasDemographicData, setHasDemographicData] = React.useState<boolean>(false);
+  const [hasDemographicData, setHasDemographicData] =
+    React.useState<boolean>(false);
 
   const handleDemographicStatusChange = (status: boolean) => {
     setHasDemographicData(status);
-  }
+  };
 
-  const [hasDistributionData, setHasDistributionData] = React.useState<boolean>(false);
+  const [hasDistributionData, setHasDistributionData] =
+    React.useState<boolean>(false);
 
   const handleDistributionStatusChange = (status: boolean) => {
     setHasDistributionData(status);
-  }
+  };
 
   // Aggregatation states
   const [aggregateType, setAggregateType] =
@@ -54,60 +56,66 @@ const DemographicModal = () => {
       </Modal.Header>
       <Modal.Body>
         {hasDistributionData && (
-        <Row className={"mb-3 text-center"}>
-          <span className={"fs-2 fw-light"}>Report statistics</span>
-        </Row>
+          <Row className={"mb-3 text-center"}>
+            <span className={"fs-2 fw-light"}>Report statistics</span>
+          </Row>
         )}
         <Row>
           <Col className={"mb-3 text-center"}>
-            <DonutChart type={"age_group"} onDataStatusChange={handleDistributionStatusChange} />
+            <DonutChart
+              type={"age_group"}
+              onDataStatusChange={handleDistributionStatusChange}
+            />
           </Col>
           <Col className={"mb-3 text-center"}>
-            <DonutChart type={"patient_sex"} onDataStatusChange={handleDistributionStatusChange} />
+            <DonutChart
+              type={"patient_sex"}
+              onDataStatusChange={handleDistributionStatusChange}
+            />
           </Col>
         </Row>
         {hasDemographicData && (
-        <div>
-        <Row className={"text-center my-4"}>
-          <span className={"fs-2 fw-light"}>Demographic breakdown</span>
-        </Row>
-          <Row className={"text-center mb-2"}>
-            <span className={"text-secondary"}>Group by:</span>
-          </Row>
-          <Row>
-            <Nav
-              variant={"pills"}
-              className="justify-content-center align-items-center mb-3"
-              onSelect={(index) => {
-                setAggregateType(index as AggregateType);
-              }}
-              defaultActiveKey={aggregateType}
-            >
-              <Nav.Item className={"mx-1"}>
-                <Nav.Link eventKey={"Sex"}>Sex</Nav.Link>
-              </Nav.Item>
-              <Nav.Item className={"mx-1"}>
-                <Nav.Link eventKey={"Age"}>Age</Nav.Link>
-              </Nav.Item>
-            </Nav>
-          </Row>
-        <Row>
-          <Nav variant={"pills"} className="justify-content-center mb-3">
-            {groupPageKeys.map((key, index) => (
-              <Nav.Item key={index} className={"mx-1"}>
-                <Nav.Link
-                  eventKey={index}
-                  active={currentPageKey === key}
-                  onClick={() => setCurrentPageKey(key)}
-                  className={"outline-primary"}
-                >
-                  {key}
-                </Nav.Link>
-              </Nav.Item>
-            ))}
-          </Nav>
-        </Row>
-        </div>
+          <div>
+            <Row className={"text-center my-4"}>
+              <span className={"fs-2 fw-light"}>Demographic breakdown</span>
+            </Row>
+            <Row className={"text-center mb-2"}>
+              <span className={"text-secondary"}>Group by:</span>
+            </Row>
+            <Row>
+              <Nav
+                variant={"pills"}
+                className="justify-content-center align-items-center mb-3"
+                onSelect={(index) => {
+                  setAggregateType(index as AggregateType);
+                }}
+                defaultActiveKey={aggregateType}
+              >
+                <Nav.Item className={"mx-1"}>
+                  <Nav.Link eventKey={"Sex"}>Sex</Nav.Link>
+                </Nav.Item>
+                <Nav.Item className={"mx-1"}>
+                  <Nav.Link eventKey={"Age"}>Age</Nav.Link>
+                </Nav.Item>
+              </Nav>
+            </Row>
+            <Row>
+              <Nav variant={"pills"} className="justify-content-center mb-3">
+                {groupPageKeys.map((key, index) => (
+                  <Nav.Item key={index} className={"mx-1"}>
+                    <Nav.Link
+                      eventKey={index}
+                      active={currentPageKey === key}
+                      onClick={() => setCurrentPageKey(key)}
+                      className={"outline-primary"}
+                    >
+                      {key}
+                    </Nav.Link>
+                  </Nav.Item>
+                ))}
+              </Nav>
+            </Row>
+          </div>
         )}
         <Row>
           <DemographicComparsionChart

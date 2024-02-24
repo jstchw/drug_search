@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import {
   FilterLeft as FilterLeftIcon,
@@ -7,53 +7,26 @@ import {
 import "./SearchBox.css";
 import OptionModal from "../OptionModal/OptionModal";
 import { useSuggestions } from "../../hooks/useSuggestions";
-import { SearchOptions } from "../../types";
-import { defaultSearchOptions } from "../../constants";
 import Fuse, { FuseResult, Expression } from "fuse.js";
 import CreatableSelect from "react-select/creatable";
-import Cookies from "js-cookie";
 import { useSearch } from "../../hooks/useSearch";
 import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import { ThemeContext } from "../../contexts/ThemeContext";
+import useSearchStore from "../../stores/searchStore";
 
-type SearchBoxProps = {
-  passedInput?: string[];
-};
-
-const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
+const SearchBox = () => {
   const { theme } = React.useContext(ThemeContext);
 
-  const initialSearchOptionsState = () => {
-    const optionsString = Cookies.get("searchOptions");
-    if (optionsString) {
-      try {
-        return JSON.parse(optionsString);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return defaultSearchOptions;
-  };
+  const [searchOptions, setSearchOptions] = useSearchStore((state) => [
+    state.searchOptions,
+    state.setSearchOptions,
+  ]);
 
-  const [searchOptions, setSearchOptions] = React.useState<SearchOptions>(
-    initialSearchOptionsState,
-  );
+  const [inputValue, setInputValue] = useSearchStore((state) => [
+    state.searchInput,
+    state.setSearchInput,
+  ]);
 
-  useEffect(() => {
-    const optionsString = Cookies.get("searchOptions");
-    if (optionsString) {
-      try {
-        const options = JSON.parse(optionsString);
-        setSearchOptions(options);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, []);
-
-  const [inputValue, setInputValue] = React.useState<string[]>(
-    passedInput ? passedInput : [],
-  );
   const inputRef = React.useRef<string[]>([]);
 
   const [showOptionModal, setShowOptionModal] = React.useState(false);
@@ -128,11 +101,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ passedInput }) => {
               className={"creatable-select"}
               isMulti
               // display the passed input value if it exists
-              defaultValue={
-                passedInput
-                  ? passedInput.map((item) => ({ value: item, label: item }))
-                  : undefined
-              }
+              value={inputValue.map((item) => ({ value: item, label: item }))}
               menuIsOpen={
                 suggestions.length > 0 ||
                 (searchOptions.searchBy.index === 2 &&

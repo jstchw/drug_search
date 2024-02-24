@@ -106,7 +106,10 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
 
   const { paramDataArray, isError } = useDemographicData(paramsArray);
 
-  const hasData = React.useMemo(() => !!(paramDataArray && !isError && paramDataArray.length !== 0), [paramDataArray, isError]);
+  const hasData = React.useMemo(
+    () => !!(paramDataArray && !isError && paramDataArray.length !== 0),
+    [paramDataArray, isError],
+  );
 
   React.useEffect(() => {
     onDataStatusChange(hasData);

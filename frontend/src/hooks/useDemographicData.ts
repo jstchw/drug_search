@@ -18,7 +18,7 @@ const fetchDemographicData = async (
 ): Promise<DemographicData[]> => {
   const fetchPromises = paramsArray.map(async (params) => {
     const url = generatePath(params, undefined, 10);
-    
+
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     const result_1 = await response.json();

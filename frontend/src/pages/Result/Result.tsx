@@ -16,12 +16,25 @@ import RelevantArticles from "../../components/RelevantArticles/RelevantArticles
 import InfoCard from "../../components/InfoCard/InfoCard";
 import useOnScreen from "../../hooks/useOnScreen";
 import Scrollbar from "../../components/Scrollbar/Scrollbar";
+import useSearchStore from "../../stores/searchStore";
 
 const Result = () => {
   const { params, paramError } = useUrlParams();
-  const capitalizedTerms = params.terms.map(
-    (term) => term.charAt(0).toUpperCase() + term.slice(1),
+
+  const setSearchInput = useSearchStore(state => state.setSearchInput);
+
+  const capitalizedTerms = React.useMemo(
+    () =>
+      params.terms.map((term) => term.charAt(0).toUpperCase() + term.slice(1)),
+    [params.terms], // Only recalculate when params.terms changes
   );
+
+  React.useEffect(() => {
+    if (capitalizedTerms.length > 0) {
+      setSearchInput(capitalizedTerms);
+    }
+  }, [capitalizedTerms, setSearchInput]);
+
   const navigate = useNavigate();
 
   const [loading, setLoading] = React.useState(true);
@@ -63,7 +76,7 @@ const Result = () => {
 
   // Effect to update the document title
   React.useEffect(() => {
-    if (params.terms) {
+    if (params.terms && capitalizedTerms.length > 0) {
       document.title = capitalizedTerms.join(" & ") + " - Drug Search";
     }
   }, [capitalizedTerms, params.terms]);
@@ -88,14 +101,23 @@ const Result = () => {
 
   return (
     <>
+      {showNavbar && (
+        <Scrollbar>
+          <SearchBox />
+        </Scrollbar>
+      )}
+
       <InfoCard />
 
-      <div ref={searchBoxSectionRef} className="d-flex flex-column justify-content-center align-items-center sticky-top">
+      <div
+        ref={searchBoxSectionRef}
+        className="d-flex flex-column justify-content-center align-items-center"
+      >
         <Row className={"mb-4 mt-5"}>
           <Header />
         </Row>
         <Row className={"mb-4 text-center"}>
-          <SearchBox passedInput={capitalizedTerms} />
+          <SearchBox />
         </Row>
       </div>
 

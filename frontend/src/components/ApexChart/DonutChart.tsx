@@ -61,11 +61,17 @@ interface DonutChartProps {
   onDataStatusChange: (status: boolean) => void;
 }
 
-const DonutChart: React.FC<DonutChartProps> = ({ type, onDataStatusChange }) => {
+const DonutChart: React.FC<DonutChartProps> = ({
+  type,
+  onDataStatusChange,
+}) => {
   const { theme } = React.useContext(ThemeContext);
   const { data, isError } = fetchDistributionData(type);
 
-  const hasData = React.useMemo(() => !!(data && !isError && data.length !== 0), [data, isError]);
+  const hasData = React.useMemo(
+    () => !!(data && !isError && data.length !== 0),
+    [data, isError],
+  );
 
   React.useEffect(() => {
     onDataStatusChange(hasData);
@@ -89,11 +95,11 @@ const DonutChart: React.FC<DonutChartProps> = ({ type, onDataStatusChange }) => 
 
   return (
     <div className={"d-flex flex-column"}>
-        {type === "age_group" ? (
-          <span className={"fs-4 fw-light mb-1"}>Age distribution</span>
-        ) : (
-          <span className={"fs-4 fw-light mb-1"}>Sex distribution</span>
-        )}
+      {type === "age_group" ? (
+        <span className={"fs-4 fw-light mb-1"}>Age distribution</span>
+      ) : (
+        <span className={"fs-4 fw-light mb-1"}>Sex distribution</span>
+      )}
       <span className={"text-secondary mb-2"}>
         From {reportCount.toLocaleString()} reports
       </span>

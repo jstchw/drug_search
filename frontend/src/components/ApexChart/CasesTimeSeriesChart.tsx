@@ -56,7 +56,11 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
         layout
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
+        transition={{ 
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+         }}
         exit={{ opacity: 0 }}
       >
         <ReactApexChart

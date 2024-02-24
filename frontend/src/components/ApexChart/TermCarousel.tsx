@@ -263,7 +263,11 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
       layout
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+      transition={{ 
+          type: "spring",
+          stiffness: 260,
+          damping: 20,
+       }}
       exit={{ opacity: 0 }}
     >
       <Nav variant="tabs" defaultActiveKey={carouselIndex} className={"mt-3"}>

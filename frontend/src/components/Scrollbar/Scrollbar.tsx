@@ -9,8 +9,12 @@ const Scrollbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         exit={{ y: -100 }}
-        transition={{ duration: 0.2 }}
-        className="fixed-top py-3 m-3 rounded shadow-sm bg-body"
+        transition={{ 
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+        }}
+        className="fixed-top py-4 rounded shadow-lg bg-body"
         >
     <Nav>
     <Row className="w-100 align-items-center">

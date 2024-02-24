@@ -7,6 +7,7 @@ import { useUrlParams } from "../../hooks/useUrlParams";
 import DemographicModal from "../DemographicModal/DemographicModal";
 import useDemographicStore from "../../stores/demographicStore";
 import DemographicButton from "../DemographicModal/DemographicButton";
+import { AnimatePresence } from "framer-motion";
 
 const DrugPropertyBox = (props: {
   drug: DrugProperties;
@@ -41,7 +42,9 @@ const DrugPropertyBox = (props: {
         </Row>
 
         {/* Load the DemographicModal when the button is clicked to avoid unnecessary slowdowns */}
-        {showDemographic && <DemographicModal />}
+        <AnimatePresence mode={"wait"}>
+          {showDemographic && <DemographicModal />}
+        </AnimatePresence>
 
         {props.isSingle ? (
           // For a single drug, put DrugDescription and DrugAccordion side by side

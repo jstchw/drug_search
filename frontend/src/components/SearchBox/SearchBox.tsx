@@ -14,7 +14,6 @@ import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import useSearchStore from "../../stores/searchStore";
 
-
 const SearchBox = () => {
   const { theme } = React.useContext(ThemeContext);
 
@@ -120,7 +119,10 @@ const SearchBox = () => {
               }}
               placeholder={searchPlaceholder}
               classNames={{
-                control: () => (theme === "dark" ? "bg-transparent border-secondary rounded-0" : "bg-white border-secondary rounded-0"),
+                control: () =>
+                  theme === "dark"
+                    ? "bg-transparent border-secondary rounded-0"
+                    : "bg-white border-secondary rounded-0",
                 menu: () => (theme === "dark" ? "bg-dark text-light" : ""),
                 input: () =>
                   theme === "dark" ? "bg-transparent text-light" : "",

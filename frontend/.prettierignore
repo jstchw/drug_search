@@ -5,3 +5,9 @@ node_modules
 coverage
 api
 backup
+.yarn
+.vscode
+package.json
+yarn.lock
+.pnp.cjs
+.pnp.loader.mjs

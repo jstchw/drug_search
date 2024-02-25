@@ -21,7 +21,7 @@ import { AnimatePresence, useInView } from "framer-motion";
 const Result = () => {
   const { params, paramError } = useUrlParams();
 
-  const setSearchInput = useSearchStore(state => state.setSearchInput);
+  const setSearchInput = useSearchStore((state) => state.setSearchInput);
 
   const capitalizedTerms = React.useMemo(
     () =>

@@ -2,5 +2,14 @@
     "name": "DrugSearch Backend",
     "dockerComposeFile": "../../compose.yml",
     "service": "backend",
-    "workspaceFolder": "/usr/src/app"
+    "workspaceFolder": "/usr/src/app",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "Codeium.codeium",
+                "ms-python.python",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    }
 }

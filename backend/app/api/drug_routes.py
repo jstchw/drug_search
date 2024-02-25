@@ -17,6 +17,12 @@ drug_json = data_manager.drug_json
 
 @drug_api.route('/get_molecule', methods=['GET'])
 def get_molecule():
+    """
+    Endpoint to retrieve a molecule image based on the drug name provided in the request.
+    Takes no parameters.
+    Returns a molecule image as a PNG file and a status code 200 if the molecule is found, 
+    otherwise returns a string "No molecule found" and a status code 404.
+    """
     drug_name = request.args.get('drug_name')
 
     # Search the json and match the drug name to the drugbank id
@@ -36,6 +42,12 @@ def get_molecule():
 
 @drug_api.route('/get_suggestions', methods=['GET'])
 def get_suggestions():
+    """
+    Endpoint to retrieve real-time suggestions based on the search type provided in the request.
+    Takes no parameters.
+    Returns a list of suggestions as a JSON object and a status code 200 if the search type is valid, 
+    otherwise returns a string "Invalid search type" and a status code 400.
+    """
     search_by = request.args.get('searchBy')
     try:
         if search_by == 'patient.drug.openfda.generic_name':
@@ -50,6 +62,10 @@ def get_suggestions():
 
 @drug_api.route('/get_info', methods=['GET'])
 def get_info():
+    """
+    This function retrieves information from the drugbank json based on the provided parameters such as drug name and search type. 
+    It then processes the data according to the search type and returns the filtered drug data in JSON format along with the HTTP status code 200.
+    """
     # Get the params from the request
     drug_name = request.args.get('drug_name')
     search_type = request.args.get('search_type')
@@ -81,6 +97,20 @@ def get_info():
 
 @drug_api.route('/get_articles', methods=['GET'])
 def get_articles():
+    """
+    Retrieves articles based on the provided search parameters and returns a JSON response.
+
+    Parameters:
+    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
+    - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
+    - terms (list): A list of search terms.
+    - sex (str): The gender, can be 'male' or 'female'.
+    - age (int): The age of the person.
+    - country (str): The country for the search.
+
+    Returns:
+    - JSON: A JSON response containing the articles based on the search parameters.
+    """
     params = {
         'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
         'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,

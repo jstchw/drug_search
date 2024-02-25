@@ -5,6 +5,16 @@ import time
 
 
 def format_json_drug(drug, product_name=None):
+    """
+    Format the given drug data into a standardized JSON format.
+    
+    Args:
+        drug: dict, the drug data to be formatted.
+        product_name: str, optional, the name of the product.
+        
+    Returns:
+        dict: the formatted drug data in a standardized JSON format.
+    """
     calculated_properties = drug.get('calculated-properties', {}).get('property', [])
 
     groups = drug.get('groups', {}).get('group', [])
@@ -24,6 +34,18 @@ def format_json_drug(drug, product_name=None):
 
 
 def strict_search(entry, params, search_fields):
+    """
+    Perform a strict search on the given entry using the provided parameters and search fields.
+    Currently NOT IN USE.
+
+    Args:
+        entry (dict): The entry to be searched.
+        params (dict): The parameters for the search.
+        search_fields (list): The fields to be searched in the entry.
+
+    Returns:
+        list: A list of matched entries.
+    """
     matched_entries = []
 
     if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
@@ -34,6 +56,14 @@ def strict_search(entry, params, search_fields):
 
 
 def search_json(params, json_file_path, limit=10):
+    """
+    Search for entries in a JSON file based on the given parameters.
+
+    :param params: A dictionary containing search parameters such as 'search_type', 'sex', 'age', 'country', 'search_mode', and 'terms'.
+    :param json_file_path: The file path to the JSON file to be searched.
+    :param limit: An integer specifying the maximum number of matched entries to return (default is 10).
+    :return: A list of matched entries sorted by publication date in descending order.
+    """
     start_time = time.time()
     matched_entries = []
     search_fields = []
@@ -151,19 +181,40 @@ def search_json(params, json_file_path, limit=10):
 
 
 def get_pubmed_metadata(pubmed_ids):
+    """
+    Retrieves metadata from PubMed for the given PubMed IDs.
+
+    Args:
+        pubmed_ids (list): A list of PubMed IDs.
+
+    Returns:
+        list: A filtered list of PubMed metadata.
+    """
     id_string = ','.join(pubmed_ids)
 
     Entrez.email = "k21002495@kcl.ac.uk"
     handle = Entrez.efetch(db="pubmed", id=id_string, retmode="xml")
 
     records = Entrez.read(handle, validate=True)
-    records = records['PubmedArticle']
+
+    if records is not None:
+        records = records['PubmedArticle']
     handle.close()
 
     return filter_pubmed_metadata(records)
 
 
 def filter_pubmed_metadata(records):
+    """
+    Generate a list of filtered PubMed metadata records based on the input records.
+    Take only what's needed for the frontend.
+
+    Args:
+        records (list): A list of PubMed metadata records.
+
+    Returns:
+        list: A list of filtered PubMed metadata records containing title, abstract, authors, date, country, and URL.
+    """
     filtered_records = []
 
     for record in records:

@@ -2,5 +2,14 @@
     "name": "DrugSearch Frontend",
     "dockerComposeFile": "../../compose.yml",
     "service": "frontend",
-    "workspaceFolder": "/usr/src/app"
+    "workspaceFolder": "/usr/src/app",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "Codeium.codeium",
+                "arcanis.vscode-zipfs",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    }
 }

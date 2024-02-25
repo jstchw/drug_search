@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTimeSeriesData } from '../../hooks/useTimeSeriesData';
+import { useDynamicTimeSeries } from '../../hooks/useDynamicTimeSeries';
 import { ApexOptions } from 'apexcharts';
 import ReactApexChart from 'react-apexcharts';
 import { motion } from 'framer-motion';
@@ -11,13 +11,13 @@ import { Row } from 'react-bootstrap';
 interface CasesTimeSeriesChartProps {
   noFilterRequest?: boolean;
   onRender: () => void;
-  isPubmedIncluded?: boolean;
+  isPubmed?: boolean;
 }
 
-const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({ noFilterRequest = false, onRender, isPubmedIncluded = false }) => {
+const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({ noFilterRequest = false, onRender, isPubmed = false }) => {
   const { theme } = React.useContext(ThemeContext);
 
-  const { timeSeriesData, timeSeriesCount, isError } = useTimeSeriesData(noFilterRequest);
+  const { timeSeriesData, timeSeriesCount, isError } = useDynamicTimeSeries(isPubmed, noFilterRequest);
 
   React.useEffect(() => {
     if (timeSeriesData && !isError) {
@@ -34,7 +34,7 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({ noFilterReq
       {
         name: 'Reports',
         data: timeSeriesData,
-      },
+      }
     ],
   };
 

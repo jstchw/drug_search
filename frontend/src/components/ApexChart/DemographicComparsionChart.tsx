@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { DemographicData, URLParams } from '../../types';
+import { DemographicDataType, URLParams } from '../../types';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import _ from 'lodash';
 import { searchAgeGroups, searchSex, chartColors, oppositeAggregation } from '../../constants';
@@ -32,8 +32,8 @@ const getParamsArray = (term: string, searchBy: string, searchMode: string): URL
   return paramList;
 };
 
-const groupData = (data: DemographicData[], filterType: keyof DemographicData['params']) => {
-  const aggregatedData: Record<string, DemographicData[]> = {};
+const groupData = (data: DemographicDataType[], filterType: keyof DemographicDataType['params']) => {
+  const aggregatedData: Record<string, DemographicDataType[]> = {};
 
   data.forEach((entry) => {
     const key = entry.params[filterType];
@@ -46,7 +46,7 @@ const groupData = (data: DemographicData[], filterType: keyof DemographicData['p
   return aggregatedData;
 };
 
-const transformData = (data: DemographicData[], aggregateType: string) => {
+const transformData = (data: DemographicDataType[], aggregateType: string) => {
   const aggregation = oppositeAggregation[aggregateType];
 
   if (!aggregation || !data) {

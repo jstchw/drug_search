@@ -1,10 +1,11 @@
 from re import search
+from sqlite3 import Date
 from flask import Blueprint, jsonify, request, send_file
 import io
 from rdkit import Chem
 from rdkit.Chem import Draw
 from app.services.data_manager import DataManager
-from app.utils import format_json_drug, search_json, get_pubmed_metadata
+from app.utils import format_json_drug, search_json, get_pubmed_metadata, count_entries_by_property, transform_dict_to_x_y, count_total_entries
 import json
 
 drug_api = Blueprint('drug_api', __name__)
@@ -144,13 +145,18 @@ def get_articles():
 def get_pm_timedata():
     """
     Retrieves number of publications for the provided term and returns a ready-to-use
-    dictionary in format {x: 'year', y: 'number of publications'}.
+    dictionary in format {total: 'total count of publications', [x: 'year', y: 'number of publications'...]}.
 
     Parameters:
-    - drug_name (str[]): The name of the drug.
+    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
+    - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
+    - terms (list): A list of search terms.
+    - sex (str): The sex of the patient, can be 'male' and 'female'.
+    - age (int): The age of the patient.
+    - country (str): The country for the search.
 
     Returns:
-    - JSON: A JSON response containing the number of publications for the provided term.
+    - JSON: A JSON response containing the total count of publications for the provided term and count by year.
     """
     params = {
         'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
@@ -161,5 +167,57 @@ def get_pm_timedata():
         'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
     }
 
-    print(type(pubmed_data), flush=True)
-    return jsonify(params['terms']), 200
+    results = search_json(params, data=pubmed_data, limit=1000)
+    total_entries = count_total_entries(results)
+
+    if results:
+        count_by_year = count_entries_by_property(results, 'year')
+    else:
+        count_by_year = {"error": "No data found"}
+
+    if not results or not count_by_year:
+        return jsonify({"error": "No data found"}), 404
+
+    # Remove years outside the range of start_year and end_year
+    start_year = 2004
+    end_year = Date.today().year - 1
+    count_by_year = {year: count for year, count in count_by_year.items() if start_year <= int(year) <= end_year}
+
+    return jsonify({
+        "total": total_entries,
+        "data": transform_dict_to_x_y(count_by_year)
+    }), 200
+
+
+@drug_api.route('/get_pm_age_distribution', methods=['GET'])
+def get_pm_age_distribution():
+    """
+    Retrieves number of publications for the provided term and returns a ready-to-use
+    dictionary in format {[x: 'age_group', y: 'number of publications'...]}.
+
+    Parameters:
+    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
+    - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
+    - terms (list): A list of search terms.
+
+    Returns:
+    - JSON: A JSON response containing the total count of publications for the provided term and count by age.
+    """
+
+    params = {
+        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
+        'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
+        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None
+    }
+
+    results = search_json(params, data=pubmed_data, limit=1000)
+
+    if results:
+        count_by_age = count_entries_by_property(results, 'age')
+    else:
+        count_by_age = {"error": "No data found"}
+
+    if not results or not count_by_age:
+        return jsonify({"error": "No data found"}), 404
+
+    return jsonify({transform_dict_to_x_y(count_by_age)}), 200

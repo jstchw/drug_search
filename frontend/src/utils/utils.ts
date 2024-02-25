@@ -6,6 +6,7 @@ import {
   SearchOptionsType,
   PercentageIntensityColors,
   FDARawData,
+  BackendDataType
 } from '../types';
 import { baseFdaUrl, searchModes, searchSex, searchTypes, percentageIntensityColors, whatToCount } from '../constants';
 import React from 'react';
@@ -107,7 +108,7 @@ export const generatePath = (
   }
 };
 
-export const fetchData = async (url: string): Promise<FDARawData> => {
+export const fetchData = async (url: string): Promise<FDARawData | BackendDataType> => {
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`HTTP error: ${response.status}`);

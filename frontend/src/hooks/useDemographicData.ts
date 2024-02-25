@@ -1,15 +1,15 @@
 import { URLParams } from '../types';
-import { ResultItem, DemographicData } from '../types';
+import { ResultItem, DemographicDataType } from '../types';
 import { generatePath, mapParamArrayToLabels, processTermData } from '../utils/utils';
 import { useQuery } from 'react-query';
 
 type UseTermDataBatchReturnType = {
-  paramDataArray: DemographicData[] | undefined;
+  paramDataArray: DemographicDataType[] | undefined;
   isError: boolean;
   isLoading: boolean;
 };
 
-const fetchDemographicData = async (paramsArray: URLParams[]): Promise<DemographicData[]> => {
+const fetchDemographicData = async (paramsArray: URLParams[]): Promise<DemographicDataType[]> => {
   const fetchPromises = paramsArray.map(async (params) => {
     const url = generatePath(params, undefined, 10);
 

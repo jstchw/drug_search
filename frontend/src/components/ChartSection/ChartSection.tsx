@@ -39,9 +39,9 @@ const ChartSection = () => {
   const { params } = useUrlParams();
 
   const [noFilterTimeSeriesRequest, setNoFilterTimeSeriesRequest] = React.useState<boolean>(false);
-  const [isPubmedIncludedTimeSeries, setIsPubmedIncludedTimeSeries] = React.useState<boolean>(false);
+  const [isPubmedTimeSeries, setIsPubmedTimeSeries] = React.useState<boolean>(false);
   const togglePubmedIncludedTimeSeries = React.useCallback(() => {
-    setIsPubmedIncludedTimeSeries((prev) => !prev);
+    setIsPubmedTimeSeries((prev) => !prev);
   }, []);
 
   const [noFilterTermCarouselRequest, setNoFilterTermCarouselRequest] = React.useState<boolean>(false);
@@ -55,15 +55,11 @@ const ChartSection = () => {
     setChildrenRendered((prev) => ({ ...prev, [child]: true }));
   };
 
-  React.useEffect(() => {
-    console.log('isPubmedIncludedTimeSeries', isPubmedIncludedTimeSeries);
-  }, [isPubmedIncludedTimeSeries]);
-
   return (
     <div className={'mt-4'}>
       {/* Time series section */}
       <Row className={'d-flex justify-content-center'}>
-        <Col xs={isMobile || noFilterTimeSeriesRequest ? 12 : 6} className="mb-4">
+        <Col xs={isMobile || noFilterTimeSeriesRequest || isPubmedTimeSeries ? 12 : 6} className="mb-4">
           {/* If the children are rendered, show the title */}
           {childrenRendered.timeSeries && (
             <>
@@ -74,9 +70,14 @@ const ChartSection = () => {
                   Reports over time
                 </h3>
               </Row>
+
+              {/* If the params are not filtered, show the Pubmed switch */}
+              {/* There is no point in showing the button when params are filtered becasue the data is too sparse */}
+              {!areParamsFiltered && (
               <Row className={'my-1'}>
                 <PubmedSwitch handlePubmedSwitch={togglePubmedIncludedTimeSeries}/>
               </Row>
+              )}
 
               {areParamsFiltered &&
                 viewUnfilteredButton({
@@ -92,8 +93,20 @@ const ChartSection = () => {
             <Row className={'mb-4'}>
               <Col>
                 {noFilterTimeSeriesRequest && <h5 className={'d-flex justify-content-center mt-3'}>Filtered data</h5>}
+                {isPubmedTimeSeries && <h5 className={'d-flex justify-content-center mt-3'}>FAERS data</h5>}
                 <CasesTimeSeriesChart key={'genericTimeSeries'} onRender={() => handleChildRender('timeSeries')} />
               </Col>
+
+              {isPubmedTimeSeries && (
+                <Col>
+                  <h5 className={'d-flex justify-content-center mt-3'}>Pubmed data</h5>
+                  <CasesTimeSeriesChart
+                    key={'pubmedTimeSeries'}
+                    isPubmed={true}
+                    onRender={() => handleChildRender('timeSeries')}
+                  />
+                </Col>
+              )}
 
               {noFilterTimeSeriesRequest && (
                 <Col>

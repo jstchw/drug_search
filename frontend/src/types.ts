@@ -130,7 +130,12 @@ type PercentageIntensityColor = {
 
 export type PercentageIntensityColors = Record<string, PercentageIntensityColor>;
 
-export type DemographicData = {
+export type DemographicDataType = {
   params: Record<string, string>;
   data: ChartDataPoint[];
+};
+
+export type BackendDataType = {
+  data: number[];
+  total: number;
 };

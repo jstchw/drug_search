@@ -257,3 +257,68 @@ def filter_pubmed_metadata(records):
 
     return filtered_records
 
+
+def transform_dict_to_x_y(data):
+    """
+    Transform the given dictionary into a format suitable for a chart.
+
+    Args:
+        data (dict): A dictionary containing the data to be transformed.
+
+    Returns:
+        list: A list of dictionaries containing the transformed data.
+    """
+    chart_data = []
+
+    for key, value in data.items():
+        chart_data.append({
+            "x": key,
+            "y": value
+        })
+
+    return chart_data
+
+
+def count_entries_by_property(data, property):
+    """
+    Count the number of entries in the given data by the specified property.
+    If the property is 'year', it counts occurrences by extracting the year from a 'pub_date' property formatted as 'YYYY-MM-DD'.
+    For properties with list values, it counts each list item separately.
+
+    Args:
+        data (list): A list of entries to be counted.
+        property (str): The property to be counted. Use 'year' to count by year extracted from 'pub_date'.
+
+    Returns:
+        dict: A dictionary containing the counts of entries by the specified property.
+    """
+    counts = {}
+
+    for entry in data:
+        if property == "year":
+            pub_date = entry.get("pub_date")
+            if pub_date:
+                year = pub_date.split("-")[0]
+                counts[year] = counts.get(year, 0) + 1
+        else:
+            value = entry.get(property)
+            if isinstance(value, list):
+                for item in value:
+                    counts[item] = counts.get(item, 0) + 1
+            elif value is not None:
+                counts[value] = counts.get(value, 0) + 1
+
+    return dict(sorted(counts.items(), key=lambda x: x[0]))
+
+
+def count_total_entries(data):
+    """
+    Count the total number of entries in the given data.
+
+    Args:
+        data (list): A list of entries to be counted.
+
+    Returns:
+        int: The total number of entries.
+    """
+    return len(data)

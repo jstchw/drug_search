@@ -6,7 +6,7 @@ import { generatePath, fetchData, processTermData } from '../../utils/utils';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { useQuery } from 'react-query';
-import { ChartDataPoint, ResultItem } from '../../types';
+import { ChartDataPoint, FDARawData, ResultItem } from '../../types';
 import { ageGroupsFDA, sexGroupsFDA } from '../../constants';
 import _ from 'lodash';
 
@@ -16,7 +16,7 @@ type RadarChartReturnType = {
   isLoading: boolean;
 };
 
-const fetchDistributionData = (type: string): RadarChartReturnType => {
+const fetchFdaDistributionData = (type: string): RadarChartReturnType => {
   const term = useDemographicStore((state) => state.demographicTerm);
   const searchBy = useDemographicStore((state) => state.demographicType);
   const {
@@ -26,7 +26,7 @@ const fetchDistributionData = (type: string): RadarChartReturnType => {
   const params = { terms: [term], searchBy, searchMode };
   const url = generatePath(params, type, 10);
 
-  const { data, isError, isLoading } = useQuery(['treeMapChart', url], () => fetchData(url), {
+  const { data, isError, isLoading } = useQuery(['treeMapChart', url], () => fetchData(url) as Promise<FDARawData>, {
     staleTime: 3600000,
     retry: false,
     select: (data) => processTermData(data.results as ResultItem[]),
@@ -59,7 +59,9 @@ interface DonutChartProps {
 
 const DonutChart: React.FC<DonutChartProps> = ({ type, onDataStatusChange }) => {
   const { theme } = React.useContext(ThemeContext);
-  const { data, isError } = fetchDistributionData(type);
+  const { data, isError } = fetchFdaDistributionData(type);
+
+  console.log(data)
 
   const hasData = React.useMemo(() => !!(data && !isError && data.length !== 0), [data, isError]);
 

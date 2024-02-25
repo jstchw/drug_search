@@ -6,9 +6,10 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "Codeium.codeium",
                 "ms-python.python",
-                "esbenp.prettier-vscode"
+                "esbenp.prettier-vscode",
+                "GitHub.copilot",
+                "GitHub.copilot-chat"
             ]
         }
     }

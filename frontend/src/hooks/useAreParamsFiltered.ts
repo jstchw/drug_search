@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useUrlParams } from "./useUrlParams";
-import { optionalURLParams } from "../constants";
+import { useEffect, useState } from 'react';
+import { useUrlParams } from './useUrlParams';
+import { optionalURLParams } from '../constants';
 
 export const useAreParamsFiltered = () => {
   const { params } = useUrlParams();
@@ -8,7 +8,7 @@ export const useAreParamsFiltered = () => {
 
   useEffect(() => {
     const isValueSet = (value: any): boolean => {
-      if (typeof value === "object" && value !== null) {
+      if (typeof value === 'object' && value !== null) {
         return Object.values(value).some(isValueSet);
       }
       return value !== null && value !== undefined;
@@ -17,7 +17,7 @@ export const useAreParamsFiltered = () => {
     const checkIfParamsAreFiltered = (): boolean => {
       return optionalURLParams.some((param) => {
         const value = params[param];
-        if (typeof value === "object") {
+        if (typeof value === 'object') {
           return isValueSet(value);
         }
         return value !== null && value !== undefined;

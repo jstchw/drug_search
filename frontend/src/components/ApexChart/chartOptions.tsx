@@ -1,6 +1,6 @@
-import { ApexOptions } from "apexcharts";
-import { ThemeType } from "../../types";
-import _ from "lodash";
+import { ApexOptions } from 'apexcharts';
+import { ThemeType } from '../../types';
+import _ from 'lodash';
 
 const getCommonOptions = (theme: ThemeType) => {
   return {
@@ -16,13 +16,13 @@ const getCommonOptions = (theme: ThemeType) => {
           zoomout: false,
         },
       },
-      background: theme === "dark" ? "#212529" : "",
+      background: theme === 'dark' ? '#212529' : '',
     },
     yaxis: {
       labels: {
         style: {
-          fontSize: "14px",
-          colors: theme === "dark" ? "#ACB5BD" : "",
+          fontSize: '14px',
+          colors: theme === 'dark' ? '#ACB5BD' : '',
         },
       },
     },
@@ -30,16 +30,16 @@ const getCommonOptions = (theme: ThemeType) => {
 };
 
 const colors = [
-  "#59768A",
-  "#035363",
-  "#32B2BF",
-  "#D5E0BE",
-  "#CE9062",
-  "#E0AB86",
-  "#C7CE8A",
-  "#6EB585",
-  "#325951",
-  "#6F9F9D",
+  '#59768A',
+  '#035363',
+  '#32B2BF',
+  '#D5E0BE',
+  '#CE9062',
+  '#E0AB86',
+  '#C7CE8A',
+  '#6EB585',
+  '#325951',
+  '#6F9F9D',
 ];
 
 export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
@@ -50,8 +50,8 @@ export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
       show: false,
     },
     chart: {
-      type: "bar",
-      width: "100%",
+      type: 'bar',
+      width: '100%',
       toolbar: {
         show: false,
       },
@@ -60,7 +60,7 @@ export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
         top: 1,
         left: 1,
         blur: 2,
-        color: theme === "dark" ? "#000" : "#000",
+        color: theme === 'dark' ? '#000' : '#000',
         opacity: 0.2,
       },
     },
@@ -68,9 +68,9 @@ export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
       bar: {
         horizontal: true,
         distributed: true,
-        barHeight: "80%",
+        barHeight: '80%',
         borderRadius: 4,
-        borderRadiusApplication: "end",
+        borderRadiusApplication: 'end',
       },
     },
     grid: {
@@ -80,15 +80,12 @@ export const getTermCarouselOptions = (theme: ThemeType): ApexOptions => {
       labels: {
         show: true,
         style: {
-          fontSize: "14px",
-          colors: theme === "dark" ? "#ACB5BD" : "",
+          fontSize: '14px',
+          colors: theme === 'dark' ? '#ACB5BD' : '',
         },
         formatter: (value: number) => {
           const stringValue = String(value);
-          return (
-            stringValue.charAt(0).toUpperCase() +
-            stringValue.slice(1).toLowerCase()
-          );
+          return stringValue.charAt(0).toUpperCase() + stringValue.slice(1).toLowerCase();
         },
       },
     },
@@ -106,29 +103,29 @@ export const getTimeSeriesOptions = (theme: ThemeType): ApexOptions => {
   const commonOptions = getCommonOptions(theme);
 
   const specificOptions = {
-    colors: ["#59768A"],
+    colors: ['#59768A'],
     legend: {
       show: true,
-      position: "bottom",
+      position: 'bottom',
     },
     chart: {
-      type: "area",
+      type: 'area',
     },
     stroke: {
-      curve: "smooth",
+      curve: 'smooth',
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
     },
     dataLabels: {
       enabled: false,
     },
     xaxis: {
-      type: "category",
+      type: 'category',
       labels: {
         style: {
-          fontSize: "14px",
-          colors: theme === "dark" ? "#ACB5BD" : "",
+          fontSize: '14px',
+          colors: theme === 'dark' ? '#ACB5BD' : '',
         },
       },
       tooltip: {
@@ -138,8 +135,8 @@ export const getTimeSeriesOptions = (theme: ThemeType): ApexOptions => {
     yaxis: {
       labels: {
         style: {
-          fontSize: "14px",
-          colors: theme === "dark" ? "#ACB5BD" : "",
+          fontSize: '14px',
+          colors: theme === 'dark' ? '#ACB5BD' : '',
         },
         formatter: (value: number) => {
           return value.toLocaleString();
@@ -158,7 +155,7 @@ export const getDonutChartOptions = (theme: ThemeType): ApexOptions => {
     colors: colors,
     legend: {
       show: true,
-      position: "bottom",
+      position: 'bottom',
     },
     tooltip: {
       y: {
@@ -167,8 +164,8 @@ export const getDonutChartOptions = (theme: ThemeType): ApexOptions => {
         },
       },
       style: {
-        fontSize: "16px",
-        background: theme === "dark" ? "#343A40" : "#fff",
+        fontSize: '16px',
+        background: theme === 'dark' ? '#343A40' : '#fff',
       },
     },
   };

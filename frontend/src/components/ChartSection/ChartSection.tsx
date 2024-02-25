@@ -1,14 +1,15 @@
-import React from "react";
-import CasesTimeSeriesChart from "../ApexChart/CasesTimeSeriesChart";
-import TermCarousel from "../ApexChart/TermCarousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Row, Col, ToggleButton } from "react-bootstrap";
-import { Clock } from "@phosphor-icons/react";
-import { isMobile } from "react-device-detect";
-import { useAreParamsFiltered } from "../../hooks/useAreParamsFiltered";
-import { getChartWarning } from "../ApexChart/TermCarousel";
-import { useUrlParams } from "../../hooks/useUrlParams";
-import { AnimatePresence } from "framer-motion";
+import React from 'react';
+import CasesTimeSeriesChart from '../ApexChart/CasesTimeSeriesChart';
+import TermCarousel from '../ApexChart/TermCarousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { Row, Col, ToggleButton } from 'react-bootstrap';
+import { Clock } from '@phosphor-icons/react';
+import { isMobile } from 'react-device-detect';
+import { useAreParamsFiltered } from '../../hooks/useAreParamsFiltered';
+import { getChartWarning } from '../ApexChart/TermCarousel';
+import { useUrlParams } from '../../hooks/useUrlParams';
+import { AnimatePresence } from 'framer-motion';
+import PubmedSwitch from './PubmedSwitch';
 
 type ViewUnfilteredButtonProps = {
   noFilterRequest: boolean;
@@ -17,19 +18,14 @@ type ViewUnfilteredButtonProps = {
   value: string;
 };
 
-const viewUnfilteredButton = ({
-  noFilterRequest,
-  setNoFilterRequest,
-  id,
-  value,
-}: ViewUnfilteredButtonProps) => (
-  <div className={"d-flex justify-content-center align-items-center"}>
+const viewUnfilteredButton = ({ noFilterRequest, setNoFilterRequest, id, value }: ViewUnfilteredButtonProps) => (
+  <div className={'d-flex justify-content-center align-items-center'}>
     <ToggleButton
       id={id}
       value={value}
-      variant={"outline-primary"}
-      className={"d-flex justify-content-center align-items-center my-2"}
-      type={"checkbox"}
+      variant={'outline-primary'}
+      className={'d-flex justify-content-center align-items-center my-2'}
+      type={'checkbox'}
       checked={noFilterRequest}
       onChange={() => setNoFilterRequest(!noFilterRequest)}
     >
@@ -42,11 +38,13 @@ const ChartSection = () => {
   const areParamsFiltered = useAreParamsFiltered();
   const { params } = useUrlParams();
 
-  const [noFilterTimeSeriesRequest, setNoFilterTimeSeriesRequest] =
-    React.useState<boolean>(false);
+  const [noFilterTimeSeriesRequest, setNoFilterTimeSeriesRequest] = React.useState<boolean>(false);
+  const [isPubmedIncludedTimeSeries, setIsPubmedIncludedTimeSeries] = React.useState<boolean>(false);
+  const togglePubmedIncludedTimeSeries = React.useCallback(() => {
+    setIsPubmedIncludedTimeSeries((prev) => !prev);
+  }, []);
 
-  const [noFilterTermCarouselRequest, setNoFilterTermCarouselRequest] =
-    React.useState<boolean>(false);
+  const [noFilterTermCarouselRequest, setNoFilterTermCarouselRequest] = React.useState<boolean>(false);
 
   const [childrenRendered, setChildrenRendered] = React.useState({
     timeSeries: false,
@@ -57,60 +55,53 @@ const ChartSection = () => {
     setChildrenRendered((prev) => ({ ...prev, [child]: true }));
   };
 
+  React.useEffect(() => {
+    console.log('isPubmedIncludedTimeSeries', isPubmedIncludedTimeSeries);
+  }, [isPubmedIncludedTimeSeries]);
+
   return (
-    <div className={"mt-4"}>
+    <div className={'mt-4'}>
       {/* Time series section */}
-      <Row className={"d-flex justify-content-center"}>
-        <Col
-          xs={isMobile || noFilterTimeSeriesRequest ? 12 : 6}
-          className="mb-4"
-        >
+      <Row className={'d-flex justify-content-center'}>
+        <Col xs={isMobile || noFilterTimeSeriesRequest ? 12 : 6} className="mb-4">
           {/* If the children are rendered, show the title */}
           {childrenRendered.timeSeries && (
             <>
               <Row>
-                <h3
-                  className={"d-flex justify-content-center align-items-center"}
-                >
-                  <Clock weight={"light"} className={"text-secondary"} />
-                  <div className={"vr mx-2"} />
+                <h3 className={'d-flex justify-content-center align-items-center'}>
+                  <Clock weight={'light'} className={'text-secondary'} />
+                  <div className={'vr mx-2'} />
                   Reports over time
                 </h3>
+              </Row>
+              <Row className={'my-1'}>
+                <PubmedSwitch handlePubmedSwitch={togglePubmedIncludedTimeSeries}/>
               </Row>
 
               {areParamsFiltered &&
                 viewUnfilteredButton({
                   noFilterRequest: noFilterTimeSeriesRequest,
                   setNoFilterRequest: setNoFilterTimeSeriesRequest,
-                  id: "unfilteredTimeSeries",
-                  value: "unfilteredTimeSeries",
+                  id: 'unfilteredTimeSeries',
+                  value: 'unfilteredTimeSeries',
                 })}
             </>
           )}
 
           <AnimatePresence>
-            <Row className={"mb-4"}>
+            <Row className={'mb-4'}>
               <Col>
-                {noFilterTimeSeriesRequest && (
-                  <h5 className={"d-flex justify-content-center mt-3"}>
-                    Filtered data
-                  </h5>
-                )}
-                <CasesTimeSeriesChart
-                  key={"genericTimeSeries"}
-                  onRender={() => handleChildRender("timeSeries")}
-                />
+                {noFilterTimeSeriesRequest && <h5 className={'d-flex justify-content-center mt-3'}>Filtered data</h5>}
+                <CasesTimeSeriesChart key={'genericTimeSeries'} onRender={() => handleChildRender('timeSeries')} />
               </Col>
 
               {noFilterTimeSeriesRequest && (
                 <Col>
-                  <h5 className={"d-flex justify-content-center mt-3"}>
-                    Unfiltered data
-                  </h5>
+                  <h5 className={'d-flex justify-content-center mt-3'}>Unfiltered data</h5>
                   <CasesTimeSeriesChart
-                    key={"unfilteredTimeSeries"}
+                    key={'unfilteredTimeSeries'}
                     noFilterRequest={true}
-                    onRender={() => handleChildRender("timeSeries")}
+                    onRender={() => handleChildRender('timeSeries')}
                   />
                 </Col>
               )}
@@ -120,20 +111,15 @@ const ChartSection = () => {
       </Row>
 
       {/* Term carousel section */}
-      <Row className={"d-flex justify-content-center mb-4"}>
-        <Col
-          xs={isMobile || noFilterTermCarouselRequest ? 12 : 6}
-          className="mb-4"
-        >
+      <Row className={'d-flex justify-content-center mb-4'}>
+        <Col xs={isMobile || noFilterTermCarouselRequest ? 12 : 6} className="mb-4">
           {/* If the children are rendered, show the title */}
           {childrenRendered.termCarousel && (
             <>
               <Row>
-                <h3 className={"d-flex justify-content-center"}>
-                  {getChartWarning(params)}
-                </h3>
+                <h3 className={'d-flex justify-content-center'}>{getChartWarning(params)}</h3>
               </Row>
-              <Row className={"d-flex justify-content-center text-secondary"}>
+              <Row className={'d-flex justify-content-center text-secondary'}>
                 Percentage is calculated using only the presented data.
               </Row>
 
@@ -141,8 +127,8 @@ const ChartSection = () => {
                 viewUnfilteredButton({
                   noFilterRequest: noFilterTermCarouselRequest,
                   setNoFilterRequest: setNoFilterTermCarouselRequest,
-                  id: "unfilteredTermCarousel",
-                  value: "unfilteredTermCarousel",
+                  id: 'unfilteredTermCarousel',
+                  value: 'unfilteredTermCarousel',
                 })}
             </>
           )}
@@ -150,25 +136,14 @@ const ChartSection = () => {
           <AnimatePresence>
             <Row>
               <Col xs={noFilterTermCarouselRequest ? 6 : 12}>
-                {noFilterTermCarouselRequest && (
-                  <h5 className={"d-flex justify-content-center mt-3"}>
-                    Filtered data
-                  </h5>
-                )}
-                <TermCarousel
-                  onRender={() => handleChildRender("termCarousel")}
-                />
+                {noFilterTermCarouselRequest && <h5 className={'d-flex justify-content-center mt-3'}>Filtered data</h5>}
+                <TermCarousel onRender={() => handleChildRender('termCarousel')} />
               </Col>
 
               {noFilterTermCarouselRequest && (
                 <Col xs={6}>
-                  <h5 className={"d-flex justify-content-center mt-3"}>
-                    Unfiltered data
-                  </h5>
-                  <TermCarousel
-                    noFilterRequest={true}
-                    onRender={() => handleChildRender("termCarousel")}
-                  />
+                  <h5 className={'d-flex justify-content-center mt-3'}>Unfiltered data</h5>
+                  <TermCarousel noFilterRequest={true} onRender={() => handleChildRender('termCarousel')} />
                 </Col>
               )}
             </Row>

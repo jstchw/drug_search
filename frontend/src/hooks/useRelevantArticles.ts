@@ -1,7 +1,7 @@
-import { useUrlParams } from "./useUrlParams";
-import { useState } from "react";
-import { backendUrl } from "../constants";
-import { useEffect } from "react";
+import { useUrlParams } from './useUrlParams';
+import { useState } from 'react';
+import { backendUrl } from '../constants';
+import { useEffect } from 'react';
 
 type RelevantArticle = {
   title: string;
@@ -14,12 +14,8 @@ type RelevantArticle = {
 
 export const useRelevantArticles = () => {
   const { params } = useUrlParams();
-  const [relevantArticles, setRelevantArticles] = useState<RelevantArticle[]>(
-    [],
-  );
-  const [relevantArticlesError, setRelevantArticlesError] = useState<
-    unknown | boolean
-  >(false);
+  const [relevantArticles, setRelevantArticles] = useState<RelevantArticle[]>([]);
+  const [relevantArticlesError, setRelevantArticlesError] = useState<unknown | boolean>(false);
 
   useEffect(() => {
     const fetchRelevantArticles = async () => {
@@ -47,7 +43,7 @@ export const useRelevantArticles = () => {
         if (error instanceof Error) {
           throw new Error(error.message);
         } else {
-          throw new Error("An unknown error occurred");
+          throw new Error('An unknown error occurred');
         }
       }
     };

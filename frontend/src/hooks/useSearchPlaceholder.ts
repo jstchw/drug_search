@@ -1,23 +1,16 @@
-import { useEffect, useState } from "react";
-import { placeholders } from "../constants";
-import { SearchOptionsType } from "../types";
+import { useEffect, useState } from 'react';
+import { placeholders } from '../constants';
+import { SearchOptionsType } from '../types';
 
-const useSearchPlaceholder = (
-  duration: number,
-  searchBy: SearchOptionsType,
-) => {
-  const [currentPlaceholder, setCurrentPlaceholder] = useState<
-    string | undefined
-  >(undefined);
+const useSearchPlaceholder = (duration: number, searchBy: SearchOptionsType) => {
+  const [currentPlaceholder, setCurrentPlaceholder] = useState<string | undefined>(undefined);
   const [currentIndex, setCurrentIndex] = useState<number>(0); // used to be null
 
   useEffect(() => {
     const setRandomPlaceholder = () => {
       let randomIndex: number;
       do {
-        randomIndex = Math.floor(
-          Math.random() * (placeholders[searchBy.value]?.length || 1),
-        );
+        randomIndex = Math.floor(Math.random() * (placeholders[searchBy.value]?.length || 1));
       } while (randomIndex === currentIndex);
 
       setCurrentPlaceholder(placeholders[searchBy.value]?.[randomIndex]);

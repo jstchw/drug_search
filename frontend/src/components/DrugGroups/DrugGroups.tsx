@@ -1,7 +1,7 @@
-import React from "react";
-import { Popover, OverlayTrigger, Badge } from "react-bootstrap";
-import { useUrlParams } from "../../hooks/useUrlParams";
-import { drugGroupConfig } from "../../constants";
+import React from 'react';
+import { Popover, OverlayTrigger, Badge } from 'react-bootstrap';
+import { useUrlParams } from '../../hooks/useUrlParams';
+import { drugGroupConfig } from '../../constants';
 
 interface DrugGroupsProps {
   drugGroups: string[];
@@ -22,10 +22,10 @@ const DrugGroups: React.FC<DrugGroupsProps> = ({ drugGroups }) => {
 
       const popover = (
         <Popover id={`popover-${index}`}>
-          <Popover.Header style={{ backgroundColor: "transparent" }}>
-            <div className={"d-flex align-items-center fs-5"}>
-              {IconComponent && <IconComponent weight={"light"} />}
-              <div className={"vr mx-2"} />
+          <Popover.Header style={{ backgroundColor: 'transparent' }}>
+            <div className={'d-flex align-items-center fs-5'}>
+              {IconComponent && <IconComponent weight={'light'} />}
+              <div className={'vr mx-2'} />
               {label}
             </div>
           </Popover.Header>
@@ -34,13 +34,8 @@ const DrugGroups: React.FC<DrugGroupsProps> = ({ drugGroups }) => {
       );
 
       return (
-        <OverlayTrigger
-          key={index}
-          trigger={["hover", "focus"]}
-          placement="bottom"
-          overlay={popover}
-        >
-          <Badge style={{ cursor: "default" }} className="mx-1" bg={variant}>
+        <OverlayTrigger key={index} trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
+          <Badge style={{ cursor: 'default' }} className="mx-1" bg={variant}>
             {groupLabel}
           </Badge>
         </OverlayTrigger>
@@ -50,7 +45,7 @@ const DrugGroups: React.FC<DrugGroupsProps> = ({ drugGroups }) => {
 
   return (
     <>
-      {params.searchBy === "generic_name" ? (
+      {params.searchBy === 'generic_name' ? (
         <h3>{processDrugGroups(drugGroups)}</h3>
       ) : (
         <h5>{processDrugGroups(drugGroups)}</h5>

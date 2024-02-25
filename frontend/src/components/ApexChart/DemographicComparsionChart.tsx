@@ -1,25 +1,16 @@
-import React from "react";
-import ReactApexChart from "react-apexcharts";
-import { DemographicData, URLParams } from "../../types";
-import { ThemeContext } from "../../contexts/ThemeContext";
-import _ from "lodash";
-import {
-  searchAgeGroups,
-  searchSex,
-  chartColors,
-  oppositeAggregation,
-} from "../../constants";
-import useDemographicStore from "../../stores/demographicStore";
-import { useUrlParams } from "../../hooks/useUrlParams";
-import { useDemographicData } from "../../hooks/useDemographicData";
-import { ApexOptions } from "apexcharts";
-import { capitalizeFirstLetter } from "../../utils/utils";
+import React from 'react';
+import ReactApexChart from 'react-apexcharts';
+import { DemographicData, URLParams } from '../../types';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import _ from 'lodash';
+import { searchAgeGroups, searchSex, chartColors, oppositeAggregation } from '../../constants';
+import useDemographicStore from '../../stores/demographicStore';
+import { useUrlParams } from '../../hooks/useUrlParams';
+import { useDemographicData } from '../../hooks/useDemographicData';
+import { ApexOptions } from 'apexcharts';
+import { capitalizeFirstLetter } from '../../utils/utils';
 
-const getParamsArray = (
-  term: string,
-  searchBy: string,
-  searchMode: string,
-): URLParams[] => {
+const getParamsArray = (term: string, searchBy: string, searchMode: string): URLParams[] => {
   const paramList: URLParams[] = [];
 
   Object.entries(searchAgeGroups).forEach(([_, ageGroup]) => {
@@ -41,10 +32,7 @@ const getParamsArray = (
   return paramList;
 };
 
-const groupData = (
-  data: DemographicData[],
-  filterType: keyof DemographicData["params"],
-) => {
+const groupData = (data: DemographicData[], filterType: keyof DemographicData['params']) => {
   const aggregatedData: Record<string, DemographicData[]> = {};
 
   data.forEach((entry) => {
@@ -66,9 +54,7 @@ const transformData = (data: DemographicData[], aggregateType: string) => {
   }
 
   const labels = data.map((entry) => entry.params[aggregation]);
-  const uniqueTerms = [
-    ...new Set(data.flatMap((item) => item.data.map((d) => d.x))),
-  ];
+  const uniqueTerms = [...new Set(data.flatMap((item) => item.data.map((d) => d.x)))];
 
   const series = uniqueTerms.map((term) => ({
     name: capitalizeFirstLetter(term),
@@ -108,7 +94,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
 
   const hasData = React.useMemo(
     () => !!(paramDataArray && !isError && paramDataArray.length !== 0),
-    [paramDataArray, isError],
+    [paramDataArray, isError]
   );
 
   React.useEffect(() => {
@@ -135,10 +121,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   }
 
   const aggregatedDataForKey = aggregatedData[currentPageKey];
-  const { series, labels } = transformData(
-    aggregatedDataForKey || [],
-    aggregateType,
-  );
+  const { series, labels } = transformData(aggregatedDataForKey || [], aggregateType);
 
   const chartOptions: ApexOptions = {
     colors: chartColors,
@@ -155,8 +138,8 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
         },
       },
       stacked: true,
-      stackType: "100%",
-      background: theme === "dark" ? "#212529" : "",
+      stackType: '100%',
+      background: theme === 'dark' ? '#212529' : '',
     },
     legend: {
       show: true,
@@ -165,9 +148,9 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
       bar: {
         horizontal: true,
         distributed: false,
-        barHeight: "50%",
+        barHeight: '50%',
         borderRadius: 0,
-        borderRadiusWhenStacked: "last",
+        borderRadiusWhenStacked: 'last',
       },
     },
     xaxis: {
@@ -192,7 +175,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
 
   return (
     <>
-      <div className={"mb-3"}>
+      <div className={'mb-3'}>
         <ReactApexChart options={chartOptions} type="bar" series={series} />
       </div>
     </>

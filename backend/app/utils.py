@@ -55,7 +55,7 @@ def strict_search(entry, params, search_fields):
     return matched_entries
 
 
-def search_json(params, json_file_path, limit=10):
+def search_json(params, data, limit=10):
     """
     Search for entries in a JSON file based on the given parameters.
 
@@ -86,9 +86,6 @@ def search_json(params, json_file_path, limit=10):
 
     country_specified = params.get('country') is not None and params.get('country').strip() != ''
     country_filter = params.get('country').lower() if country_specified else None
-
-    with open(json_file_path, 'r') as file:
-        data = json.load(file)  # Load the entire JSON array
 
     for entry in data:
         # Gender filtering section -------------------------------------------

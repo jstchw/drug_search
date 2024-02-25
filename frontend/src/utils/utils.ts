@@ -6,16 +6,9 @@ import {
   SearchOptionsType,
   PercentageIntensityColors,
   FDARawData,
-} from "../types";
-import {
-  baseFdaUrl,
-  searchModes,
-  searchSex,
-  searchTypes,
-  percentageIntensityColors,
-  whatToCount,
-} from "../constants";
-import React from "react";
+} from '../types';
+import { baseFdaUrl, searchModes, searchSex, searchTypes, percentageIntensityColors, whatToCount } from '../constants';
+import React from 'react';
 
 export const processTermData = (data: ResultItem[]): ChartDataPoint[] => {
   return data.map((item) => ({
@@ -25,24 +18,19 @@ export const processTermData = (data: ResultItem[]): ChartDataPoint[] => {
 };
 
 export const processYearData = (data: TimeEventData[]): ChartDataPoint[] => {
-  const yearlyData = data.reduce(
-    (acc: { [year: string]: number }, entry: TimeEventData) => {
-      const year = entry.time.substring(0, 4); // Accessing the year from the time string (e.g. 2019-01-01)
-      acc[year] = (acc[year] || 0) + entry.count; // If the year exists in the accumulator, add the count to it, otherwise set it to 0 and add the count to it (this is to avoid undefined errors)
-      return acc;
-    },
-    {},
-  );
+  const yearlyData = data.reduce((acc: { [year: string]: number }, entry: TimeEventData) => {
+    const year = entry.time.substring(0, 4); // Accessing the year from the time string (e.g. 2019-01-01)
+    acc[year] = (acc[year] || 0) + entry.count; // If the year exists in the accumulator, add the count to it, otherwise set it to 0 and add the count to it (this is to avoid undefined errors)
+    return acc;
+  }, {});
 
-  const sortedEntries: [string, number][] = Object.entries(yearlyData).sort(
-    (a, b) => a[0].localeCompare(b[0]),
-  );
+  const sortedEntries: [string, number][] = Object.entries(yearlyData).sort((a, b) => a[0].localeCompare(b[0]));
 
   return sortedEntries.map(
     ([time, count]): ChartDataPoint => ({
       x: time,
       y: count,
-    }),
+    })
   );
 };
 
@@ -60,7 +48,7 @@ export const generatePath = (
   params: URLParams,
   countType?: string,
   limitProp?: number,
-  returnReportCount: boolean = false,
+  returnReportCount: boolean = false
 ) => {
   const fromDate = `20040101`;
   const limit = limitProp ? limitProp : 50;
@@ -75,10 +63,8 @@ export const generatePath = (
 
   // Term formation ----------------
   if (params.terms) {
-    const encodedTerms = params.terms.flat().join("+AND+");
-    searchParts.push(
-      `(${mapParamToValue(params.searchBy, searchTypes)}:${encodedTerms})`,
-    );
+    const encodedTerms = params.terms.flat().join('+AND+');
+    searchParts.push(`(${mapParamToValue(params.searchBy, searchTypes)}:${encodedTerms})`);
   }
 
   // Sex formation ----------------
@@ -99,9 +85,7 @@ export const generatePath = (
       params.age.max = defaultMaxAge.toString();
     }
 
-    searchParts.push(
-      `patient.patientonsetage:[${params.age.min}+TO+${params.age.max}]`,
-    );
+    searchParts.push(`patient.patientonsetage:[${params.age.min}+TO+${params.age.max}]`);
   }
 
   // Country formation ----------------
@@ -111,15 +95,15 @@ export const generatePath = (
 
   // If the parameter is set to return the report count, return the count of the reports only
   if (returnReportCount) {
-    return `${baseFdaUrl}?search=${searchParts.join("+AND+")}&limit=1`;
+    return `${baseFdaUrl}?search=${searchParts.join('+AND+')}&limit=1`;
   }
 
   // countType is empty when the link is generated for Term Carousel (Feb 10, 2024)
   // countType is not empty when the link is generated for Time Series Chart (Feb 10, 2024)
   if (countType) {
-    return `${baseFdaUrl}?search=${searchParts.join("+AND+")}&count=${whatToCount[countType]}`;
+    return `${baseFdaUrl}?search=${searchParts.join('+AND+')}&count=${whatToCount[countType]}`;
   } else {
-    return `${baseFdaUrl}?search=${searchParts.join("+AND+")}&count=${whatToCount[params.searchBy]}&limit=${limit}`;
+    return `${baseFdaUrl}?search=${searchParts.join('+AND+')}&count=${whatToCount[params.searchBy]}&limit=${limit}`;
   }
 };
 
@@ -131,24 +115,15 @@ export const fetchData = async (url: string): Promise<FDARawData> => {
   return response.json();
 };
 
-export const mapParamToLabel = (
-  param: string,
-  options: SearchOptionsType[],
-): string => {
+export const mapParamToLabel = (param: string, options: SearchOptionsType[]): string => {
   const option = options.find((option) => option.param === param);
-  return option ? option.label : "Not Specified";
+  return option ? option.label : 'Not Specified';
 };
 
-export const mapParamArrayToLabels = (
-  params: URLParams,
-): Record<string, string> => {
+export const mapParamArrayToLabels = (params: URLParams): Record<string, string> => {
   const paramLabels: Record<string, string> = {};
 
-  const assignMappedLabel = (
-    param: string | null,
-    optionsArray: SearchOptionsType[],
-    paramName: string,
-  ) => {
+  const assignMappedLabel = (param: string | null, optionsArray: SearchOptionsType[], paramName: string) => {
     const option = optionsArray.find((option) => option.param === param);
     if (option) {
       paramLabels[paramName] = option.label;
@@ -156,52 +131,46 @@ export const mapParamArrayToLabels = (
   };
 
   if (params.searchBy) {
-    assignMappedLabel(params.searchBy, searchTypes, "Type");
+    assignMappedLabel(params.searchBy, searchTypes, 'Type');
   }
 
   if (params.searchMode) {
-    assignMappedLabel(params.searchMode, searchModes, "Mode");
+    assignMappedLabel(params.searchMode, searchModes, 'Mode');
   }
 
   if (params.sex) {
-    assignMappedLabel(params.sex, searchSex, "Sex");
+    assignMappedLabel(params.sex, searchSex, 'Sex');
   }
 
   if (params.age) {
     if (params.age.max && params.age.min) {
-      paramLabels["Age"] = `${params.age.min} - ${params.age.max}`;
+      paramLabels['Age'] = `${params.age.min} - ${params.age.max}`;
     } else if (params.age.max && !params.age.min) {
-      paramLabels["Age"] = `Up to ${params.age.max}`;
+      paramLabels['Age'] = `Up to ${params.age.max}`;
     } else if (params.age.min && !params.age.max) {
-      paramLabels["Age"] = `From ${params.age.min}`;
+      paramLabels['Age'] = `From ${params.age.min}`;
     }
   }
 
   if (params.country) {
-    paramLabels["Country"] = params.country;
+    paramLabels['Country'] = params.country;
   }
 
   return paramLabels;
 };
 
-export const mapParamToValue = (
-  param: string,
-  options: SearchOptionsType[],
-): string => {
+export const mapParamToValue = (param: string, options: SearchOptionsType[]): string => {
   const option = options.find((option) => option.param === param);
-  return option ? option.value : "";
+  return option ? option.value : '';
 };
 
-export const highlightWords = (
-  text: string,
-  words: string[],
-): React.ReactNode => {
-  const regex = new RegExp(`(${words.join("|")})`, "gi");
+export const highlightWords = (text: string, words: string[]): React.ReactNode => {
+  const regex = new RegExp(`(${words.join('|')})`, 'gi');
   const parts = text.split(regex);
 
   return parts.map((part, index) => {
-    const isMatch = words.some((word) => new RegExp(word, "gi").test(part));
-    return isMatch ? React.createElement("mark", { key: index }, part) : part;
+    const isMatch = words.some((word) => new RegExp(word, 'gi').test(part));
+    return isMatch ? React.createElement('mark', { key: index }, part) : part;
   });
 };
 
@@ -212,20 +181,16 @@ export const capitalizeFirstLetter = (string: string): string => {
 export const getColorFromPercentage = (percentage: number) => {
   for (const key in percentageIntensityColors) {
     if (percentageIntensityColors.hasOwnProperty(key)) {
-      const category =
-        percentageIntensityColors[key as keyof PercentageIntensityColors];
+      const category = percentageIntensityColors[key as keyof PercentageIntensityColors];
       if (category && category.percentageRange && category.color) {
-        if (
-          percentage > category.percentageRange[0] &&
-          percentage <= category.percentageRange[1]
-        ) {
+        if (percentage > category.percentageRange[0] && percentage <= category.percentageRange[1]) {
           return category.color;
         }
       }
     }
   }
 
-  return "#FFFFFF";
+  return '#FFFFFF';
 };
 
 export const percentageToValue = (percentage: number, total: number) => {

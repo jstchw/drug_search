@@ -1,3 +1,4 @@
+from re import search
 from flask import Blueprint, jsonify, request, send_file
 import io
 from rdkit import Chem
@@ -13,6 +14,7 @@ data_manager = DataManager.get_instance()
 substances = data_manager.substances
 products = data_manager.products
 drug_json = data_manager.drug_json
+pubmed_data = data_manager.pubmed_data
 
 
 @drug_api.route('/get_molecule', methods=['GET'])
@@ -124,7 +126,7 @@ def get_articles():
         return jsonify({"error": "Missing required parameters"}), 400
 
     results = search_json(params,
-                          json_file_path='data/pubmed_article_data/pubmed_data.json',
+                          data=pubmed_data,
                           limit=10)
 
     # Form a list of pubmed ids and use it to generate the pubmed url
@@ -136,3 +138,28 @@ def get_articles():
         return jsonify(article_metadata), 200
     else:
         return jsonify({"error": "No articles found"}), 404
+
+
+@drug_api.route('/get_pm_timedata', methods=['GET'])
+def get_pm_timedata():
+    """
+    Retrieves number of publications for the provided term and returns a ready-to-use
+    dictionary in format {x: 'year', y: 'number of publications'}.
+
+    Parameters:
+    - drug_name (str[]): The name of the drug.
+
+    Returns:
+    - JSON: A JSON response containing the number of publications for the provided term.
+    """
+    params = {
+        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
+        'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
+        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None,
+        'sex': request.args.get('sex') if request.args.get('sex') in ['male', 'female'] else None,
+        'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
+        'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
+    }
+
+    print(type(pubmed_data), flush=True)
+    return jsonify(params['terms']), 200

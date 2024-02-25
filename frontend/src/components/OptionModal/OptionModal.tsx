@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   Button,
   FigureCaption,
@@ -10,26 +10,15 @@ import {
   Tooltip,
   Overlay,
   ButtonGroup,
-} from "react-bootstrap";
-import { ThemeContext } from "../../contexts/ThemeContext";
-import {
-  Moon,
-  Sun,
-  Funnel,
-  ClockCounterClockwise,
-} from "@phosphor-icons/react";
-import Cookies from "js-cookie";
-import {
-  searchCountry,
-  searchSex,
-  searchTypes,
-  searchModes,
-  searchAgeGroups,
-  versionInfo,
-} from "../../constants";
-import { SearchOptions, SearchOptionsType } from "../../types";
-import SearchHistory from "../SearchHistory/SearchHistory";
-import { Carousel } from "react-responsive-carousel";
+  Badge,
+} from 'react-bootstrap';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import { Moon, Sun, Funnel, ClockCounterClockwise } from '@phosphor-icons/react';
+import Cookies from 'js-cookie';
+import { searchCountry, searchSex, searchTypes, searchModes, searchAgeGroups, versionInfo } from '../../constants';
+import { SearchOptions, SearchOptionsType } from '../../types';
+import SearchHistory from '../SearchHistory/SearchHistory';
+import { Carousel } from 'react-responsive-carousel';
 
 const OptionModal = (props: {
   showOptionModal: boolean;
@@ -39,9 +28,9 @@ const OptionModal = (props: {
 }) => {
   useEffect(() => {
     const optionsString = JSON.stringify(props.searchOptions);
-    Cookies.set("searchOptions", optionsString, {
+    Cookies.set('searchOptions', optionsString, {
       expires: 365,
-      sameSite: "strict",
+      sameSite: 'strict',
     });
   }, [props.searchOptions]);
 
@@ -56,31 +45,22 @@ const OptionModal = (props: {
   const maxAgeRef = React.useRef<HTMLInputElement>(null);
 
   const [selectedAgeGroup, setSelectedAgeGroup] = React.useState<string>(
-    `${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`,
+    `${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`
   );
   // Custom value for the age group input if the selected age doesn't match any of the predefined age groups
-  const [customAgeGroup, setCustomAgeGroup] = React.useState<string>("");
+  const [customAgeGroup, setCustomAgeGroup] = React.useState<string>('');
 
   // Trigger the update of the selected age group when the min and max age values change
   React.useEffect(() => {
-    setCustomAgeGroup(
-      `${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`,
-    );
-    setSelectedAgeGroup(
-      `${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`,
-    );
+    setCustomAgeGroup(`${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`);
+    setSelectedAgeGroup(`${props.searchOptions.age.min.value}-${props.searchOptions.age.max.value}`);
   }, [props.searchOptions.age.min.value, props.searchOptions.age.max.value]);
 
   // Function to compare the selected age group with the predefined age groups
   // If the group doesn't exist -> false
-  const doesAgeGroupExist = Object.values(searchAgeGroups).some(
-    ({ min, max }) => {
-      return (
-        min === parseInt(props.searchOptions.age.min.value) &&
-        max === parseInt(props.searchOptions.age.max.value)
-      );
-    },
-  );
+  const doesAgeGroupExist = Object.values(searchAgeGroups).some(({ min, max }) => {
+    return min === parseInt(props.searchOptions.age.min.value) && max === parseInt(props.searchOptions.age.max.value);
+  });
 
   const incorrectAgeTooltip = (
     <Tooltip id="incorrectAgeTooltip">
@@ -90,9 +70,7 @@ const OptionModal = (props: {
 
   const handleSearchTypeChange = (value: string) => {
     const newSearchType =
-      (searchTypes.find(
-        (searchType) => searchType.value === value,
-      ) as SearchOptionsType) || searchTypes[0];
+      (searchTypes.find((searchType) => searchType.value === value) as SearchOptionsType) || searchTypes[0];
 
     props.setSearchOptions({
       ...props.searchOptions,
@@ -105,9 +83,7 @@ const OptionModal = (props: {
 
   const handleSearchModeChange = (value: string) => {
     const newSearchMode =
-      (searchModes.find(
-        (searchMode) => searchMode.value === value,
-      ) as SearchOptionsType) || searchModes[0];
+      (searchModes.find((searchMode) => searchMode.value === value) as SearchOptionsType) || searchModes[0];
 
     props.setSearchOptions({
       ...props.searchOptions,
@@ -120,9 +96,7 @@ const OptionModal = (props: {
 
   const handleSexChange = (value: string) => {
     const newSearchSex =
-      (searchSex.find(
-        (searchSex) => searchSex.value === value,
-      ) as SearchOptionsType) || searchSex[0];
+      (searchSex.find((searchSex) => searchSex.value === value) as SearchOptionsType) || searchSex[0];
 
     props.setSearchOptions({
       ...props.searchOptions,
@@ -137,7 +111,7 @@ const OptionModal = (props: {
     if (props.searchOptions.age.ageGroupsEnabled) {
       setSelectedAgeGroup(e.currentTarget.value);
 
-      const [min, max] = e.currentTarget.value.split("-");
+      const [min, max] = e.currentTarget.value.split('-');
       const updatedAge = { ...props.searchOptions.age };
 
       updatedAge.min = { ...updatedAge.min, value: min as string };
@@ -184,24 +158,18 @@ const OptionModal = (props: {
           value: selectedAgeGroup,
         },
       };
-      handleAgeChange(
-        syntheticEvent as unknown as React.ChangeEvent<HTMLInputElement>,
-      );
+      handleAgeChange(syntheticEvent as unknown as React.ChangeEvent<HTMLInputElement>);
     }
   };
 
   React.useEffect(() => {
     handleAgeGroupToggle();
-  }, [
-    props.searchOptions.age.ageGroupsEnabled,
-    props.searchOptions.age.enabled,
-  ]);
+  }, [props.searchOptions.age.ageGroupsEnabled, props.searchOptions.age.enabled]);
 
   const handleCountryChange = (value: string) => {
     const newSearchCountry =
-      (searchCountry.find(
-        (searchCountry) => searchCountry.index === parseInt(value),
-      ) as SearchOptionsType) || searchCountry[0];
+      (searchCountry.find((searchCountry) => searchCountry.index === parseInt(value)) as SearchOptionsType) ||
+      searchCountry[0];
 
     props.setSearchOptions({
       ...props.searchOptions,
@@ -214,21 +182,13 @@ const OptionModal = (props: {
 
   return (
     <>
-      <Modal
-        centered
-        show={props.showOptionModal}
-        onHide={() => !incorrectAge && props.setShowOptionModal(false)}
-      >
+      <Modal centered show={props.showOptionModal} onHide={() => !incorrectAge && props.setShowOptionModal(false)}>
         <Modal.Header closeButton>
           {/*Theme change button*/}
-          <Button
-            variant={"outline-primary"}
-            onClick={toggleTheme}
-            className={"d-flex align-items-center"}
-          >
-            {theme === "light" ? <Moon /> : <Sun />}
+          <Button variant={'outline-primary'} onClick={toggleTheme} className={'d-flex align-items-center'}>
+            {theme === 'light' ? <Moon /> : <Sun />}
           </Button>
-          <div className={"vr mx-2"} />
+          <div className={'vr mx-2'} />
           <Modal.Title>Options</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -243,9 +203,9 @@ const OptionModal = (props: {
             <Form>
               {/* Search type change */}
               <Form.Group className="mb-3 d-flex align-items-center">
-                <div className={"d-flex align-items-center"}>
+                <div className={'d-flex align-items-center'}>
                   <ToggleButton
-                    id={"search_type_button"}
+                    id={'search_type_button'}
                     type="checkbox"
                     variant="outline-primary"
                     checked={true}
@@ -255,16 +215,11 @@ const OptionModal = (props: {
                     Search by
                   </ToggleButton>
                 </div>
-                <InputGroup
-                  className={"flex-grow-1 mx-3"}
-                  style={{ width: "auto" }}
-                >
+                <InputGroup className={'flex-grow-1 mx-3'} style={{ width: 'auto' }}>
                   <Form.Select
-                    onChange={(e) =>
-                      handleSearchTypeChange(e.currentTarget.value)
-                    }
+                    onChange={(e) => handleSearchTypeChange(e.currentTarget.value)}
                     value={props.searchOptions.searchBy.value}
-                    style={{ width: "auto" }}
+                    style={{ width: 'auto' }}
                   >
                     {searchTypes.map((searchType, index) => (
                       <option key={index} value={searchType.value}>
@@ -277,9 +232,9 @@ const OptionModal = (props: {
 
               {/* Search mode change */}
               <Form.Group className="mb-3 d-flex align-items-center">
-                <div className={"d-flex align-items-center"}>
+                <div className={'d-flex align-items-center'}>
                   <ToggleButton
-                    id={"search_mode_button"}
+                    id={'search_mode_button'}
                     type="checkbox"
                     variant="outline-primary"
                     checked={true}
@@ -289,16 +244,12 @@ const OptionModal = (props: {
                     Search mode
                   </ToggleButton>
                 </div>
-                <InputGroup
-                  className={"flex-grow-1 mx-3"}
-                  style={{ width: "auto" }}
-                >
+                <Badge className={'bg-danger mx-2'}>Exp</Badge>
+                <InputGroup className={'flex-grow-1 me-3'} style={{ width: 'auto' }}>
                   <Form.Select
-                    onChange={(e) =>
-                      handleSearchModeChange(e.currentTarget.value)
-                    }
+                    onChange={(e) => handleSearchModeChange(e.currentTarget.value)}
                     value={props.searchOptions.searchMode.value}
-                    style={{ width: "auto" }}
+                    style={{ width: 'auto' }}
                   >
                     {searchModes.map((searchMode, index) => (
                       <option key={index} value={searchMode.value}>
@@ -311,9 +262,9 @@ const OptionModal = (props: {
 
               {/* Sex option change */}
               <Form.Group className="mb-3 d-flex align-items-center">
-                <div className={"d-flex align-items-center"}>
+                <div className={'d-flex align-items-center'}>
                   <ToggleButton
-                    id={"sex_change_button"}
+                    id={'sex_change_button'}
                     type="checkbox"
                     variant="outline-primary"
                     checked={props.searchOptions.sex.enabled}
@@ -331,7 +282,7 @@ const OptionModal = (props: {
                     Sex
                   </ToggleButton>
                 </div>
-                <InputGroup className={"mx-3 flex-grow-1"}>
+                <InputGroup className={'mx-3 flex-grow-1'}>
                   <Form.Select
                     onChange={(e) => {
                       handleSexChange(e.currentTarget.value);
@@ -350,18 +301,14 @@ const OptionModal = (props: {
 
               {/* Age option change */}
               <Form.Group className="mb-3 d-flex align-items-center">
-                <div className={"d-flex align-items-center"}>
-                  <Overlay
-                    placement={"left"}
-                    show={incorrectAge}
-                    target={ageTooltipTarget.current}
-                  >
+                <div className={'d-flex align-items-center'}>
+                  <Overlay placement={'left'} show={incorrectAge} target={ageTooltipTarget.current}>
                     {incorrectAgeTooltip}
                   </Overlay>
                   <ButtonGroup>
                     <ToggleButton
                       ref={ageTooltipTarget}
-                      id={"age_change_button"}
+                      id={'age_change_button'}
                       type="checkbox"
                       variant="outline-primary"
                       checked={props.searchOptions.age.enabled}
@@ -378,7 +325,7 @@ const OptionModal = (props: {
                       Age
                     </ToggleButton>
                     <ToggleButton
-                      id={"age_range_button"}
+                      id={'age_range_button'}
                       type="checkbox"
                       variant="outline-primary"
                       disabled={!props.searchOptions.age.enabled}
@@ -388,8 +335,7 @@ const OptionModal = (props: {
                         const newSearchOptions = { ...props.searchOptions };
                         newSearchOptions.age = {
                           ...props.searchOptions.age,
-                          ageGroupsEnabled:
-                            !props.searchOptions.age.ageGroupsEnabled,
+                          ageGroupsEnabled: !props.searchOptions.age.ageGroupsEnabled,
                         };
                         props.setSearchOptions(newSearchOptions);
                       }}
@@ -401,32 +347,21 @@ const OptionModal = (props: {
 
                 {/* Age groups input */}
                 {props.searchOptions.age.ageGroupsEnabled && (
-                  <InputGroup className={"mx-3 flex-grow-1"}>
+                  <InputGroup className={'mx-3 flex-grow-1'}>
                     <Form.Select
                       value={selectedAgeGroup}
-                      disabled={
-                        !props.searchOptions.age.enabled ||
-                        !props.searchOptions.age.ageGroupsEnabled
-                      }
+                      disabled={!props.searchOptions.age.enabled || !props.searchOptions.age.ageGroupsEnabled}
                       onChange={(e) => {
-                        handleAgeChange(
-                          e as unknown as React.ChangeEvent<HTMLInputElement>,
-                        );
+                        handleAgeChange(e as unknown as React.ChangeEvent<HTMLInputElement>);
                         setIncorrectAge(false);
                       }}
                     >
-                      {Object.entries(searchAgeGroups).map(
-                        ([key, { min, max }], index) => (
-                          <option key={index} value={`${min}-${max}`}>
-                            {key}
-                          </option>
-                        ),
-                      )}
-                      {!doesAgeGroupExist && (
-                        <option value={customAgeGroup}>
-                          Custom: {customAgeGroup}
+                      {Object.entries(searchAgeGroups).map(([key, { min, max }], index) => (
+                        <option key={index} value={`${min}-${max}`}>
+                          {key}
                         </option>
-                      )}
+                      ))}
+                      {!doesAgeGroupExist && <option value={customAgeGroup}>Custom: {customAgeGroup}</option>}
                     </Form.Select>
                   </InputGroup>
                 )}
@@ -434,17 +369,15 @@ const OptionModal = (props: {
                 {!props.searchOptions.age.ageGroupsEnabled && (
                   <>
                     {/* Min age input */}
-                    <InputGroup className={"mx-3 flex-grow-1"}>
+                    <InputGroup className={'mx-3 flex-grow-1'}>
                       <Form.Control
                         ref={minAgeRef}
                         type="text"
                         placeholder="Min"
                         value={props.searchOptions.age.min.value ?? 0}
-                        id={"0"}
+                        id={'0'}
                         onChange={(e) => {
-                          handleAgeChange(
-                            e as React.ChangeEvent<HTMLInputElement>,
-                          );
+                          handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
                         }}
                         disabled={!props.searchOptions.age.enabled}
                         onCopy={(e) => e.preventDefault()}
@@ -459,11 +392,9 @@ const OptionModal = (props: {
                         type="text"
                         placeholder="Max"
                         value={props.searchOptions.age.max.value ?? 0}
-                        id={"1"}
+                        id={'1'}
                         onChange={(e) => {
-                          handleAgeChange(
-                            e as React.ChangeEvent<HTMLInputElement>,
-                          );
+                          handleAgeChange(e as React.ChangeEvent<HTMLInputElement>);
                         }}
                         disabled={!props.searchOptions.age.enabled}
                         onCopy={(e) => e.preventDefault()}
@@ -476,9 +407,9 @@ const OptionModal = (props: {
 
               {/* Country option change */}
               <Form.Group>
-                <div className={"d-flex align-items-center"}>
+                <div className={'d-flex align-items-center'}>
                   <ToggleButton
-                    id={"country_change_button"}
+                    id={'country_change_button'}
                     type="checkbox"
                     variant="outline-primary"
                     value="1"
@@ -495,12 +426,10 @@ const OptionModal = (props: {
                   >
                     Country
                   </ToggleButton>
-                  <InputGroup className={"mx-3 flex-grow-1"}>
+                  <InputGroup className={'mx-3 flex-grow-1'}>
                     <Form.Select
                       disabled={!props.searchOptions.country.enabled}
-                      onChange={(e) =>
-                        handleCountryChange(e.currentTarget.value)
-                      }
+                      onChange={(e) => handleCountryChange(e.currentTarget.value)}
                       value={props.searchOptions.country.index}
                     >
                       {searchCountry.map((country, index) => (
@@ -517,40 +446,28 @@ const OptionModal = (props: {
             <SearchHistory setShowOptionModal={props.setShowOptionModal} />
           </Carousel>
 
-          <Nav
-            variant="tabs"
-            defaultActiveKey={carouselIndex}
-            className={"mt-3"}
-          >
+          <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3'}>
             <Nav.Item>
-              <Nav.Link
-                className={"d-flex align-items-center"}
-                eventKey="0"
-                onClick={() => setCarouselIndex(0)}
-              >
-                <Funnel weight={"light"} />
-                <div className={"vr mx-2"} />
+              <Nav.Link className={'d-flex align-items-center'} eventKey="0" onClick={() => setCarouselIndex(0)}>
+                <Funnel weight={'light'} />
+                <div className={'vr mx-2'} />
                 Filters
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link
-                className={"d-flex align-items-center"}
-                eventKey="1"
-                onClick={() => setCarouselIndex(1)}
-              >
-                <ClockCounterClockwise weight={"light"} />
-                <div className={"vr mx-2"} />
+              <Nav.Link className={'d-flex align-items-center'} eventKey="1" onClick={() => setCarouselIndex(1)}>
+                <ClockCounterClockwise weight={'light'} />
+                <div className={'vr mx-2'} />
                 History
               </Nav.Link>
             </Nav.Item>
           </Nav>
 
-          <FigureCaption className={"d-flex justify-content-center mt-3"}>
+          <FigureCaption className={'d-flex justify-content-center mt-3'}>
             <a
-              className={"text-decoration-none"}
-              href={"https://github.com/jstchw/drug_search"}
-              target={"_blank"}
+              className={'text-decoration-none'}
+              href={'https://github.com/jstchw/drug_search'}
+              target={'_blank'}
               rel="noreferrer"
             >
               {versionInfo.appName} {versionInfo.tag} {versionInfo.number}

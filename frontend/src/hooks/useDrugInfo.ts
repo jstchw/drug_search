@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { backendUrl, searchTypes } from "../constants";
-import { DrugProperties, URLParams } from "../types";
+import { backendUrl, searchTypes } from '../constants';
+import { DrugProperties, URLParams } from '../types';
 
 const toSubscript = (str: string): string => {
   const subscriptMap: { [key: string]: string } = {
-    "0": "₀",
-    "1": "₁",
-    "2": "₂",
-    "3": "₃",
-    "4": "₄",
-    "5": "₅",
-    "6": "₆",
-    "7": "₇",
-    "8": "₈",
-    "9": "₉",
+    '0': '₀',
+    '1': '₁',
+    '2': '₂',
+    '3': '₃',
+    '4': '₄',
+    '5': '₅',
+    '6': '₆',
+    '7': '₇',
+    '8': '₈',
+    '9': '₉',
   };
   return str
-    .split("")
+    .split('')
     .map((char) => subscriptMap[char] || char)
-    .join("");
+    .join('');
 };
 
 const useDrugInfo = (params: URLParams) => {
@@ -28,20 +28,18 @@ const useDrugInfo = (params: URLParams) => {
 
   const fetchDrugMolecule = async (drug: string) => {
     try {
-      const response = await fetch(
-        `${backendUrl}/drug/get_molecule?drug_name=${drug}`,
-      );
+      const response = await fetch(`${backendUrl}/drug/get_molecule?drug_name=${drug}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.arrayBuffer();
-      const blob = new Blob([data], { type: "image/png" });
+      const blob = new Blob([data], { type: 'image/png' });
       return URL.createObjectURL(blob);
     } catch (error) {
       if (error instanceof Error) {
-        console.warn("Error fetching drug molecule:", error.message);
+        console.warn('Error fetching drug molecule:', error.message);
       } else {
-        console.warn("Error fetching drug molecule: Unknown error");
+        console.warn('Error fetching drug molecule: Unknown error');
       }
       return;
     }
@@ -56,36 +54,34 @@ const useDrugInfo = (params: URLParams) => {
       setDrugInfo(
         params.terms.map((name) => ({
           name: name.charAt(0).toUpperCase() + name.slice(1),
-        })),
+        }))
       );
     } else {
       const getDrugInfo = async () => {
         try {
           const promises = params.terms.map((name) =>
-            fetch(
-              `${backendUrl}/drug/get_info?drug_name=${name}&search_type=${params.searchBy}`,
-            ).then((response) => {
+            fetch(`${backendUrl}/drug/get_info?drug_name=${name}&search_type=${params.searchBy}`).then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
               }
               return response.json(); // Assuming the response is JSON. Use .text() or another method if not.
-            }),
+            })
           );
           const responses = await Promise.all(promises);
 
           const infoPromises = responses.flatMap((response) => {
             if (response.length > 0) {
               return response.map(async (drug: DrugProperties) => ({
-                name: drug.name || "",
-                classification: drug.classification || "",
-                groups: drug.groups || "",
-                iupac: drug.iupac || "",
-                formula: drug.formula ? toSubscript(drug.formula) : "",
-                brands: drug.brands || "",
-                half_life: drug.half_life || "",
-                indication: drug.indication || "",
-                product: drug.product || "",
-                molecule_url: (await fetchDrugMolecule(drug.name)) || "",
+                name: drug.name || '',
+                classification: drug.classification || '',
+                groups: drug.groups || '',
+                iupac: drug.iupac || '',
+                formula: drug.formula ? toSubscript(drug.formula) : '',
+                brands: drug.brands || '',
+                half_life: drug.half_life || '',
+                indication: drug.indication || '',
+                product: drug.product || '',
+                molecule_url: (await fetchDrugMolecule(drug.name)) || '',
               })) as DrugProperties;
             } else {
               setError(true);

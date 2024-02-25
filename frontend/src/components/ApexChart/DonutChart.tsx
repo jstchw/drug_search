@@ -1,14 +1,14 @@
-import Chart from "react-apexcharts";
-import { getDonutChartOptions } from "./chartOptions";
-import { ThemeContext } from "../../contexts/ThemeContext";
-import React from "react";
-import { generatePath, fetchData, processTermData } from "../../utils/utils";
-import useDemographicStore from "../../stores/demographicStore";
-import { useUrlParams } from "../../hooks/useUrlParams";
-import { useQuery } from "react-query";
-import { ChartDataPoint, ResultItem } from "../../types";
-import { ageGroupsFDA, sexGroupsFDA } from "../../constants";
-import _ from "lodash";
+import Chart from 'react-apexcharts';
+import { getDonutChartOptions } from './chartOptions';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import React from 'react';
+import { generatePath, fetchData, processTermData } from '../../utils/utils';
+import useDemographicStore from '../../stores/demographicStore';
+import { useUrlParams } from '../../hooks/useUrlParams';
+import { useQuery } from 'react-query';
+import { ChartDataPoint, ResultItem } from '../../types';
+import { ageGroupsFDA, sexGroupsFDA } from '../../constants';
+import _ from 'lodash';
 
 type RadarChartReturnType = {
   data: ChartDataPoint[] | undefined;
@@ -26,15 +26,11 @@ const fetchDistributionData = (type: string): RadarChartReturnType => {
   const params = { terms: [term], searchBy, searchMode };
   const url = generatePath(params, type, 10);
 
-  const { data, isError, isLoading } = useQuery(
-    ["treeMapChart", url],
-    () => fetchData(url),
-    {
-      staleTime: 3600000,
-      retry: false,
-      select: (data) => processTermData(data.results as ResultItem[]),
-    },
-  );
+  const { data, isError, isLoading } = useQuery(['treeMapChart', url], () => fetchData(url), {
+    staleTime: 3600000,
+    retry: false,
+    select: (data) => processTermData(data.results as ResultItem[]),
+  });
 
   return { data, isError, isLoading };
 };
@@ -42,9 +38,9 @@ const fetchDistributionData = (type: string): RadarChartReturnType => {
 const augmentDistributionData = (data: ChartDataPoint[], type: string) => {
   const dataLabels = data.map((entry) => {
     switch (type) {
-      case "age_group":
+      case 'age_group':
         return ageGroupsFDA[entry.x] || entry.x;
-      case "patient_sex":
+      case 'patient_sex':
         return sexGroupsFDA[entry.x] || entry.x;
       default:
         return entry.x;
@@ -61,17 +57,11 @@ interface DonutChartProps {
   onDataStatusChange: (status: boolean) => void;
 }
 
-const DonutChart: React.FC<DonutChartProps> = ({
-  type,
-  onDataStatusChange,
-}) => {
+const DonutChart: React.FC<DonutChartProps> = ({ type, onDataStatusChange }) => {
   const { theme } = React.useContext(ThemeContext);
   const { data, isError } = fetchDistributionData(type);
 
-  const hasData = React.useMemo(
-    () => !!(data && !isError && data.length !== 0),
-    [data, isError],
-  );
+  const hasData = React.useMemo(() => !!(data && !isError && data.length !== 0), [data, isError]);
 
   React.useEffect(() => {
     onDataStatusChange(hasData);
@@ -94,15 +84,13 @@ const DonutChart: React.FC<DonutChartProps> = ({
   const options = _.merge(chartOptions, specificOptions);
 
   return (
-    <div className={"d-flex flex-column"}>
-      {type === "age_group" ? (
-        <span className={"fs-4 fw-light mb-1"}>Age distribution</span>
+    <div className={'d-flex flex-column'}>
+      {type === 'age_group' ? (
+        <span className={'fs-4 fw-light mb-1'}>Age distribution</span>
       ) : (
-        <span className={"fs-4 fw-light mb-1"}>Sex distribution</span>
+        <span className={'fs-4 fw-light mb-1'}>Sex distribution</span>
       )}
-      <span className={"text-secondary mb-2"}>
-        From {reportCount.toLocaleString()} reports
-      </span>
+      <span className={'text-secondary mb-2'}>From {reportCount.toLocaleString()} reports</span>
       <Chart options={options} series={dataSeries} type="donut" />
     </div>
   );

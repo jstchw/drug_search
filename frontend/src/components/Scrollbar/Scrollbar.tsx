@@ -1,7 +1,7 @@
-import { Nav, Row, Col } from "react-bootstrap";
-import SearchBox from "../SearchBox/SearchBox";
-import Header from "../Header/Header";
-import { motion } from "framer-motion";
+import { Nav, Row, Col } from 'react-bootstrap';
+import SearchBox from '../SearchBox/SearchBox';
+import Header from '../Header/Header';
+import { motion } from 'framer-motion';
 
 const Scrollbar = () => {
   return (
@@ -10,7 +10,7 @@ const Scrollbar = () => {
       animate={{ y: 0 }}
       exit={{ y: -100 }}
       transition={{
-        type: "spring",
+        type: 'spring',
         stiffness: 260,
         damping: 20,
       }}
@@ -18,7 +18,7 @@ const Scrollbar = () => {
     >
       <Nav>
         <Row className="w-100 align-items-center">
-          <Col className={"ms-4"}>
+          <Col className={'ms-4'}>
             <Header />
           </Col>
 

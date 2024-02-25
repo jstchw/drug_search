@@ -1,50 +1,39 @@
-import { DrugProperties } from "../../types";
-import DrugGroups from "../DrugGroups/DrugGroups";
-import { Col, Row } from "react-bootstrap";
-import DrugDescription from "../DrugDescription/DrugDescription";
-import DrugAccordion from "../DrugAccordion/DrugAccordion";
-import { useUrlParams } from "../../hooks/useUrlParams";
-import DemographicModal from "../DemographicModal/DemographicModal";
-import useDemographicStore from "../../stores/demographicStore";
-import DemographicButton from "../DemographicModal/DemographicButton";
-import { AnimatePresence } from "framer-motion";
+import { DrugProperties } from '../../types';
+import DrugGroups from '../DrugGroups/DrugGroups';
+import { Col, Row } from 'react-bootstrap';
+import DrugDescription from '../DrugDescription/DrugDescription';
+import DrugAccordion from '../DrugAccordion/DrugAccordion';
+import { useUrlParams } from '../../hooks/useUrlParams';
+import DemographicModal from '../DemographicModal/DemographicModal';
+import useDemographicStore from '../../stores/demographicStore';
+import DemographicButton from '../DemographicModal/DemographicButton';
+import { AnimatePresence } from 'framer-motion';
 
-const DrugPropertyBox = (props: {
-  drug: DrugProperties;
-  isSingle: boolean;
-}) => {
+const DrugPropertyBox = (props: { drug: DrugProperties; isSingle: boolean }) => {
   const { params } = useUrlParams();
 
-  if (params.searchBy === "side_effect") {
-    props.drug.groups = ["side_effect"];
+  if (params.searchBy === 'side_effect') {
+    props.drug.groups = ['side_effect'];
   }
 
-  const [showDemographic] = useDemographicStore((state) => [
-    state.showDemographic,
-  ]);
+  const [showDemographic] = useDemographicStore((state) => [state.showDemographic]);
 
   return (
     <>
-      <Col style={{ textAlign: "center" }}>
-        {params.searchBy === "generic_name" ? (
-          <h1>{props.drug.name}</h1>
-        ) : (
-          <h3>{props.drug.name}</h3>
-        )}
+      <Col style={{ textAlign: 'center' }}>
+        {params.searchBy === 'generic_name' ? <h1>{props.drug.name}</h1> : <h3>{props.drug.name}</h3>}
         <Row className="justify-content-center mb-2">
           <Col xs={12} md={8}>
             <DrugGroups drugGroups={props.drug.groups || []} />
           </Col>
         </Row>
 
-        <Row className={"d-flex justify-content-center"}>
+        <Row className={'d-flex justify-content-center'}>
           <DemographicButton term={props.drug.name} />
         </Row>
 
         {/* Load the DemographicModal when the button is clicked to avoid unnecessary slowdowns */}
-        <AnimatePresence mode={"wait"}>
-          {showDemographic && <DemographicModal />}
-        </AnimatePresence>
+        <AnimatePresence mode={'wait'}>{showDemographic && <DemographicModal />}</AnimatePresence>
 
         {props.isSingle ? (
           // For a single drug, put DrugDescription and DrugAccordion side by side
@@ -66,7 +55,7 @@ const DrugPropertyBox = (props: {
             </Row>
             <Row className="justify-content-center">
               <Col xs={12} md={8}>
-                <div style={{ maxWidth: "100%", overflow: "auto" }}>
+                <div style={{ maxWidth: '100%', overflow: 'auto' }}>
                   <DrugAccordion drugInfo={props.drug} />
                 </div>
               </Col>

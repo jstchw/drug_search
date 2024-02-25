@@ -1,40 +1,36 @@
-import { useTermData } from "../../hooks/useTermData";
-import { ApexOptions } from "apexcharts";
-import { ThemeType, URLParams } from "../../types";
-import ReactApexChart from "react-apexcharts";
-import { ThemeContext } from "../../contexts/ThemeContext";
-import React from "react";
-import ReactWordcloud, { OptionsProp } from "react-wordcloud";
-import { Carousel } from "react-responsive-carousel";
-import { Nav, OverlayTrigger, Popover, Pagination } from "react-bootstrap";
-import { Cloud, List, Pill } from "@phosphor-icons/react";
-import { SealWarning, ChartLine, SmileyNervous } from "@phosphor-icons/react";
-import { motion } from "framer-motion";
-import { getTermCarouselOptions } from "./chartOptions";
-import useDemographicStore from "../../stores/demographicStore";
-import { useUrlParams } from "../../hooks/useUrlParams";
-import { searchTypes } from "../../constants";
-import {
-  capitalizeFirstLetter,
-  getColorFromPercentage,
-  valueToPercentage,
-} from "../../utils/utils";
-import _ from "lodash";
-import "tippy.js/dist/tippy.css";
-import "tippy.js/animations/scale.css";
+import { useTermData } from '../../hooks/useTermData';
+import { ApexOptions } from 'apexcharts';
+import { ThemeType, URLParams } from '../../types';
+import ReactApexChart from 'react-apexcharts';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import React from 'react';
+import ReactWordcloud, { OptionsProp } from 'react-wordcloud';
+import { Carousel } from 'react-responsive-carousel';
+import { Nav, OverlayTrigger, Popover, Pagination } from 'react-bootstrap';
+import { Cloud, List, Pill } from '@phosphor-icons/react';
+import { SealWarning, ChartLine, SmileyNervous } from '@phosphor-icons/react';
+import { motion } from 'framer-motion';
+import { getTermCarouselOptions } from './chartOptions';
+import useDemographicStore from '../../stores/demographicStore';
+import { useUrlParams } from '../../hooks/useUrlParams';
+import { searchTypes } from '../../constants';
+import { capitalizeFirstLetter, getColorFromPercentage, valueToPercentage } from '../../utils/utils';
+import _ from 'lodash';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 
 const cloudOptions: OptionsProp = {
   enableTooltip: true,
   enableOptimizations: true,
   deterministic: true,
-  fontFamily: "trebuchet ms",
+  fontFamily: 'trebuchet ms',
   fontSizes: [10, 60],
-  fontStyle: "normal",
-  fontWeight: "normal",
+  fontStyle: 'normal',
+  fontWeight: 'normal',
   padding: 1,
   rotations: 0,
-  scale: "log",
-  spiral: "archimedean",
+  scale: 'log',
+  spiral: 'archimedean',
   transitionDuration: 1000,
 };
 
@@ -42,9 +38,9 @@ export const getChartWarning = (params: URLParams) => {
   const popover = (
     <Popover>
       <Popover.Body>
-        <div className={"d-flex align-items-center justify-content-center"}>
-          <ChartLine weight={"light"} />
-          <div className={"vr mx-2"} />
+        <div className={'d-flex align-items-center justify-content-center'}>
+          <ChartLine weight={'light'} />
+          <div className={'vr mx-2'} />
           Correlation does not imply causation.
         </div>
       </Popover.Body>
@@ -52,24 +48,20 @@ export const getChartWarning = (params: URLParams) => {
   );
 
   return (
-    <OverlayTrigger
-      trigger={["hover", "focus"]}
-      placement={"bottom"}
-      overlay={popover}
-    >
-      <div style={{ cursor: "default" }}>
-        {params.searchBy !== "side_effect" ? (
-          <span className={"d-inline-flex align-items-center"}>
-            <SmileyNervous className={"text-secondary"} weight={"light"} />
-            <SealWarning className={"text-secondary"} weight={"light"} />
-            <div className={"vr mx-2"} />
+    <OverlayTrigger trigger={['hover', 'focus']} placement={'bottom'} overlay={popover}>
+      <div style={{ cursor: 'default' }}>
+        {params.searchBy !== 'side_effect' ? (
+          <span className={'d-inline-flex align-items-center'}>
+            <SmileyNervous className={'text-secondary'} weight={'light'} />
+            <SealWarning className={'text-secondary'} weight={'light'} />
+            <div className={'vr mx-2'} />
             <span>Side Effects</span>
           </span>
         ) : (
-          <span className={"d-inline-flex align-items-center"}>
-            <Pill className={"text-secondary"} weight={"light"} />
-            <SealWarning className={"text-secondary"} weight={"light"} />
-            <div className={"vr mx-2"} />
+          <span className={'d-inline-flex align-items-center'}>
+            <Pill className={'text-secondary'} weight={'light'} />
+            <SealWarning className={'text-secondary'} weight={'light'} />
+            <div className={'vr mx-2'} />
             <span>Substances</span>
           </span>
         )}
@@ -90,7 +82,7 @@ const determineDisplayType = (searchBy: string) => {
       return searchTypes[0].param;
     }
   } else {
-    return "";
+    return '';
   }
 };
 
@@ -99,10 +91,7 @@ interface TermCarouselProps {
   onRender: () => void;
 }
 
-const TermCarousel: React.FC<TermCarouselProps> = ({
-  noFilterRequest = false,
-  onRender,
-}) => {
+const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, onRender }) => {
   const {
     params: { searchBy },
   } = useUrlParams();
@@ -112,15 +101,9 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
 
   const { reportData, isError } = useTermData(noFilterRequest);
 
-  const setShowDemographic = useDemographicStore(
-    (state) => state.setShowDemographic,
-  );
-  const setDemographicTerm = useDemographicStore(
-    (state) => state.setDemographicTerm,
-  );
-  const setDemographicType = useDemographicStore(
-    (state) => state.setDemographicType,
-  );
+  const setShowDemographic = useDemographicStore((state) => state.setShowDemographic);
+  const setDemographicTerm = useDemographicStore((state) => state.setDemographicTerm);
+  const setDemographicType = useDemographicStore((state) => state.setDemographicType);
 
   // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
@@ -148,38 +131,29 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
     labels: reportData.map((obj) => obj.x),
     series: [
       {
-        name: "Events",
+        name: 'Events',
         data: reportData,
       },
     ],
   };
 
   // Pagination items
-  const dataForCurrentPage = reportData.slice(
-    currentChartPage * itemsPerPage,
-    (currentChartPage + 1) * itemsPerPage,
-  );
+  const dataForCurrentPage = reportData.slice(currentChartPage * itemsPerPage, (currentChartPage + 1) * itemsPerPage);
   const labelsForCurrentPage = dataForCurrentPage.map((obj) => obj.x);
 
   const totalPageCount = Math.ceil(reportData.length / itemsPerPage);
   const paginationItems = [];
   for (let number = 0; number < totalPageCount; number++) {
     paginationItems.push(
-      <Pagination.Item
-        key={number}
-        active={number === currentChartPage}
-        onClick={() => handleChartPageChange(number)}
-      >
+      <Pagination.Item key={number} active={number === currentChartPage} onClick={() => handleChartPageChange(number)}>
         {number + 1}
-      </Pagination.Item>,
+      </Pagination.Item>
     );
   }
 
   const coloredDataForCurrentPage = dataForCurrentPage.map((obj) => ({
     ...obj,
-    fillColor: getColorFromPercentage(
-      valueToPercentage(obj.y, totalSideEffectCount),
-    ),
+    fillColor: getColorFromPercentage(valueToPercentage(obj.y, totalSideEffectCount)),
   }));
 
   /* Apex Chart declarations */
@@ -214,10 +188,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
   };
 
   // Deep merge the base options with the specific options (to avoid overwriting the base options with the specific options)
-  const apexChartOptions = _.merge(
-    termCarouselBaseOptions,
-    termCarouselSpecificOptions,
-  ) as ApexOptions;
+  const apexChartOptions = _.merge(termCarouselBaseOptions, termCarouselSpecificOptions) as ApexOptions;
 
   /* Word Cloud declarations*/
   const cloudData = reportData.map((item) => {
@@ -232,7 +203,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
       const maxFrequency = Math.max(...cloudData.map((w) => w.value));
       const frequencyRatio = word.value / maxFrequency;
 
-      if (theme === "dark") {
+      if (theme === 'dark') {
         const darkGray = [172, 181, 189];
         const brightRed = [255, 0, 0];
 
@@ -245,7 +216,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
           }
         });
 
-        return `rgb(${interpolatedColor.join(", ")})`;
+        return `rgb(${interpolatedColor.join(', ')})`;
       } else {
         const redComponent = Math.floor(frequencyRatio * 255);
         return `rgb(${redComponent}, 0, 0)`;
@@ -264,32 +235,24 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{
-        type: "spring",
+        type: 'spring',
         stiffness: 260,
         damping: 20,
       }}
       exit={{ opacity: 0 }}
     >
-      <Nav variant="tabs" defaultActiveKey={carouselIndex} className={"mt-3"}>
+      <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3'}>
         <Nav.Item>
-          <Nav.Link
-            className={"d-flex align-items-center"}
-            eventKey="0"
-            onClick={() => setCarouselIndex(0)}
-          >
-            <List weight={"light"} />
-            <div className={"vr mx-2"} />
+          <Nav.Link className={'d-flex align-items-center'} eventKey="0" onClick={() => setCarouselIndex(0)}>
+            <List weight={'light'} />
+            <div className={'vr mx-2'} />
             Term Chart
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link
-            className={"d-flex align-items-center"}
-            eventKey="1"
-            onClick={() => setCarouselIndex(1)}
-          >
-            <Cloud weight={"light"} />
-            <div className={"vr mx-2"} />
+          <Nav.Link className={'d-flex align-items-center'} eventKey="1" onClick={() => setCarouselIndex(1)}>
+            <Cloud weight={'light'} />
+            <div className={'vr mx-2'} />
             Word Cloud
           </Nav.Link>
         </Nav.Item>
@@ -313,15 +276,11 @@ const TermCarousel: React.FC<TermCarouselProps> = ({
             ]}
             type={apexChartOptions.chart?.type}
           />
-          <Pagination size={"lg"} className={"d-flex justify-content-center"}>
+          <Pagination size={'lg'} className={'d-flex justify-content-center'}>
             {paginationItems}
           </Pagination>
         </div>
-        <ReactWordcloud
-          words={cloudData}
-          options={cloudOptions}
-          callbacks={cloudCallbacks}
-        />
+        <ReactWordcloud words={cloudData} options={cloudOptions} callbacks={cloudCallbacks} />
       </Carousel>
     </motion.div>
   );

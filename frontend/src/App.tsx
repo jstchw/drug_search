@@ -1,7 +1,7 @@
-import "./App.scss";
-import AppRoutes from "./AppRoutes";
-import { CookieInfoFooter } from "./components/CookieInfoFooter/CookieInfoFooter";
-import AppProviders from "./AppProviders";
+import './App.scss';
+import AppRoutes from './AppRoutes';
+import { CookieInfoFooter } from './components/CookieInfoFooter/CookieInfoFooter';
+import AppProviders from './AppProviders';
 
 const App = () => {
   return (

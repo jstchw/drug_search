@@ -1,46 +1,35 @@
-import React from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
-import {
-  FilterLeft as FilterLeftIcon,
-  Search as SearchIcon,
-} from "react-bootstrap-icons";
-import "./SearchBox.css";
-import OptionModal from "../OptionModal/OptionModal";
-import { useSuggestions } from "../../hooks/useSuggestions";
-import Fuse, { FuseResult, Expression } from "fuse.js";
-import CreatableSelect from "react-select/creatable";
-import { useSearch } from "../../hooks/useSearch";
-import useSearchPlaceholder from "../../hooks/useSearchPlaceholder";
-import { ThemeContext } from "../../contexts/ThemeContext";
-import useSearchStore from "../../stores/searchStore";
+import React from 'react';
+import { Button, Form, InputGroup } from 'react-bootstrap';
+import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons';
+import './SearchBox.css';
+import OptionModal from '../OptionModal/OptionModal';
+import { useSuggestions } from '../../hooks/useSuggestions';
+import Fuse, { FuseResult, Expression } from 'fuse.js';
+import CreatableSelect from 'react-select/creatable';
+import { useSearch } from '../../hooks/useSearch';
+import useSearchPlaceholder from '../../hooks/useSearchPlaceholder';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import useSearchStore from '../../stores/searchStore';
 
 const SearchBox = () => {
   const { theme } = React.useContext(ThemeContext);
 
-  const [searchOptions, setSearchOptions] = useSearchStore((state) => [
-    state.searchOptions,
-    state.setSearchOptions,
-  ]);
+  const [searchOptions, setSearchOptions] = useSearchStore((state) => [state.searchOptions, state.setSearchOptions]);
 
-  const [inputValue, setInputValue] = useSearchStore((state) => [
-    state.searchInput,
-    state.setSearchInput,
-  ]);
+  const [inputValue, setInputValue] = useSearchStore((state) => [state.searchInput, state.setSearchInput]);
 
   const inputRef = React.useRef<string[]>([]);
 
   const [showOptionModal, setShowOptionModal] = React.useState(false);
 
-  const { executeSearch } = useSearch("SearchOptions");
+  const { executeSearch } = useSearch('SearchOptions');
 
   // Timeout for the placeholder animation
   const searchPlaceholder = useSearchPlaceholder(3000, searchOptions.searchBy);
 
   const [fuse, setFuse] = React.useState<Fuse<string> | null>(null);
   // Elements for the suggestion mechanism
-  const [suggestions, setSuggestions] = React.useState<FuseResult<string>[]>(
-    [],
-  );
+  const [suggestions, setSuggestions] = React.useState<FuseResult<string>[]>([]);
 
   useSuggestions(searchOptions.searchBy, setFuse);
 
@@ -54,10 +43,7 @@ const SearchBox = () => {
     // Needed to manipulate the menu (open and close) when there are no suggestions
     inputRef.current = [e.toString()];
     if (e) {
-      if (
-        searchOptions.searchBy.index === 0 ||
-        searchOptions.searchBy.index === 1
-      ) {
+      if (searchOptions.searchBy.index === 0 || searchOptions.searchBy.index === 1) {
         if (fuse) {
           const suggestion = fuse.search(e, { limit: 5 });
           if (suggestion.length > 0) {
@@ -76,7 +62,7 @@ const SearchBox = () => {
   };
 
   return (
-    <div className={"d-flex justify-content-center"}>
+    <div className={'d-flex justify-content-center'}>
       <Form onSubmit={handleSearch}>
         <Form.Group controlId="searchTerm">
           <InputGroup>
@@ -85,7 +71,7 @@ const SearchBox = () => {
                 variant="outline-secondary"
                 id="button-filters"
                 onClick={() => setShowOptionModal(true)}
-                className={"d-flex align-items-center"}
+                className={'d-flex align-items-center'}
               >
                 <FilterLeftIcon />
               </Button>
@@ -98,14 +84,13 @@ const SearchBox = () => {
             </>
 
             <CreatableSelect
-              className={"creatable-select"}
+              className={'creatable-select'}
               isMulti
               // display the passed input value if it exists
               value={inputValue.map((item) => ({ value: item, label: item }))}
               menuIsOpen={
                 suggestions.length > 0 ||
-                (searchOptions.searchBy.index === 2 &&
-                  inputRef.current.some((item) => item.length > 0))
+                (searchOptions.searchBy.index === 2 && inputRef.current.some((item) => item.length > 0))
               }
               onInputChange={(e) => handleInputChange(e)}
               onChange={(e) => setInputValue(e.map((item) => item.value))}
@@ -120,25 +105,18 @@ const SearchBox = () => {
               placeholder={searchPlaceholder}
               classNames={{
                 control: () =>
-                  theme === "dark"
-                    ? "bg-transparent border-secondary rounded-0"
-                    : "bg-white border-secondary rounded-0",
-                menu: () => (theme === "dark" ? "bg-dark text-light" : ""),
-                input: () =>
-                  theme === "dark" ? "bg-transparent text-light" : "",
-                option: (state) =>
-                  state.isFocused && theme === "dark" ? "text-dark" : "",
-                multiValue: () => "bg-secondary-subtle",
-                multiValueLabel: () => (theme === "dark" ? "text-light" : ""),
+                  theme === 'dark'
+                    ? 'bg-transparent border-secondary rounded-0'
+                    : 'bg-white border-secondary rounded-0',
+                menu: () => (theme === 'dark' ? 'bg-dark text-light' : ''),
+                input: () => (theme === 'dark' ? 'bg-transparent text-light' : ''),
+                option: (state) => (state.isFocused && theme === 'dark' ? 'text-dark' : ''),
+                multiValue: () => 'bg-secondary-subtle',
+                multiValueLabel: () => (theme === 'dark' ? 'text-light' : ''),
               }}
             />
 
-            <Button
-              variant="outline-primary"
-              id="button-submit"
-              type="submit"
-              className={"d-flex align-items-center"}
-            >
+            <Button variant="outline-primary" id="button-submit" type="submit" className={'d-flex align-items-center'}>
               <SearchIcon />
             </Button>
           </InputGroup>

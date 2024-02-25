@@ -1,16 +1,13 @@
-import React, { useEffect } from "react";
-import Fuse from "fuse.js";
-import { backendUrl, fuseOptions } from "../constants";
-import { SearchOptionsType } from "../types";
+import React, { useEffect } from 'react';
+import Fuse from 'fuse.js';
+import { backendUrl, fuseOptions } from '../constants';
+import { SearchOptionsType } from '../types';
 
-export const useSuggestions = (
-  searchBy: SearchOptionsType,
-  setFuse: React.Dispatch<Fuse<string>>,
-) => {
+export const useSuggestions = (searchBy: SearchOptionsType, setFuse: React.Dispatch<Fuse<string>>) => {
   useEffect(() => {
     async function fetchSuggestions() {
       try {
-        if (searchBy.param !== "side_effect") {
+        if (searchBy.param !== 'side_effect') {
           // Form a URL based on the searchBy parameter and fetch the data
           const url = `${backendUrl}/drug/get_suggestions?searchBy=${encodeURIComponent(searchBy.value)}`;
           const response = await fetch(url);
@@ -18,7 +15,7 @@ export const useSuggestions = (
           setFuse(new Fuse(data, fuseOptions));
         }
       } catch (error) {
-        console.error("Error fetching suggestions:", error);
+        console.error('Error fetching suggestions:', error);
       }
     }
 

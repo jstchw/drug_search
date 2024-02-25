@@ -1,11 +1,7 @@
-import { URLParams } from "../types";
-import { ResultItem, DemographicData } from "../types";
-import {
-  generatePath,
-  mapParamArrayToLabels,
-  processTermData,
-} from "../utils/utils";
-import { useQuery } from "react-query";
+import { URLParams } from '../types';
+import { ResultItem, DemographicData } from '../types';
+import { generatePath, mapParamArrayToLabels, processTermData } from '../utils/utils';
+import { useQuery } from 'react-query';
 
 type UseTermDataBatchReturnType = {
   paramDataArray: DemographicData[] | undefined;
@@ -13,9 +9,7 @@ type UseTermDataBatchReturnType = {
   isLoading: boolean;
 };
 
-const fetchDemographicData = async (
-  paramsArray: URLParams[],
-): Promise<DemographicData[]> => {
+const fetchDemographicData = async (paramsArray: URLParams[]): Promise<DemographicData[]> => {
   const fetchPromises = paramsArray.map(async (params) => {
     const url = generatePath(params, undefined, 10);
 
@@ -31,10 +25,8 @@ const fetchDemographicData = async (
   return Promise.all(fetchPromises);
 };
 
-export const useDemographicData = (
-  paramsArray: URLParams[],
-): UseTermDataBatchReturnType => {
-  const queryKey = ["termDataBatch", JSON.stringify(paramsArray)];
+export const useDemographicData = (paramsArray: URLParams[]): UseTermDataBatchReturnType => {
+  const queryKey = ['termDataBatch', JSON.stringify(paramsArray)];
 
   const {
     data: paramDataArray,

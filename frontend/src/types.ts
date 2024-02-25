@@ -1,5 +1,5 @@
-import React from "react";
-import { IconProps } from "@phosphor-icons/react";
+import React from 'react';
+import { IconProps } from '@phosphor-icons/react';
 
 export type SearchOptions = {
   searchBy: SearchOptionsType;
@@ -105,7 +105,7 @@ export type ChartDataPoint = {
   y: number;
 };
 
-export type ThemeType = "light" | "dark";
+export type ThemeType = 'light' | 'dark';
 
 export type DemographicGroups = {
   name: string;
@@ -128,10 +128,7 @@ type PercentageIntensityColor = {
   color: string;
 };
 
-export type PercentageIntensityColors = Record<
-  string,
-  PercentageIntensityColor
->;
+export type PercentageIntensityColors = Record<string, PercentageIntensityColor>;
 
 export type DemographicData = {
   params: Record<string, string>;

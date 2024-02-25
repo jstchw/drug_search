@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { SearchOptions } from "../types";
-import Cookies from "js-cookie";
-import { defaultSearchOptions } from "../constants";
+import { create } from 'zustand';
+import { SearchOptions } from '../types';
+import Cookies from 'js-cookie';
+import { defaultSearchOptions } from '../constants';
 
 interface StoreStates {
   searchOptions: SearchOptions;
@@ -16,7 +16,7 @@ interface StoreActions {
 type Store = StoreStates & StoreActions;
 
 const initialSearchOptionsState = () => {
-  const optionsString = Cookies.get("searchOptions");
+  const optionsString = Cookies.get('searchOptions');
   if (optionsString) {
     try {
       return JSON.parse(optionsString);

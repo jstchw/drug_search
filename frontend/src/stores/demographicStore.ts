@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 interface StoreStates {
   showDemographic: boolean;
@@ -19,14 +19,12 @@ type Store = StoreStates & StoreActions;
 const useDemographicStore = create<Store>((set) => ({
   showDemographic: false,
   setShowDemographic: (showDemographic: boolean) => set({ showDemographic }),
-  demographicTerm: "",
+  demographicTerm: '',
   setDemographicTerm: (term: string) => set({ demographicTerm: term }),
-  demographicType: "",
-  setDemographicType: (searchedType: string) =>
-    set({ demographicType: searchedType }),
+  demographicType: '',
+  setDemographicType: (searchedType: string) => set({ demographicType: searchedType }),
   groupPageKeys: [],
-  setGroupPageKeys: (groupPageKeys: string[]) =>
-    set({ groupPageKeys: groupPageKeys }),
+  setGroupPageKeys: (groupPageKeys: string[]) => set({ groupPageKeys: groupPageKeys }),
 }));
 
 export default useDemographicStore;

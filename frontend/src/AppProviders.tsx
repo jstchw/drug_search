@@ -1,7 +1,7 @@
-import React from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { SearchHistoryProvider } from "./contexts/SearchHistoryContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { SearchHistoryProvider } from './contexts/SearchHistoryContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const queryClient = new QueryClient();
 

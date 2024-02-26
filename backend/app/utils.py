@@ -2,6 +2,7 @@ import json
 from Bio import Entrez
 import re
 import time
+from constants import age_groups
 
 
 def format_json_drug(drug, product_name=None):
@@ -284,29 +285,47 @@ def count_entries_by_property(data, property):
     Count the number of entries in the given data by the specified property.
     If the property is 'year', it counts occurrences by extracting the year from a 'pub_date' property formatted as 'YYYY-MM-DD'.
     For properties with list values, it counts each list item separately.
+    If the property is 'age', it counts the properties with age present (not null) and reports in age groups specified in the constants.
+
+    *IMPORTANT*: If the property is 'age', the algorithm counts all age groups that the entry falls into.
+    For example: entry with age: [60, 120] will be put both in 'adult' and 'elderly' groups.
+    This is done to avoid losing data when the age is a range since the data is super sparse.
 
     Args:
         data (list): A list of entries to be counted.
-        property (str): The property to be counted. Use 'year' to count by year extracted from 'pub_date'.
+        property (str): The property to be counted. Use 'year' to count by year extracted from 'pub_date'. Use 'age' to count by age groups.
 
     Returns:
         dict: A dictionary containing the counts of entries by the specified property.
     """
     counts = {}
 
-    for entry in data:
-        if property == "year":
-            pub_date = entry.get("pub_date")
-            if pub_date:
-                year = pub_date.split("-")[0]
-                counts[year] = counts.get(year, 0) + 1
-        else:
-            value = entry.get(property)
-            if isinstance(value, list):
-                for item in value:
-                    counts[item] = counts.get(item, 0) + 1
-            elif value is not None:
-                counts[value] = counts.get(value, 0) + 1
+    if property == "age":
+        for entry in data:
+            age = entry.get(property)
+            if age is not None:
+                if isinstance(age, int):
+                    age = [age]
+                elif not isinstance(age, list):
+                    continue
+
+                for age_group, age_data in age_groups.items():
+                    if any(age_value for age_value in age if age_data['min'] <= age_value <= age_data['max']):
+                        counts[age_group] = counts.get(age_group, 0) + 1
+    else:
+        for entry in data:
+            if property == "year":
+                pub_date = entry.get("pub_date")
+                if pub_date:
+                    year = pub_date.split("-")[0]
+                    counts[year] = counts.get(year, 0) + 1
+            else:
+                value = entry.get(property)
+                if isinstance(value, list):
+                    for item in value:
+                        counts[item] = counts.get(item, 0) + 1
+                elif value is not None:
+                    counts[value] = counts.get(value, 0) + 1
 
     return dict(sorted(counts.items(), key=lambda x: x[0]))
 

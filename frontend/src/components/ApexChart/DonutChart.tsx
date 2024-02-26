@@ -6,8 +6,8 @@ import { generatePath, fetchData, processTermData } from '../../utils/utils';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { useQuery } from 'react-query';
-import { ChartDataPoint, FDARawData, ResultItem } from '../../types';
-import { ageGroupsFDA, sexGroupsFDA } from '../../constants';
+import { BackendDataType, ChartDataPoint, FDARawData, ResultItem } from '../../types';
+import { ageGroupsFDA, sexGroupsFDA, backendUrl } from '../../constants';
 import _ from 'lodash';
 
 type RadarChartReturnType = {
@@ -26,13 +26,57 @@ const fetchFdaDistributionData = (type: string): RadarChartReturnType => {
   const params = { terms: [term], searchBy, searchMode };
   const url = generatePath(params, type, 10);
 
-  const { data, isError, isLoading } = useQuery(['treeMapChart', url], () => fetchData(url) as Promise<FDARawData>, {
-    staleTime: 3600000,
-    retry: false,
-    select: (data) => processTermData(data.results as ResultItem[]),
-  });
+  const { data, isError, isLoading } = useQuery(
+    ['distributionChart', url],
+    () => fetchData(url) as Promise<FDARawData>,
+    {
+      staleTime: 3600000,
+      retry: false,
+      select: (data) => processTermData(data.results as ResultItem[]),
+    }
+  );
 
   return { data, isError, isLoading };
+};
+
+const fetchPmdDistributionData = (type: string): RadarChartReturnType => {
+  const term = useDemographicStore((state) => state.demographicTerm);
+  const searchBy = useDemographicStore((state) => state.demographicType);
+  const {
+    params: { searchMode },
+  } = useUrlParams();
+
+  let url = '';
+
+  if (type === 'age_group') {
+    url =
+      `${backendUrl}/drug/get_pm_age_distribution?` +
+      `terms=${term}&` +
+      `search_mode=${searchMode}&` +
+      `search_type=${searchBy}&`;
+  } else if (type === 'patient_sex') {
+    url =
+      `${backendUrl}/drug/get_pm_sex_distribution?` +
+      `terms=${term}&` +
+      `search_mode=${searchMode}&` +
+      `search_type=${searchBy}&`;
+  }
+
+  const { data, isError, isLoading } = useQuery(
+    ['distributionChart', url],
+    () => fetchData(url) as Promise<BackendDataType>,
+    {
+      staleTime: 3600000,
+      retry: false,
+      select: (data) => data.data as ChartDataPoint[],
+    }
+  );
+
+  return { data, isError, isLoading };
+};
+
+const useDynamicDistributionData = (source: string, type: string) => {
+  return source === 'fda' ? fetchFdaDistributionData(type) : fetchPmdDistributionData(type);
 };
 
 const augmentDistributionData = (data: ChartDataPoint[], type: string) => {
@@ -53,15 +97,15 @@ const augmentDistributionData = (data: ChartDataPoint[], type: string) => {
 };
 
 interface DonutChartProps {
+  source: string;
   type: string;
   onDataStatusChange: (status: boolean) => void;
 }
 
-const DonutChart: React.FC<DonutChartProps> = ({ type, onDataStatusChange }) => {
+const DonutChart: React.FC<DonutChartProps> = ({ source, type, onDataStatusChange }) => {
   const { theme } = React.useContext(ThemeContext);
-  const { data, isError } = fetchFdaDistributionData(type);
 
-  console.log(data)
+  const { data, isError } = useDynamicDistributionData(source, type);
 
   const hasData = React.useMemo(() => !!(data && !isError && data.length !== 0), [data, isError]);
 

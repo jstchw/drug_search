@@ -54,7 +54,7 @@ const SearchBox = () => {
         /* If the search type is side effects, it will update the input value every time the user types
                        This is needed because we don't have suggestions for side effects yet (04/01/2024)
                     */
-        setInputValue([e.toString()]);
+        setInputValue([]);
       }
     } else {
       setSuggestions([]);
@@ -62,7 +62,7 @@ const SearchBox = () => {
   };
 
   return (
-    <div className={'d-flex justify-content-center'}>
+    <div className={'d-flex justify-content-center text-center'}>
       <Form onSubmit={handleSearch}>
         <Form.Group controlId="searchTerm">
           <InputGroup>

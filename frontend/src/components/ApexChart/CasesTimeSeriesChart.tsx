@@ -14,7 +14,11 @@ interface CasesTimeSeriesChartProps {
   isPubmed?: boolean;
 }
 
-const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({ noFilterRequest = false, onRender, isPubmed = false }) => {
+const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
+  noFilterRequest = false,
+  onRender,
+  isPubmed = false,
+}) => {
   const { theme } = React.useContext(ThemeContext);
 
   const { timeSeriesData, timeSeriesCount, isError } = useDynamicTimeSeries(isPubmed, noFilterRequest);
@@ -34,7 +38,7 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({ noFilterReq
       {
         name: 'Reports',
         data: timeSeriesData,
-      }
+      },
     ],
   };
 

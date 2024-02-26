@@ -6,7 +6,7 @@ import {
   SearchOptionsType,
   PercentageIntensityColors,
   FDARawData,
-  BackendDataType
+  BackendDataType,
 } from '../types';
 import { baseFdaUrl, searchModes, searchSex, searchTypes, percentageIntensityColors, whatToCount } from '../constants';
 import React from 'react';

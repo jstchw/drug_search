@@ -136,6 +136,6 @@ export type DemographicDataType = {
 };
 
 export type BackendDataType = {
-  data: number[];
+  data: number[] | ChartDataPoint[];
   total: number;
 };

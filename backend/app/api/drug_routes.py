@@ -193,7 +193,7 @@ def get_pm_timedata():
 def get_pm_age_distribution():
     """
     Retrieves number of publications for the provided term and returns a ready-to-use
-    dictionary in format {[x: 'age_group', y: 'number of publications'...]}.
+    dictionary in format {total: count, data: [x: 'age_group', y: 'number of publications'...]}.
 
     Parameters:
     - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
@@ -220,4 +220,44 @@ def get_pm_age_distribution():
     if not results or not count_by_age:
         return jsonify({"error": "No data found"}), 404
 
-    return jsonify({transform_dict_to_x_y(count_by_age)}), 200
+    return jsonify({
+        "total": sum(count_by_age.values()),
+        "data": transform_dict_to_x_y(count_by_age)
+    }), 200
+
+
+@drug_api.route('/get_pm_sex_distribution', methods=['GET'])
+def get_pm_sex_distribution():
+    """
+    Retrieves number of publications for the provided params and returns a ready-to-use
+    dictionary in format {total: count, data: [x: 'age_group', y: 'number of publications'...]}.
+
+    Parameters:
+    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
+    - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
+    - terms (list): A list of search terms.
+
+    Returns:
+    - JSON: A JSON response containing the total count of publications for the provided term and count by age.
+    """
+    
+    params = {
+        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
+        'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
+        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None
+    }
+
+    results = search_json(params, data=pubmed_data, limit=1000)
+
+    if results:
+        count_by_sex = count_entries_by_property(results, 'gender')
+    else:
+        count_by_sex = {"error": "No data found"}
+
+    if not results or not count_by_sex:
+        return jsonify({"error": "No data found"}), 404
+    
+    return jsonify({
+        "total": sum(count_by_sex.values()),
+        "data": transform_dict_to_x_y(count_by_sex)
+    }), 200

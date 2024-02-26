@@ -4,6 +4,7 @@ import DemographicComparsionChart from '../ApexChart/DemographicComparsionChart'
 import useDemographicStore from '../../stores/demographicStore';
 import React from 'react';
 import DonutChart from '../ApexChart/DonutChart';
+import PubmedSwitch from '../ChartSection/PubmedSwitch';
 
 type AggregateType = 'Sex' | 'Age';
 
@@ -26,10 +27,14 @@ const DemographicModal = () => {
     setHasDemographicData(status);
   };
 
-  const [hasDistributionData, setHasDistributionData] = React.useState<boolean>(false);
+  const [hasFdaDistributionData, setHasFdaDistributionData] = React.useState<boolean>(false);
+  const handleFdaDistributionStatus = (status: boolean) => {
+    setHasFdaDistributionData(status);
+  };
 
-  const handleDistributionStatusChange = (status: boolean) => {
-    setHasDistributionData(status);
+  const [hasPmDistributionData, setHasPmDistributionData] = React.useState<boolean>(false);
+  const handlePmDistributionStatus = (status: boolean) => {
+    setHasPmDistributionData(status);
   };
 
   // Aggregatation states
@@ -41,6 +46,16 @@ const DemographicModal = () => {
     setCurrentPageKey(defaultPageKeys[aggregateType]);
   }, [aggregateType]);
 
+  const [isPubmedAgeDistribution, setIsPubmedAgeDistribution] = React.useState<boolean>(false);
+  const togglePubmedAgeDistribution = React.useCallback(() => {
+    setIsPubmedAgeDistribution((prev) => !prev);
+  }, []);
+
+  const [isPubmedSexDistribution, setIsPubmedSexDistribution] = React.useState<boolean>(false);
+  const togglePubmedSexDistribution = React.useCallback(() => {
+    setIsPubmedSexDistribution((prev) => !prev);
+  }, []);
+
   return (
     <Modal show={show} onHide={() => setShow(!show)} centered size={'xl'}>
       <Modal.Header closeButton>
@@ -49,17 +64,29 @@ const DemographicModal = () => {
         <span className={'text-secondary'}>Demographic breakdown</span>
       </Modal.Header>
       <Modal.Body>
-        {hasDistributionData && (
+        {hasFdaDistributionData && (
           <Row className={'mb-3 text-center'}>
             <span className={'fs-2 fw-light'}>Report statistics</span>
           </Row>
         )}
         <Row>
           <Col className={'mb-3 text-center'}>
-            <DonutChart type={'age_group'} onDataStatusChange={handleDistributionStatusChange} />
+            <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
+              <PubmedSwitch handlePubmedSwitch={togglePubmedAgeDistribution} />
+            </Row>
+            <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
+            {isPubmedAgeDistribution && (
+              <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
+            )}
           </Col>
           <Col className={'mb-3 text-center'}>
-            <DonutChart type={'patient_sex'} onDataStatusChange={handleDistributionStatusChange} />
+            <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
+              <PubmedSwitch handlePubmedSwitch={togglePubmedSexDistribution} />
+            </Row>
+            <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
+            {isPubmedSexDistribution && (
+              <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
+            )}
           </Col>
         </Row>
         {hasDemographicData && (

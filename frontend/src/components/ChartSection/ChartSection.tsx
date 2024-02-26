@@ -74,9 +74,9 @@ const ChartSection = () => {
               {/* If the params are not filtered, show the Pubmed switch */}
               {/* There is no point in showing the button when params are filtered becasue the data is too sparse */}
               {!areParamsFiltered && (
-              <Row className={'my-1'}>
-                <PubmedSwitch handlePubmedSwitch={togglePubmedIncludedTimeSeries}/>
-              </Row>
+                <Row className={'my-1'}>
+                  <PubmedSwitch handlePubmedSwitch={togglePubmedIncludedTimeSeries} />
+                </Row>
               )}
 
               {areParamsFiltered &&

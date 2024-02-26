@@ -87,17 +87,17 @@ const Result = () => {
     }
   }, [drugInfo, params, updateSearchHistory]);
 
-  const [showNavbar, setShowNavbar] = React.useState(false);
+  const [showScrollbar, setShowScrollbar] = React.useState(false);
   const searchBoxSectionRef = React.useRef<HTMLDivElement>(null);
   const isSearchBoxInView = useInView(searchBoxSectionRef);
 
   React.useEffect(() => {
-    setShowNavbar(!!!isSearchBoxInView);
+    setShowScrollbar(!!!isSearchBoxInView);
   }, [isSearchBoxInView]);
 
   return (
     <>
-      <AnimatePresence>{showNavbar && <Scrollbar key={'scrollbar'} />}</AnimatePresence>
+      <AnimatePresence>{showScrollbar && <Scrollbar key={'scrollbar'} />}</AnimatePresence>
 
       <InfoCard />
 
@@ -105,7 +105,7 @@ const Result = () => {
         <Row className={'mb-4 mt-5'}>
           <Header />
         </Row>
-        <Row className={'mb-4 text-center'}>
+        <Row className={'mb-4'}>
           <SearchBox />
         </Row>
       </div>

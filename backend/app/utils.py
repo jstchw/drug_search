@@ -220,8 +220,31 @@ def filter_pubmed_metadata(records):
 
         title = re.sub(r'<.*?>', '', title)  # Remove HTML tags
 
-        abstract = record['MedlineCitation']['Article']['Abstract']['AbstractText'][0] \
-            if 'Abstract' in record['MedlineCitation']['Article'] else ''
+        abstract_section = record['MedlineCitation']['Article']['Abstract']['AbstractText'] \
+            if 'Abstract' in record['MedlineCitation']['Article'] and \
+            'AbstractText' in record['MedlineCitation']['Article']['Abstract'] and \
+            len(record['MedlineCitation']['Article']['Abstract']['AbstractText']) > 0 else ''
+        
+        abstract = ''
+
+        # Check if abstract_section is directly a string
+        if isinstance(abstract_section, str):
+            abstract = abstract_section
+        # Check if abstract_section is a list
+        elif isinstance(abstract_section, list):
+            # Initialize an empty list to hold the strings
+            abstract_parts = []
+            for item in abstract_section:
+                if isinstance(item, str):
+                    abstract_parts.append(item)
+                elif isinstance(item, dict):
+                    # Assuming each dict has a 'text' key; adjust if necessary
+                    abstract_parts.append(item.get('text', ''))
+            # Concatenate list elements separated by a newline
+            abstract = '\n'.join(abstract_parts)
+        # Handle the case where abstract_section is a dict (if needed)
+        elif isinstance(abstract_section, dict):
+            abstract = abstract_section.get('text', '')
 
         abstract = re.sub(r'<.*?>', '', abstract)  # Remove HTML tags
 
@@ -238,22 +261,36 @@ def filter_pubmed_metadata(records):
 
         article_url = record['MedlineCitation']['PMID']
 
-        article_date = record['MedlineCitation']['Article']['ArticleDate']
-        if article_date:
-            article_date = article_date[0]
-            article_date = f"{article_date['Year']}-{article_date['Month']}-{article_date['Day']}"
-        else:
-            article_date = ''
+        pubmed_history = record.get('PubmedData', {}).get('History', [])
+
+        # Extract the publication date
+        article_year = None
+        for item in pubmed_history:
+            if item.attributes.get('PubStatus') == 'pubmed':
+                article_year = item.get('Year')
+                break
+
+        venue_year = record.get('MedlineCitation', {}).get('Article', {}).get('Journal', {}).get('JournalIssue', {}).get('PubDate', {}).get('Year')
+        if venue_year is None:
+            medline_date = record.get('MedlineCitation', {}).get('Article', {}).get('Journal', {}).get('JournalIssue', {}).get('PubDate', {}).get('MedlineDate')
+            if medline_date is not None:
+                venue_year = medline_date.split(' ')[0]
+        venue_title = record.get('MedlineCitation', {}).get('Article', {}).get('Journal', {}).get('Title')
 
         country = record['MedlineCitation']['MedlineJournalInfo']['Country']
+
+        key_words = flatten_list(record.get('MedlineCitation', {}).get('KeywordList', []))
 
         filtered_records.append({
             'title': title,
             'abstract': abstract,
             'authors': authors,
-            'date': article_date,
+            'pm_year': article_year,
             'country': country,
-            'url': f"https://pubmed.ncbi.nlm.nih.gov/{article_url}"
+            'venue_year': venue_year,
+            'venue_title': venue_title,
+            'key_words': key_words,
+            'url': f"https://pubmed.ncbi.nlm.nih.gov/{article_url}/"
         })
 
     return filtered_records
@@ -341,3 +378,16 @@ def count_total_entries(data):
         int: The total number of entries.
     """
     return len(data)
+
+
+def flatten_list(data):
+    """
+    Flatten the given list of lists into a single list.
+
+    Args:
+        data (list): A list of lists to be flattened.
+
+    Returns:
+        list: A single list containing all the elements from the input list of lists.
+    """
+    return [item for sublist in data for item in sublist]

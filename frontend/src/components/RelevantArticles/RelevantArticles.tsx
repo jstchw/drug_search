@@ -1,6 +1,6 @@
 import { useRelevantArticles } from '../../hooks/useRelevantArticles';
 import { Books, LinkSimple } from '@phosphor-icons/react';
-import { Accordion, Button } from 'react-bootstrap';
+import { Accordion, Button, Row, Col, Badge } from 'react-bootstrap';
 import { highlightWords } from '../../utils/utils';
 import { useUrlParams } from '../../hooks/useUrlParams';
 
@@ -31,20 +31,45 @@ const RelevantArticles = () => {
                   {article.authors && article.authors.join(', ')}
                   <div className={'vr mx-2'} />
                   {article.country}
+                  <div className={'vr mx-2'} />
+                  {article.pm_year}
                 </div>
               </div>
             </Accordion.Header>
             <Accordion.Body>
               <div>{highlightWords(article.abstract, terms)}</div>
-              <div className={'d-flex justify-content-end mt-3'}>
-                <Button href={article.url} target={'_blank'} variant={'outline-primary'}>
-                  <div className={'d-flex align-items-center'}>
-                    <LinkSimple weight={'light'} />
+              <Row className={'mt-3'}>
+                <Col className={'d-flex flex-column'}>
+                  <div className={'d-flex align-items-center mb-2'}>
+                    <span className={'text-secondary'}>Published in</span>
                     <div className={'vr mx-2'} />
-                    Read on PubMed
+                    {article.venue_title}
                   </div>
-                </Button>
-              </div>
+                  <div className={'d-flex align-items-center'}>
+                    <span className={'text-secondary'}>Publication year</span>
+                    <div className={'vr mx-2'} />
+                    {article.venue_year}
+                  </div>
+                  {article.key_words.length !== 0 && (
+                    <div className={'d-flex align-items-center flex-wrap mt-2'}>
+                      {article.key_words.map((word, index) => (
+                        <Badge key={index} bg={'secondary'} className={'me-2 my-1'}>
+                          {word}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </Col>
+                <Col className={'d-flex justify-content-end align-items-center'}>
+                  <Button href={article.url} target={'_blank'} variant={'outline-primary'}>
+                    <div className={'d-flex align-items-center'}>
+                      <LinkSimple weight={'light'} />
+                      <div className={'vr mx-2'} />
+                      Read on PubMed
+                    </div>
+                  </Button>
+                </Col>
+              </Row>
             </Accordion.Body>
           </Accordion.Item>
         ))}

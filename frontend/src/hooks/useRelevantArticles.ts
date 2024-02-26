@@ -6,9 +6,12 @@ import { useEffect } from 'react';
 type RelevantArticle = {
   title: string;
   abstract: string;
-  date: string;
+  pm_year: string;
   authors: string[];
   country: string;
+  venue_title: string;
+  venue_year: string;
+  key_words: string[];
   url: string;
 };
 

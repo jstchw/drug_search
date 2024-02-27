@@ -17,8 +17,11 @@ import InfoCard from '../../components/InfoCard/InfoCard';
 import Scrollbar from '../../components/Scrollbar/Scrollbar';
 import useSearchStore from '../../stores/searchStore';
 import { AnimatePresence, useInView } from 'framer-motion';
+import DemographicModal from '../../components/DemographicModal/DemographicModal';
 
 const Result = () => {
+  
+  
   const { params, paramError } = useUrlParams();
 
   const setSearchInput = useSearchStore((state) => state.setSearchInput);
@@ -98,6 +101,8 @@ const Result = () => {
   return (
     <>
       <AnimatePresence>{showScrollbar && <Scrollbar key={'scrollbar'} />}</AnimatePresence>
+
+      <DemographicModal />
 
       <InfoCard />
 

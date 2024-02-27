@@ -173,13 +173,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
     },
   };
 
-  return (
-    <>
-      <div className={'mb-3'}>
-        <ReactApexChart options={chartOptions} type="bar" series={series} />
-      </div>
-    </>
-  );
+  return <ReactApexChart options={chartOptions} type="bar" series={series} />;
 };
 
 export default DemographicComparsionChart;

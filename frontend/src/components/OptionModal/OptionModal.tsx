@@ -34,10 +34,10 @@ const OptionModal = (props: {
     });
   }, [props.searchOptions]);
 
-  const {theme, toggleTheme } = useGeneralOptionsStore((state) => ({
+  const { theme, toggleTheme } = useGeneralOptionsStore((state) => ({
     theme: state.theme,
     toggleTheme: state.toggleTheme,
-    }));
+  }));
 
   const [carouselIndex, setCarouselIndex] = React.useState(0);
 
@@ -245,7 +245,7 @@ const OptionModal = (props: {
                     style={{ pointerEvents: 'none' }}
                   >
                     Search mode
-                    <Badge 
+                    <Badge
                       className={'bg-danger position-absolute top-0 start-75 translate-middle opacity-100 rounded-pill'}
                     >
                       Exp

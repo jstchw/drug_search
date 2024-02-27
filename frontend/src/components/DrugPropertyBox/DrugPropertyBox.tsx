@@ -4,10 +4,7 @@ import { Col, Row } from 'react-bootstrap';
 import DrugDescription from '../DrugDescription/DrugDescription';
 import DrugAccordion from '../DrugAccordion/DrugAccordion';
 import { useUrlParams } from '../../hooks/useUrlParams';
-import DemographicModal from '../DemographicModal/DemographicModal';
-import useDemographicStore from '../../stores/demographicStore';
 import DemographicButton from '../DemographicModal/DemographicButton';
-import { AnimatePresence } from 'framer-motion';
 
 const DrugPropertyBox = (props: { drug: DrugProperties; isSingle: boolean }) => {
   const { params } = useUrlParams();
@@ -15,8 +12,6 @@ const DrugPropertyBox = (props: { drug: DrugProperties; isSingle: boolean }) => 
   if (params.searchBy === 'side_effect') {
     props.drug.groups = ['side_effect'];
   }
-
-  const [showDemographic] = useDemographicStore((state) => [state.showDemographic]);
 
   return (
     <>
@@ -31,9 +26,7 @@ const DrugPropertyBox = (props: { drug: DrugProperties; isSingle: boolean }) => 
         <Row className={'d-flex justify-content-center'}>
           <DemographicButton term={props.drug.name} />
         </Row>
-
-        {/* Load the DemographicModal when the button is clicked to avoid unnecessary slowdowns */}
-        <AnimatePresence mode={'wait'}>{showDemographic && <DemographicModal />}</AnimatePresence>
+        
 
         {props.isSingle ? (
           // For a single drug, put DrugDescription and DrugAccordion side by side

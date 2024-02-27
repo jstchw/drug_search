@@ -24,5 +24,4 @@ const useGeneralOptionsStore = create<Store>((set) => ({
   toggleTheme: () => set((state) => ({ theme: toggleTheme(state) })),
 }));
 
-
 export default useGeneralOptionsStore;

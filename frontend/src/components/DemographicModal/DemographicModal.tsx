@@ -5,6 +5,7 @@ import useDemographicStore from '../../stores/demographicStore';
 import React from 'react';
 import DonutChart from '../ApexChart/DonutChart';
 import PubmedSwitch from '../ChartSection/PubmedSwitch';
+import { motion } from 'framer-motion';
 
 type AggregateType = 'Sex' | 'Age';
 
@@ -16,6 +17,10 @@ const defaultPageKeys: Record<AggregateType, string> = {
 const DemographicModal = () => {
   // Get the states from the store
   const [show, setShow] = useDemographicStore((state) => [state.showDemographic, state.setShowDemographic]);
+
+  const handleShow = () => {
+    setShow(!show);
+  };
 
   const term = useDemographicStore((state) => state.demographicTerm);
 
@@ -57,88 +62,101 @@ const DemographicModal = () => {
   }, []);
 
   return (
-    <Modal show={show} onHide={() => setShow(!show)} centered size={'xl'}>
+    <Modal show={show} onHide={handleShow} centered size={'xl'}>
       <Modal.Header closeButton>
         <Modal.Title>{term}</Modal.Title>
         <div className={'mx-2 vr'} />
         <span className={'text-secondary'}>Demographic breakdown</span>
       </Modal.Header>
       <Modal.Body>
-        {hasFdaDistributionData && (
-          <Row className={'mb-3 text-center'}>
-            <span className={'fs-2 fw-light'}>Report statistics</span>
+          {hasFdaDistributionData && (
+            <Row className={'mb-3 text-center'}>
+              <span className={'fs-2 fw-light'}>Report statistics</span>
+            </Row>
+          )}
+          <motion.div
+            key={'distribution'}
+            layout
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              type: 'spring',
+              stiffness: 260,
+              damping: 20,
+            }}
+            exit={{ opacity: 0 }}
+            >
+          <Row>
+            <Col className={'mb-3 text-center'}>
+              <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
+                <PubmedSwitch handlePubmedSwitch={togglePubmedAgeDistribution} />
+              </Row>
+              <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
+              {isPubmedAgeDistribution && (
+                <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
+              )}
+            </Col>
+            <Col className={'mb-3 text-center'}>
+              <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
+                <PubmedSwitch handlePubmedSwitch={togglePubmedSexDistribution} />
+              </Row>
+              <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
+              {isPubmedSexDistribution && (
+                <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
+              )}
+            </Col>
           </Row>
-        )}
-        <Row>
-          <Col className={'mb-3 text-center'}>
-            <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
-              <PubmedSwitch handlePubmedSwitch={togglePubmedAgeDistribution} />
-            </Row>
-            <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
-            {isPubmedAgeDistribution && (
-              <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
+            {hasDemographicData && (
+              <div>
+                <Row className={'text-center my-4'}>
+                  <span className={'fs-2 fw-light'}>Demographic breakdown</span>
+                </Row>
+                <Row className={'text-center mb-2'}>
+                  <span className={'text-secondary'}>Group by:</span>
+                </Row>
+                <Row>
+                  <Nav
+                    variant={'pills'}
+                    className="justify-content-center align-items-center mb-3"
+                    onSelect={(index) => {
+                      setAggregateType(index as AggregateType);
+                    }}
+                    defaultActiveKey={aggregateType}
+                  >
+                    <Nav.Item className={'mx-1'}>
+                      <Nav.Link eventKey={'Sex'}>Sex</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item className={'mx-1'}>
+                      <Nav.Link eventKey={'Age'}>Age</Nav.Link>
+                    </Nav.Item>
+                  </Nav>
+                </Row>
+                <Row>
+                  <Nav variant={'pills'} className="justify-content-center mb-3">
+                    {groupPageKeys.map((key, index) => (
+                      <Nav.Item key={`${key}-${index}`} className={'mx-1'}>
+                        <Nav.Link
+                          eventKey={index}
+                          active={currentPageKey === key}
+                          onClick={() => setCurrentPageKey(key)}
+                          className={'outline-primary'}
+                        >
+                          {key}
+                        </Nav.Link>
+                      </Nav.Item>
+                    ))}
+                  </Nav>
+                </Row>
+              </div>
             )}
-          </Col>
-          <Col className={'mb-3 text-center'}>
-            <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
-              <PubmedSwitch handlePubmedSwitch={togglePubmedSexDistribution} />
-            </Row>
-            <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
-            {isPubmedSexDistribution && (
-              <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
-            )}
-          </Col>
-        </Row>
-        {hasDemographicData && (
-          <div>
-            <Row className={'text-center my-4'}>
-              <span className={'fs-2 fw-light'}>Demographic breakdown</span>
-            </Row>
-            <Row className={'text-center mb-2'}>
-              <span className={'text-secondary'}>Group by:</span>
-            </Row>
             <Row>
-              <Nav
-                variant={'pills'}
-                className="justify-content-center align-items-center mb-3"
-                onSelect={(index) => {
-                  setAggregateType(index as AggregateType);
-                }}
-                defaultActiveKey={aggregateType}
-              >
-                <Nav.Item className={'mx-1'}>
-                  <Nav.Link eventKey={'Sex'}>Sex</Nav.Link>
-                </Nav.Item>
-                <Nav.Item className={'mx-1'}>
-                  <Nav.Link eventKey={'Age'}>Age</Nav.Link>
-                </Nav.Item>
-              </Nav>
+              <DemographicComparsionChart
+                aggregateType={aggregateType}
+                currentPageKey={currentPageKey}
+                onDataStatusChange={handleDemographicStatusChange}
+              />
             </Row>
-            <Row>
-              <Nav variant={'pills'} className="justify-content-center mb-3">
-                {groupPageKeys.map((key, index) => (
-                  <Nav.Item key={index} className={'mx-1'}>
-                    <Nav.Link
-                      eventKey={index}
-                      active={currentPageKey === key}
-                      onClick={() => setCurrentPageKey(key)}
-                      className={'outline-primary'}
-                    >
-                      {key}
-                    </Nav.Link>
-                  </Nav.Item>
-                ))}
-              </Nav>
-            </Row>
-          </div>
-        )}
-        <Row>
-          <DemographicComparsionChart
-            aggregateType={aggregateType}
-            currentPageKey={currentPageKey}
-            onDataStatusChange={handleDemographicStatusChange}
-          />
-        </Row>
+          </motion.div>
       </Modal.Body>
     </Modal>
   );

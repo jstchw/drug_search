@@ -9,6 +9,7 @@ import { BackendDataType, ChartDataPoint, FDARawData, ResultItem } from '../../t
 import { ageGroupsFDA, sexGroupsFDA, backendUrl, chartColors } from '../../constants';
 import _ from 'lodash';
 import { ApexOptions } from 'apexcharts';
+import { motion } from 'framer-motion';
 
 type RadarChartReturnType = {
   data: ChartDataPoint[] | undefined;
@@ -155,7 +156,18 @@ const DonutChart: React.FC<DonutChartProps> = ({ source, type, onDataStatusChang
   };
 
   return (
-    <div className={'d-flex flex-column'}>
+    <motion.div
+      layout
+      initial={{ y: -50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{
+        type: 'spring',
+        stiffness: 260,
+        damping: 20,
+      }}
+      exit={{ y: -50, opacity: 0 }}
+      className={'d-flex flex-column'}
+    >
       {type === 'age_group' ? (
         <span className={'fs-4 fw-light mb-1'}>Age distribution</span>
       ) : (
@@ -163,7 +175,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ source, type, onDataStatusChang
       )}
       <span className={'text-secondary mb-2'}>From {reportCount.toLocaleString()} reports</span>
       <Chart options={chartOptions} series={dataSeries} type="donut" />
-    </div>
+    </motion.div>
   );
 };
 

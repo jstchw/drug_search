@@ -186,10 +186,12 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       },
       events: {
         dataPointSelection: (_, __, config) => {
-          const term = config.w.config.labels[config.dataPointIndex];
-          setDemographicTerm(capitalizeFirstLetter(term));
-          setDemographicType(determineDisplayType(searchBy));
-          setShowDemographic(true);
+          // Timeout to prevent result page re render (NO IDEA WHY THIS HAPPENS)
+          setTimeout(() => {
+            setDemographicTerm(capitalizeFirstLetter(config.w.config.labels[config.dataPointIndex]));
+            setDemographicType(determineDisplayType(searchBy));
+            setShowDemographic(true);
+          }, 0);
         },
       },
     },

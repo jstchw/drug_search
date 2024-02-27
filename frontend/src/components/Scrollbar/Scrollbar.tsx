@@ -13,6 +13,8 @@ const Scrollbar = () => {
         type: 'spring',
         stiffness: 260,
         damping: 20,
+        duration: 0.8,
+        delay: 0.1,
       }}
       className="fixed-top py-4 rounded shadow-lg bg-body"
     >

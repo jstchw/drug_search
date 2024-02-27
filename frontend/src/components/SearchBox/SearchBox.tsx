@@ -12,7 +12,7 @@ import useSearchStore from '../../stores/searchStore';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 
 const SearchBox = () => {
-  const theme = useGeneralOptionsStore(state => state.theme);
+  const theme = useGeneralOptionsStore((state) => state.theme);
 
   const [searchOptions, setSearchOptions] = useSearchStore((state) => [state.searchOptions, state.setSearchOptions]);
 

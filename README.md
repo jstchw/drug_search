@@ -8,24 +8,14 @@
 - **Adverse Effect to Drug**: Discover which drugs can cause a specific adverse effect.
 - **Visual Insights**: Utilize our visualizing tools powered by ApexCharts to get a graphical representation of the data.
 - **Drug Information**: Fetch detailed information about a drug, including its molecule picture, IUPAC name, drug class, and more.
-- **AI-Powered Summaries**: Generate a concise AI summary for quick statistics on any drug.
 - **Reliable Data Sources**: Our data is fetched from the FDA API and a local database derived from DrugBank.ca, ensuring accuracy and comprehensiveness.
 
 ## Technologies Used
 
 - **Frontend**: React
-- **Visualization**: ApexCharts
+- **Visualization**: ApexCharts, React-Bootstrap
 - **Backend**: Flask
-- **Data Sources**: FDA API and DrugBank.ca
-
-## Usage
-
-Access DrugSearch [here](https://drugsearch.org).
-
-1. **Search**: Use the search bar to enter a drug name or an adverse effect.
-2. **Drug Details**: Take a look at the chemical information or use the accordion next to it to unveil the pharmacological data.
-3. **Summary**: Click on a book icon next to the drug name to reveal the summary.
-4. **Visualize**: Scroll down to see the graphs.
+- **Data Sources**: FAERS, local Pubmed dataset, Drugbank.ca
 
 ## Acknowledgments
 

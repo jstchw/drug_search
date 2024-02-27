@@ -3,9 +3,7 @@ import { useDynamicTimeSeries } from '../../hooks/useDynamicTimeSeries';
 import { ApexOptions } from 'apexcharts';
 import ReactApexChart from 'react-apexcharts';
 import { motion } from 'framer-motion';
-import { getTimeSeriesOptions } from './chartOptions';
-import { ThemeContext } from '../../contexts/ThemeContext';
-import { ThemeType } from 'src/types';
+import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import { Row } from 'react-bootstrap';
 
 interface CasesTimeSeriesChartProps {
@@ -19,7 +17,7 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
   onRender,
   isPubmed = false,
 }) => {
-  const { theme } = React.useContext(ThemeContext);
+  const theme = useGeneralOptionsStore((state) => state.theme);
 
   const { timeSeriesData, timeSeriesCount, isError } = useDynamicTimeSeries(isPubmed, noFilterRequest);
 
@@ -42,7 +40,60 @@ const CasesTimeSeriesChart: React.FC<CasesTimeSeriesChartProps> = ({
     ],
   };
 
-  const options: ApexOptions = getTimeSeriesOptions(theme as ThemeType);
+  const options: ApexOptions = {
+    theme: {
+      mode: theme,
+    },
+    colors: ['#59768A'],
+    legend: {
+      show: true,
+      position: 'bottom',
+    },
+    chart: {
+      type: 'area',
+      toolbar: {
+        show: false,
+        tools: {
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+        },
+      },
+      background: theme === 'dark' ? '#212529' : '',
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    fill: {
+      type: 'gradient',
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    xaxis: {
+      type: 'category',
+      labels: {
+        style: {
+          fontSize: '14px',
+          colors: theme === 'dark' ? '#ACB5BD' : '',
+        },
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          fontSize: '14px',
+          colors: theme === 'dark' ? '#ACB5BD' : '',
+        },
+        formatter: (value: number) => {
+          return value.toLocaleString();
+        },
+      },
+    },
+  };
 
   return (
     <>

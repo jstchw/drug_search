@@ -1,7 +1,6 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SearchHistoryProvider } from './contexts/SearchHistoryContext';
-import { ThemeProvider } from './contexts/ThemeContext';
 
 const queryClient = new QueryClient();
 
@@ -12,9 +11,7 @@ interface AppProvidersProps {
 const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <SearchHistoryProvider>{children}</SearchHistoryProvider>
-      </ThemeProvider>
+      <SearchHistoryProvider>{children}</SearchHistoryProvider>
     </QueryClientProvider>
   );
 };

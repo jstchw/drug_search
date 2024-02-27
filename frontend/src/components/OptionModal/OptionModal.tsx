@@ -12,13 +12,13 @@ import {
   ButtonGroup,
   Badge,
 } from 'react-bootstrap';
-import { ThemeContext } from '../../contexts/ThemeContext';
 import { Moon, Sun, Funnel, ClockCounterClockwise } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
 import { searchCountry, searchSex, searchTypes, searchModes, searchAgeGroups, versionInfo } from '../../constants';
 import { SearchOptions, SearchOptionsType } from '../../types';
 import SearchHistory from '../SearchHistory/SearchHistory';
 import { Carousel } from 'react-responsive-carousel';
+import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 
 const OptionModal = (props: {
   showOptionModal: boolean;
@@ -34,7 +34,10 @@ const OptionModal = (props: {
     });
   }, [props.searchOptions]);
 
-  const { theme, toggleTheme } = React.useContext(ThemeContext);
+  const {theme, toggleTheme } = useGeneralOptionsStore((state) => ({
+    theme: state.theme,
+    toggleTheme: state.toggleTheme,
+    }));
 
   const [carouselIndex, setCarouselIndex] = React.useState(0);
 
@@ -208,9 +211,9 @@ const OptionModal = (props: {
                     id={'search_type_button'}
                     type="checkbox"
                     variant="outline-primary"
-                    checked={true}
-                    value="1"
-                    disabled={true}
+                    checked
+                    value=""
+                    style={{ pointerEvents: 'none' }}
                   >
                     Search by
                   </ToggleButton>
@@ -232,20 +235,24 @@ const OptionModal = (props: {
 
               {/* Search mode change */}
               <Form.Group className="mb-3 d-flex align-items-center">
-                <div className={'d-flex align-items-center'}>
+                <div className={'d-flex align-items-center position-relative'}>
                   <ToggleButton
                     id={'search_mode_button'}
                     type="checkbox"
                     variant="outline-primary"
-                    checked={true}
-                    value="1"
-                    disabled={true}
+                    checked
+                    value=""
+                    style={{ pointerEvents: 'none' }}
                   >
                     Search mode
+                    <Badge 
+                      className={'bg-danger position-absolute top-0 start-75 translate-middle opacity-100 rounded-pill'}
+                    >
+                      Exp
+                    </Badge>
                   </ToggleButton>
                 </div>
-                <Badge className={'bg-danger mx-2'}>Exp</Badge>
-                <InputGroup className={'flex-grow-1 me-3'} style={{ width: 'auto' }}>
+                <InputGroup className={'flex-grow-1 mx-3'} style={{ width: 'auto' }}>
                   <Form.Select
                     onChange={(e) => handleSearchModeChange(e.currentTarget.value)}
                     value={props.searchOptions.searchMode.value}
@@ -266,7 +273,7 @@ const OptionModal = (props: {
                   <ToggleButton
                     id={'sex_change_button'}
                     type="checkbox"
-                    variant="outline-primary"
+                    variant="outline-secondary"
                     checked={props.searchOptions.sex.enabled}
                     value="1"
                     onClick={() =>
@@ -310,7 +317,7 @@ const OptionModal = (props: {
                       ref={ageTooltipTarget}
                       id={'age_change_button'}
                       type="checkbox"
-                      variant="outline-primary"
+                      variant="outline-secondary"
                       checked={props.searchOptions.age.enabled}
                       value="1"
                       onClick={() => {
@@ -327,7 +334,7 @@ const OptionModal = (props: {
                     <ToggleButton
                       id={'age_range_button'}
                       type="checkbox"
-                      variant="outline-primary"
+                      variant="outline-secondary"
                       disabled={!props.searchOptions.age.enabled}
                       checked={!props.searchOptions.age.ageGroupsEnabled}
                       value="1"
@@ -411,7 +418,7 @@ const OptionModal = (props: {
                   <ToggleButton
                     id={'country_change_button'}
                     type="checkbox"
-                    variant="outline-primary"
+                    variant="outline-secondary"
                     value="1"
                     onClick={() =>
                       props.setSearchOptions({

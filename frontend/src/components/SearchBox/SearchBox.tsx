@@ -8,11 +8,11 @@ import Fuse, { FuseResult, Expression } from 'fuse.js';
 import CreatableSelect from 'react-select/creatable';
 import { useSearch } from '../../hooks/useSearch';
 import useSearchPlaceholder from '../../hooks/useSearchPlaceholder';
-import { ThemeContext } from '../../contexts/ThemeContext';
 import useSearchStore from '../../stores/searchStore';
+import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 
 const SearchBox = () => {
-  const { theme } = React.useContext(ThemeContext);
+  const theme = useGeneralOptionsStore(state => state.theme);
 
   const [searchOptions, setSearchOptions] = useSearchStore((state) => [state.searchOptions, state.setSearchOptions]);
 

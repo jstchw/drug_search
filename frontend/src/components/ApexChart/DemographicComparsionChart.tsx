@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { DemographicDataType, URLParams } from '../../types';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import _ from 'lodash';
 import { searchAgeGroups, searchSex, chartColors, oppositeAggregation } from '../../constants';
 import useDemographicStore from '../../stores/demographicStore';
@@ -78,7 +78,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   currentPageKey,
   onDataStatusChange,
 }) => {
-  const { theme } = React.useContext(ThemeContext);
+  const theme = useGeneralOptionsStore((state) => state.theme);
 
   const term = useDemographicStore((state) => state.demographicTerm);
   const searchBy = useDemographicStore((state) => state.demographicType);

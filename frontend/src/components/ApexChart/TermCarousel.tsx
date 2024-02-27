@@ -1,8 +1,8 @@
 import { useTermData } from '../../hooks/useTermData';
 import { ApexOptions } from 'apexcharts';
-import { ThemeType, URLParams } from '../../types';
+import { URLParams } from '../../types';
 import ReactApexChart from 'react-apexcharts';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import React from 'react';
 import ReactWordcloud, { OptionsProp } from 'react-wordcloud';
 import { Carousel } from 'react-responsive-carousel';
@@ -10,7 +10,6 @@ import { Nav, OverlayTrigger, Popover, Pagination } from 'react-bootstrap';
 import { Cloud, List, Pill } from '@phosphor-icons/react';
 import { SealWarning, ChartLine, SmileyNervous } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
-import { getTermCarouselOptions } from './chartOptions';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { searchTypes } from '../../constants';
@@ -96,7 +95,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
     params: { searchBy },
   } = useUrlParams();
 
-  const { theme } = React.useContext(ThemeContext);
+  const theme = useGeneralOptionsStore((state) => state.theme);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
   const { reportData, isError } = useTermData(noFilterRequest);
@@ -157,17 +156,78 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
   }));
 
   /* Apex Chart declarations */
-  const termCarouselBaseOptions = getTermCarouselOptions(theme as ThemeType);
 
-  const termCarouselSpecificOptions: ApexOptions = {
-    labels: labelsForCurrentPage,
+  const chartOptions: ApexOptions = {
+    theme: {
+      mode: theme,
+    },
+    legend: {
+      show: false,
+    },
     chart: {
+      type: 'bar',
+      width: '100%',
+      toolbar: {
+        show: false,
+        tools: {
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+        },
+      },
+      background: theme === 'dark' ? '#212529' : '',
+      dropShadow: {
+        enabled: true,
+        top: 1,
+        left: 1,
+        blur: 2,
+        color: theme === 'dark' ? '#000' : '#000',
+        opacity: 0.2,
+      },
       events: {
         dataPointSelection: (_, __, config) => {
           const term = config.w.config.labels[config.dataPointIndex];
           setDemographicTerm(capitalizeFirstLetter(term));
           setDemographicType(determineDisplayType(searchBy));
           setShowDemographic(true);
+        },
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        distributed: true,
+        barHeight: '80%',
+        borderRadius: 4,
+        borderRadiusApplication: 'end',
+      },
+    },
+    grid: {
+      show: false,
+    },
+    labels: labelsForCurrentPage,
+    yaxis: {
+      labels: {
+        show: true,
+        style: {
+          fontSize: '14px',
+          colors: theme === 'dark' ? '#ACB5BD' : '',
+        },
+        formatter: (value: number) => {
+          const stringValue = String(value);
+          return stringValue.charAt(0).toUpperCase() + stringValue.slice(1).toLowerCase();
+        },
+      },
+    },
+    xaxis: {
+      labels: {
+        show: false,
+      },
+    },
+    tooltip: {
+      y: {
+        formatter: (value: number) => {
+          return `${value.toLocaleString()} from ${totalSideEffectCount.toLocaleString()}`;
         },
       },
     },
@@ -178,17 +238,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
         return `${((value / totalSideEffectCount) * 100).toPrecision(3)}%`;
       },
     },
-    tooltip: {
-      y: {
-        formatter: (value: number) => {
-          return `${value.toLocaleString()} from ${totalSideEffectCount.toLocaleString()}`;
-        },
-      },
-    },
   };
-
-  // Deep merge the base options with the specific options (to avoid overwriting the base options with the specific options)
-  const apexChartOptions = _.merge(termCarouselBaseOptions, termCarouselSpecificOptions) as ApexOptions;
 
   /* Word Cloud declarations*/
   const cloudData = reportData.map((item) => {
@@ -267,14 +317,14 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       >
         <div>
           <ReactApexChart
-            options={apexChartOptions}
+            options={chartOptions}
             series={[
               {
                 ...chartData.series[0],
                 data: coloredDataForCurrentPage,
               },
             ]}
-            type={apexChartOptions.chart?.type}
+            type={chartOptions.chart?.type}
           />
           <Pagination size={'lg'} className={'d-flex justify-content-center'}>
             {paginationItems}

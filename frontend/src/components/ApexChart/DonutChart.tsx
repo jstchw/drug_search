@@ -1,14 +1,14 @@
 import Chart from 'react-apexcharts';
-import { getDonutChartOptions } from './chartOptions';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import React from 'react';
 import { generatePath, fetchData, processTermData } from '../../utils/utils';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { useQuery } from 'react-query';
 import { BackendDataType, ChartDataPoint, FDARawData, ResultItem } from '../../types';
-import { ageGroupsFDA, sexGroupsFDA, backendUrl } from '../../constants';
+import { ageGroupsFDA, sexGroupsFDA, backendUrl, chartColors } from '../../constants';
 import _ from 'lodash';
+import { ApexOptions } from 'apexcharts';
 
 type RadarChartReturnType = {
   data: ChartDataPoint[] | undefined;
@@ -103,7 +103,7 @@ interface DonutChartProps {
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({ source, type, onDataStatusChange }) => {
-  const { theme } = React.useContext(ThemeContext);
+  const theme = useGeneralOptionsStore((state) => state.theme);
 
   const { data, isError } = useDynamicDistributionData(source, type);
 
@@ -121,13 +121,38 @@ const DonutChart: React.FC<DonutChartProps> = ({ source, type, onDataStatusChang
 
   const reportCount = dataSeries.reduce((acc, curr) => acc + curr, 0);
 
-  const chartOptions = getDonutChartOptions(theme);
-
-  const specificOptions = {
+  const chartOptions: ApexOptions = {
+    theme: {
+      mode: theme,
+    },
     labels: dataLabels,
+    legend: {
+      show: true,
+      position: 'bottom',
+    },
+    tooltip: {
+      y: {
+        formatter: (val: number) => {
+          return val.toLocaleString();
+        },
+      },
+      style: {
+        fontSize: '16px',
+      },
+    },
+    colors: chartColors,
+    chart: {
+      toolbar: {
+        show: false,
+        tools: {
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+        },
+      },
+      background: theme === 'dark' ? '#212529' : '',
+    },
   };
-
-  const options = _.merge(chartOptions, specificOptions);
 
   return (
     <div className={'d-flex flex-column'}>
@@ -137,7 +162,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ source, type, onDataStatusChang
         <span className={'fs-4 fw-light mb-1'}>Sex distribution</span>
       )}
       <span className={'text-secondary mb-2'}>From {reportCount.toLocaleString()} reports</span>
-      <Chart options={options} series={dataSeries} type="donut" />
+      <Chart options={chartOptions} series={dataSeries} type="donut" />
     </div>
   );
 };

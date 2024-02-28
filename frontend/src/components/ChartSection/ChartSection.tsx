@@ -136,7 +136,7 @@ const ChartSection = () => {
               <Row>
                 <h3 className={'d-flex justify-content-center'}>{getChartWarning(params)}</h3>
               </Row>
-              {!areParamsFiltered && (
+              {!areParamsFiltered && params.searchBy === 'side_effect' && (
                 <Row className={'my-1'}>
                   <PubmedSwitch handlePubmedSwitch={togglePubmedTermCarousel} />
                 </Row>

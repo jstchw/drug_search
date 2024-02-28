@@ -1,12 +1,12 @@
-from re import search
 from sqlite3 import Date
 from flask import Blueprint, jsonify, request, send_file
 import io
 from rdkit import Chem
 from rdkit.Chem import Draw
 from app.services.data_manager import DataManager
-from app.utils import format_json_drug, search_json, get_pubmed_metadata, count_entries_by_property, transform_dict_to_x_y, count_total_entries
+from app.utils import count_entries_by_age, count_entries_by_gender, count_entries_by_terms, count_entries_by_year, format_json_drug, search_json, get_pubmed_metadata, transform_dict_to_x_y, count_total_entries
 import json
+from constants import count_properties_from_search_type
 
 drug_api = Blueprint('drug_api', __name__)
 
@@ -171,7 +171,7 @@ def get_pm_timedata():
     total_entries = count_total_entries(results)
 
     if results:
-        count_by_year = count_entries_by_property(results, 'year')
+        count_by_year = count_entries_by_year(results)
     else:
         count_by_year = {"error": "No data found"}
 
@@ -213,7 +213,7 @@ def get_pm_age_distribution():
     results = search_json(params, data=pubmed_data, limit=1000)
 
     if results:
-        count_by_age = count_entries_by_property(results, 'age')
+        count_by_age = count_entries_by_age(results)
     else:
         count_by_age = {"error": "No data found"}
 
@@ -250,7 +250,7 @@ def get_pm_sex_distribution():
     results = search_json(params, data=pubmed_data, limit=1000)
 
     if results:
-        count_by_sex = count_entries_by_property(results, 'gender')
+        count_by_sex = count_entries_by_gender(results)
     else:
         count_by_sex = {"error": "No data found"}
 
@@ -260,4 +260,42 @@ def get_pm_sex_distribution():
     return jsonify({
         "total": sum(count_by_sex.values()),
         "data": transform_dict_to_x_y(count_by_sex)
+    }), 200
+
+
+@drug_api.route('/get_pm_terms', methods=['GET'])
+def get_pm_terms():
+    """
+    Retrieves statistics about the term and an amount of reports for the provided term.
+
+    Parameters:
+
+    Returns:
+    - JSON: Ready-to-use dictionary in format {total: count, data: [x: 'term', y: 'number of reports'...]}.
+    """
+    params = {
+        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
+        'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
+        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None,
+        'sex': request.args.get('sex') if request.args.get('sex') in ['male', 'female'] else None,
+        'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
+        'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
+    }
+
+    results = search_json(params, data=pubmed_data, limit=1000)
+
+    print(results, flush=True)
+
+    if results:
+        count_by_term = count_entries_by_terms(results, params['search_type'], limit=50)
+    else:
+        count_by_term = {"error": "No data found"}
+
+    if not results or not count_by_term:
+        return jsonify({"error": "No data found"}), 404
+
+
+    return jsonify({
+        "total": sum(count_by_term.values()),
+        "data": transform_dict_to_x_y(count_by_term)
     }), 200

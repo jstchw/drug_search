@@ -1,4 +1,4 @@
-import { useTermData } from '../../hooks/useTermData';
+import { useFdaTermData } from '../../hooks/useFdaTermData';
 import { ApexOptions } from 'apexcharts';
 import { URLParams } from '../../types';
 import ReactApexChart from 'react-apexcharts';
@@ -6,12 +6,13 @@ import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import React from 'react';
 import ReactWordcloud, { OptionsProp } from 'react-wordcloud';
 import { Carousel } from 'react-responsive-carousel';
-import { Nav, OverlayTrigger, Popover, Pagination } from 'react-bootstrap';
+import { Nav, OverlayTrigger, Popover, Pagination, Row, Col } from 'react-bootstrap';
 import { Cloud, List, Pill } from '@phosphor-icons/react';
 import { SealWarning, ChartLine, SmileyNervous } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
+import { usePmTermData } from '../../hooks/usePmTermData';
 import { searchTypes } from '../../constants';
 import { capitalizeFirstLetter, getColorFromPercentage, valueToPercentage } from '../../utils/utils';
 import _ from 'lodash';
@@ -85,12 +86,17 @@ const determineDisplayType = (searchBy: string) => {
   }
 };
 
+const useDynamicTermData = (noFilterRequest: boolean, source: string) => {
+  return source === 'fda' ? useFdaTermData(noFilterRequest) : usePmTermData();
+}
+
 interface TermCarouselProps {
   noFilterRequest?: boolean;
   onRender: () => void;
+  source: string;
 }
 
-const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, onRender }) => {
+const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, onRender, source }) => {
   const {
     params: { searchBy },
   } = useUrlParams();
@@ -98,7 +104,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
   const theme = useGeneralOptionsStore((state) => state.theme);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
-  const { reportData, isError } = useTermData(noFilterRequest);
+  const { reportData, isError } = useDynamicTermData(noFilterRequest, source);
 
   const setShowDemographic = useDemographicStore((state) => state.setShowDemographic);
   const setDemographicTerm = useDemographicStore((state) => state.setDemographicTerm);
@@ -293,7 +299,12 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       }}
       exit={{ opacity: 0 }}
     >
-      <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3'}>
+      <Row className={'mt-1'}>
+        <Col className={'mb-3 text-center'}>
+          <span className={'text-secondary'}>{totalSideEffectCount.toLocaleString()} terms in total</span>
+        </Col>
+      </Row>
+      <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3 z-index-n-1'}>
         <Nav.Item>
           <Nav.Link className={'d-flex align-items-center'} eventKey="0" onClick={() => setCarouselIndex(0)}>
             <List weight={'light'} />

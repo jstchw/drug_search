@@ -37,3 +37,15 @@ sex_groups = {
         'fda_key': 2,
     }
 }
+
+count_properties_from_search_type = {
+    'generic_name': [
+        'effect',
+        'treatment_disorder',
+    ],
+    'brand_name': [
+        'effect',
+        'treatment_disorder',
+    ],
+    'side_effect': 'generic_name',
+}

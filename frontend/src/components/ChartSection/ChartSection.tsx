@@ -45,6 +45,10 @@ const ChartSection = () => {
   }, []);
 
   const [noFilterTermCarouselRequest, setNoFilterTermCarouselRequest] = React.useState<boolean>(false);
+  const [isPubmedTermCarousel, setIsPubmedTermCarousel] = React.useState<boolean>(false);
+  const togglePubmedTermCarousel = React.useCallback(() => {
+    setIsPubmedTermCarousel((prev) => !prev);
+  }, []);
 
   const [childrenRendered, setChildrenRendered] = React.useState({
     timeSeries: false,
@@ -125,13 +129,18 @@ const ChartSection = () => {
 
       {/* Term carousel section */}
       <Row className={'d-flex justify-content-center mb-4'}>
-        <Col xs={isMobile || noFilterTermCarouselRequest ? 12 : 6} className="mb-4">
+        <Col xs={isMobile || noFilterTermCarouselRequest || isPubmedTermCarousel ? 12 : 6} className="mb-4">
           {/* If the children are rendered, show the title */}
           {childrenRendered.termCarousel && (
             <>
               <Row>
                 <h3 className={'d-flex justify-content-center'}>{getChartWarning(params)}</h3>
               </Row>
+              {!areParamsFiltered && (
+                <Row className={'my-1'}>
+                  <PubmedSwitch handlePubmedSwitch={togglePubmedTermCarousel} />
+                </Row>
+              )}
               <Row className={'d-flex justify-content-center text-secondary'}>
                 Percentage is calculated using only the presented data.
               </Row>
@@ -148,15 +157,26 @@ const ChartSection = () => {
 
           <AnimatePresence>
             <Row>
-              <Col xs={noFilterTermCarouselRequest ? 6 : 12}>
+              <Col xs={noFilterTermCarouselRequest || isPubmedTermCarousel ? 6 : 12}>
                 {noFilterTermCarouselRequest && <h5 className={'d-flex justify-content-center mt-3'}>Filtered data</h5>}
-                <TermCarousel onRender={() => handleChildRender('termCarousel')} />
+                {isPubmedTermCarousel && <h5 className={'d-flex justify-content-center mt-3'}>FAERS data</h5>}
+                <TermCarousel onRender={() => handleChildRender('termCarousel')} source={'fda'} />
               </Col>
 
               {noFilterTermCarouselRequest && (
                 <Col xs={6}>
                   <h5 className={'d-flex justify-content-center mt-3'}>Unfiltered data</h5>
-                  <TermCarousel noFilterRequest={true} onRender={() => handleChildRender('termCarousel')} />
+                  <TermCarousel noFilterRequest={true} onRender={() => handleChildRender('termCarousel')} source={'fda'} />
+                </Col>
+              )}
+
+              {isPubmedTermCarousel && (
+                <Col xs={6}>
+                  <h5 className={'d-flex justify-content-center mt-3'}>Pubmed data</h5>
+                  <TermCarousel
+                    onRender={() => handleChildRender('termCarousel')}
+                    source={'pm'}
+                  />
                 </Col>
               )}
             </Row>

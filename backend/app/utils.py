@@ -56,7 +56,7 @@ def strict_search(entry, params, search_fields):
     return matched_entries
 
 
-def search_json(params, data, limit=10):
+def search_json(params, data, limit=10) -> list:
     """
     Search for entries in a JSON file based on the given parameters.
 
@@ -317,13 +317,63 @@ def transform_dict_to_x_y(data):
     return chart_data
 
 
-def count_entries_by_property(data, property):
+def count_entries_by_gender(data: list):
     """
-    Count the number of entries in the given data by the specified property.
-    If the property is 'year', it counts occurrences by extracting the year from a 'pub_date' property formatted as 'YYYY-MM-DD'.
-    For properties with list values, it counts each list item separately.
-    If the property is 'age', it counts the properties with age present (not null) and reports in age groups specified in the constants.
-    If the property is 'sex', it counts the properties with sex present (not null) and reports in sex groups specified in the constants.
+    Count the number of entries in the given data by sex property.
+
+    Args:
+        data (list): A list of entries to be counted.
+
+    Returns:
+        dict: A dictionary containing the counts of entries by sex.
+    """
+    counts = {}
+
+    for entry in data:
+        gender = entry.get('gender')
+        if gender is not None:
+            if isinstance(gender, str):
+                gender = [gender]
+            elif not isinstance(gender, list):
+                continue
+
+            for sex_group, sex_data in sex_groups.items():
+                if any(sex_value for sex_value in gender if sex_value.lower() == sex_group.lower()):
+                    counts[sex_data['fda_key']] = counts.get(sex_data['fda_key'], 0) + 1
+
+    return dict(counts.items())
+
+
+def count_entries_by_age(data: list):
+    """
+    Count the number of entries in the given data by age property.
+
+    Args:
+        data (list): A list of entries to be counted.
+
+    Returns:
+        dict: A dictionary containing the counts of entries by age.
+    """
+    counts = {}
+
+    for entry in data:
+        age = entry.get('age')
+        if age is not None:
+            if isinstance(age, int):
+                age = [age]
+            elif not isinstance(age, list):
+                continue
+
+            for _, age_data in age_groups.items():
+                if any(age_value for age_value in age if age_data['min'] <= age_value <= age_data['max']):
+                    counts[age_data['fda_key']] = counts.get(age_data['fda_key'], 0) + 1
+
+    return dict(counts.items())
+
+
+def count_entries_by_year(data):
+    """
+    Count the number of entries in the given data by publication date.
 
     *IMPORTANT*: If the property is 'age', the algorithm counts all age groups that the entry falls into.
     For example: entry with age: [60, 120] will be put both in 'adult' and 'elderly' groups.
@@ -331,54 +381,46 @@ def count_entries_by_property(data, property):
 
     Args:
         data (list): A list of entries to be counted.
-        property (str): The property to be counted. Use 'year' to count by year extracted from 'pub_date'. Use 'age' to count by age groups. Use 'sex' to count by sex groups.
 
     Returns:
-        dict: A dictionary containing the counts of entries by the specified property.
-        *IMPORTANT*: For sex and age, the fda_keys are used as dict keys.
+        dict: A dictionary containing the counts of entries by publication date. Sorted by year.
     """
     counts = {}
 
-    if property == "age":
-        for entry in data:
-            age = entry.get(property)
-            if age is not None:
-                if isinstance(age, int):
-                    age = [age]
-                elif not isinstance(age, list):
-                    continue
-
-                for age_group, age_data in age_groups.items():
-                    if any(age_value for age_value in age if age_data['min'] <= age_value <= age_data['max']):
-                        counts[age_data['fda_key']] = counts.get(age_data['fda_key'], 0) + 1
-    elif property == "gender":
-        for entry in data:
-            sex = entry.get(property)
-            if sex is not None:
-                if isinstance(sex, str):
-                    sex = [sex]
-                elif not isinstance(sex, list):
-                    continue
-
-                for sex_group, sex_data in sex_groups.items():
-                    if any(sex_value for sex_value in sex if sex_value.lower() == sex_group.lower()):
-                        counts[sex_data['fda_key']] = counts.get(sex_data['fda_key'], 0) + 1
-    else:
-        for entry in data:
-            if property == "year":
-                pub_date = entry.get("pub_date")
-                if pub_date:
-                    year = pub_date.split("-")[0]
-                    counts[year] = counts.get(year, 0) + 1
-            else:
-                value = entry.get(property)
-                if isinstance(value, list):
-                    for item in value:
-                        counts[item] = counts.get(item, 0) + 1
-                elif value is not None:
-                    counts[value] = counts.get(value, 0) + 1
+    for entry in data:
+        pub_date = entry.get("pub_date")
+        if pub_date:
+            year = pub_date.split("-")[0]
+            counts[year] = counts.get(year, 0) + 1
 
     return dict(sorted(counts.items(), key=lambda x: x[0]))
+
+
+def count_entries_by_terms(data, search_type, limit=None):
+    """
+    Count the number of entries in the given data by the specified property and search criteria.
+
+    Args:
+        data (list): A list of entries to be counted.
+        property (str): The property to be counted.
+        search_by (str): The search criteria. Can be 'generic_name', 'brand_name', or 'side_effect'.
+
+    Returns:
+        dict: A dictionary containing the counts of entries by the specified property and search criteria. Sorted by count.
+    """
+    counts = {}
+
+    for entry in data:
+        if search_type == 'side_effect':
+            if 'drug' in entry:
+                drugs = entry['drug']
+                for drug in drugs:
+                    counts[drug] = counts.get(drug, 0) + 1
+
+    if limit:
+        return dict(sorted(counts.items(), key=lambda x: x[1], reverse=True)[:limit])
+    else:
+        return dict(sorted(counts.items(), key=lambda x: x[1], reverse=True))
 
 
 def count_total_entries(data):

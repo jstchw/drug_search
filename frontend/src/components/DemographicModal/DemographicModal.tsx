@@ -61,6 +61,25 @@ const DemographicModal = () => {
     setIsPubmedSexDistribution((prev) => !prev);
   }, []);
 
+  /* Framer motion variants */
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 260,
+        damping: 20,
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
+
   return (
     <Modal show={show} onHide={handleShow} centered size={'xl'}>
       <Modal.Header closeButton>
@@ -69,43 +88,50 @@ const DemographicModal = () => {
         <span className={'text-secondary'}>Demographic breakdown</span>
       </Modal.Header>
       <Modal.Body>
-          {hasFdaDistributionData && (
-            <Row className={'mb-3 text-center'}>
-              <span className={'fs-2 fw-light'}>Report statistics</span>
-            </Row>
-          )}
-          <motion.div
-            key={'distribution'}
-            layout
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              type: 'spring',
-              stiffness: 260,
-              damping: 20,
-            }}
-            exit={{ opacity: 0 }}
-            >
-          <Row>
-            <Col className={'mb-3 text-center'}>
-              <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
-                <PubmedSwitch handlePubmedSwitch={togglePubmedAgeDistribution} />
-              </Row>
-              <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
-              {isPubmedAgeDistribution && (
-                <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
-              )}
-            </Col>
-            <Col className={'mb-3 text-center'}>
-              <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
-                <PubmedSwitch handlePubmedSwitch={togglePubmedSexDistribution} />
-              </Row>
-              <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
-              {isPubmedSexDistribution && (
-                <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
-              )}
-            </Col>
+        {hasFdaDistributionData && (
+          <Row className={'mb-3 text-center'}>
+            <span className={'fs-2 fw-light'}>Report statistics</span>
           </Row>
+        )}
+        <motion.div
+          key={'distribution'}
+          layout
+          variants={containerVariants}
+          initial={'hidden'}
+          animate={'visible'}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div variants={itemVariants}>
+            <Row>
+              <Col className={'mb-3 text-center'}>
+                <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
+                  <PubmedSwitch handlePubmedSwitch={togglePubmedAgeDistribution} />
+                </Row>
+                <Row>
+                <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
+                </Row>
+                {isPubmedAgeDistribution && (
+                  <Row className={'mt-4'}>
+                    <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
+                  </Row>
+                )}
+              </Col>
+              <Col className={'mb-3 text-center'}>
+                <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
+                  <PubmedSwitch handlePubmedSwitch={togglePubmedSexDistribution} />
+                </Row>
+                <Row>
+                <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
+                </Row>
+                {isPubmedSexDistribution && (
+                  <Row className={'mt-4'}>
+                    <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
+                  </Row>
+                )}
+              </Col>
+            </Row>
+          </motion.div>
+          <motion.div variants={itemVariants}>
             {hasDemographicData && (
               <div>
                 <Row className={'text-center my-4'}>
@@ -157,6 +183,7 @@ const DemographicModal = () => {
               />
             </Row>
           </motion.div>
+        </motion.div>
       </Modal.Body>
     </Modal>
   );

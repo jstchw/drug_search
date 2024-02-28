@@ -54,7 +54,7 @@ const SearchBox = () => {
         /* If the search type is side effects, it will update the input value every time the user types
                        This is needed because we don't have suggestions for side effects yet (04/01/2024)
                     */
-        setInputValue([]);
+        setSuggestions([]);
       }
     } else {
       setSuggestions([]);

@@ -20,8 +20,6 @@ import { AnimatePresence, useInView } from 'framer-motion';
 import DemographicModal from '../../components/DemographicModal/DemographicModal';
 
 const Result = () => {
-  
-  
   const { params, paramError } = useUrlParams();
 
   const setSearchInput = useSearchStore((state) => state.setSearchInput);

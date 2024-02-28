@@ -26,7 +26,6 @@ const DrugPropertyBox = (props: { drug: DrugProperties; isSingle: boolean }) => 
         <Row className={'d-flex justify-content-center'}>
           <DemographicButton term={props.drug.name} />
         </Row>
-        
 
         {props.isSingle ? (
           // For a single drug, put DrugDescription and DrugAccordion side by side

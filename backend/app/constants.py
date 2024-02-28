@@ -25,3 +25,15 @@ age_groups = {
         'fda_key': 6,
     }
 }
+
+sex_groups = {
+    'unknown': {
+        'fda_key': 0,
+    },
+    'male': {
+        'fda_key': 1,
+    },
+    'female': {
+        'fda_key': 2,
+    }
+}

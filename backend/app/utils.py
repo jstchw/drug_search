@@ -2,7 +2,7 @@ import json
 from Bio import Entrez
 import re
 import time
-from constants import age_groups
+from constants import age_groups, sex_groups
 
 
 def format_json_drug(drug, product_name=None):
@@ -323,6 +323,7 @@ def count_entries_by_property(data, property):
     If the property is 'year', it counts occurrences by extracting the year from a 'pub_date' property formatted as 'YYYY-MM-DD'.
     For properties with list values, it counts each list item separately.
     If the property is 'age', it counts the properties with age present (not null) and reports in age groups specified in the constants.
+    If the property is 'sex', it counts the properties with sex present (not null) and reports in sex groups specified in the constants.
 
     *IMPORTANT*: If the property is 'age', the algorithm counts all age groups that the entry falls into.
     For example: entry with age: [60, 120] will be put both in 'adult' and 'elderly' groups.
@@ -330,10 +331,11 @@ def count_entries_by_property(data, property):
 
     Args:
         data (list): A list of entries to be counted.
-        property (str): The property to be counted. Use 'year' to count by year extracted from 'pub_date'. Use 'age' to count by age groups.
+        property (str): The property to be counted. Use 'year' to count by year extracted from 'pub_date'. Use 'age' to count by age groups. Use 'sex' to count by sex groups.
 
     Returns:
         dict: A dictionary containing the counts of entries by the specified property.
+        *IMPORTANT*: For sex and age, the fda_keys are used as dict keys.
     """
     counts = {}
 
@@ -348,7 +350,19 @@ def count_entries_by_property(data, property):
 
                 for age_group, age_data in age_groups.items():
                     if any(age_value for age_value in age if age_data['min'] <= age_value <= age_data['max']):
-                        counts[age_group] = counts.get(age_group, 0) + 1
+                        counts[age_data['fda_key']] = counts.get(age_data['fda_key'], 0) + 1
+    elif property == "gender":
+        for entry in data:
+            sex = entry.get(property)
+            if sex is not None:
+                if isinstance(sex, str):
+                    sex = [sex]
+                elif not isinstance(sex, list):
+                    continue
+
+                for sex_group, sex_data in sex_groups.items():
+                    if any(sex_value for sex_value in sex if sex_value.lower() == sex_group.lower()):
+                        counts[sex_data['fda_key']] = counts.get(sex_data['fda_key'], 0) + 1
     else:
         for entry in data:
             if property == "year":

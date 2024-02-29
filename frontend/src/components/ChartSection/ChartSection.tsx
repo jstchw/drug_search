@@ -9,7 +9,7 @@ import { useAreParamsFiltered } from '../../hooks/useAreParamsFiltered';
 import { getChartWarning } from '../ApexChart/TermCarousel';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { AnimatePresence } from 'framer-motion';
-import PubmedSwitch from './PubmedSwitch';
+import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 
 type ViewUnfilteredButtonProps = {
   noFilterRequest: boolean;
@@ -79,7 +79,9 @@ const ChartSection = () => {
               {/* There is no point in showing the button when params are filtered becasue the data is too sparse */}
               {!areParamsFiltered && (
                 <Row className={'my-1'}>
-                  <PubmedSwitch handlePubmedSwitch={togglePubmedIncludedTimeSeries} />
+                  <ToggleSwitch handleToggleSwitch={togglePubmedIncludedTimeSeries}>
+                    View Pubmed data
+                  </ToggleSwitch>
                 </Row>
               )}
 
@@ -138,7 +140,9 @@ const ChartSection = () => {
               </Row>
               {!areParamsFiltered && params.searchBy === 'side_effect' && (
                 <Row className={'my-1'}>
-                  <PubmedSwitch handlePubmedSwitch={togglePubmedTermCarousel} />
+                  <ToggleSwitch handleToggleSwitch={togglePubmedTermCarousel}>
+                    View Pubmed data
+                  </ToggleSwitch>
                 </Row>
               )}
               <Row className={'d-flex justify-content-center text-secondary'}>
@@ -166,17 +170,18 @@ const ChartSection = () => {
               {noFilterTermCarouselRequest && (
                 <Col xs={6}>
                   <h5 className={'d-flex justify-content-center mt-3'}>Unfiltered data</h5>
-                  <TermCarousel noFilterRequest={true} onRender={() => handleChildRender('termCarousel')} source={'fda'} />
+                  <TermCarousel
+                    noFilterRequest={true}
+                    onRender={() => handleChildRender('termCarousel')}
+                    source={'fda'}
+                  />
                 </Col>
               )}
 
               {isPubmedTermCarousel && (
                 <Col xs={6}>
                   <h5 className={'d-flex justify-content-center mt-3'}>Pubmed data</h5>
-                  <TermCarousel
-                    onRender={() => handleChildRender('termCarousel')}
-                    source={'pm'}
-                  />
+                  <TermCarousel onRender={() => handleChildRender('termCarousel')} source={'pm'} />
                 </Col>
               )}
             </Row>

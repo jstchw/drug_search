@@ -4,7 +4,7 @@ import DemographicComparsionChart from '../ApexChart/DemographicComparsionChart'
 import useDemographicStore from '../../stores/demographicStore';
 import React from 'react';
 import DonutChart from '../ApexChart/DonutChart';
-import PubmedSwitch from '../ChartSection/PubmedSwitch';
+import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import { motion } from 'framer-motion';
 
 type AggregateType = 'Sex' | 'Age';
@@ -31,6 +31,11 @@ const DemographicModal = () => {
   const handleDemographicStatusChange = (status: boolean) => {
     setHasDemographicData(status);
   };
+
+  const [isDemographicChartAdvanced, setIsDemographicChartAdvanced] = React.useState<boolean>(false);
+  const toggleDemographicChartAdvanced = React.useCallback(() => {
+    setIsDemographicChartAdvanced((prev) => !prev);
+  }, []);
 
   const [hasFdaDistributionData, setHasFdaDistributionData] = React.useState<boolean>(false);
   const handleFdaDistributionStatus = (status: boolean) => {
@@ -65,7 +70,7 @@ const DemographicModal = () => {
         type: 'spring',
         stiffness: 260,
         damping: 20,
-        staggerChildren: 0.3,
+        staggerChildren: 0.1,
       },
     },
   };
@@ -85,12 +90,14 @@ const DemographicModal = () => {
       <Modal.Body>
         {hasFdaDistributionData && (
           <>
-          <Row className={'mb-3 text-center'}>
-            <span className={'fs-2 fw-light'}>Report statistics</span>
-          </Row>
-          <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
-            <PubmedSwitch handlePubmedSwitch={togglePubmedDistribution} />
-          </Row>
+            <Row className={'mb-2 text-center'}>
+              <span className={'fs-2 fw-light'}>Report statistics</span>
+            </Row>
+            <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
+              <ToggleSwitch handleToggleSwitch={togglePubmedDistribution}>
+                View Pubmed data
+              </ToggleSwitch>
+            </Row>
           </>
         )}
         <motion.div
@@ -103,35 +110,40 @@ const DemographicModal = () => {
         >
           <Row>
             <Col className={'mb-3 text-center'}>
-              <motion.div variants={itemVariants}>
                 <Row>
                   <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
                 </Row>
                 {isPubmedDistribution && (
+                  <motion.div variants={itemVariants}>
                   <Row className={'mt-4'}>
                     <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
                   </Row>
+                  </motion.div>
                 )}
-              </motion.div>
             </Col>
             <Col className={'mb-3 text-center'}>
-              <motion.div variants={itemVariants}>
                 <Row>
                   <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
                 </Row>
                 {isPubmedDistribution && (
+                  <motion.div variants={itemVariants}>
                   <Row className={'mt-4'}>
                     <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
                   </Row>
+                  </motion.div>
                 )}
-              </motion.div>
             </Col>
           </Row>
           <motion.div variants={itemVariants}>
             {hasDemographicData && (
               <div>
-                <Row className={'text-center my-4'}>
+                <Row className={'text-center mt-3 mb-1'}>
                   <span className={'fs-2 fw-light'}>Demographic breakdown</span>
+                </Row>
+                <Row className={'mb-2'}>
+                  <ToggleSwitch handleToggleSwitch={toggleDemographicChartAdvanced}>
+                    Advanced view
+                  </ToggleSwitch>
                 </Row>
                 <Row className={'text-center mb-2'}>
                   <span className={'text-secondary'}>Group by:</span>
@@ -176,6 +188,7 @@ const DemographicModal = () => {
                 aggregateType={aggregateType}
                 currentPageKey={currentPageKey}
                 onDataStatusChange={handleDemographicStatusChange}
+                advancedView={isDemographicChartAdvanced}
               />
             </Row>
           </motion.div>

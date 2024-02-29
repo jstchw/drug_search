@@ -164,6 +164,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ source, type, onDataStatusChang
         type: 'spring',
         stiffness: 260,
         damping: 20,
+        delay: 0.1,
       }}
       exit={{ y: -50, opacity: 0 }}
       className={'d-flex flex-column'}

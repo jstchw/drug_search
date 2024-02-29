@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { DemographicDataType, URLParams } from '../../types';
+import { ChartDataPoint, DemographicDataType, URLParams } from '../../types';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import _ from 'lodash';
 import { searchAgeGroups, searchSex, chartColors, oppositeAggregation } from '../../constants';
@@ -34,7 +34,6 @@ const getParamsArray = (term: string, searchBy: string, searchMode: string): URL
 
 const groupData = (data: DemographicDataType[], filterType: keyof DemographicDataType['params']) => {
   const aggregatedData: Record<string, DemographicDataType[]> = {};
-
   data.forEach((entry) => {
     const key = entry.params[filterType];
     if (key) {
@@ -42,11 +41,10 @@ const groupData = (data: DemographicDataType[], filterType: keyof DemographicDat
       aggregatedData[key]!.push(entry);
     }
   });
-
   return aggregatedData;
 };
 
-const transformData = (data: DemographicDataType[], aggregateType: string) => {
+const transformDataGranular = (data: DemographicDataType[], aggregateType: string) => {
   const aggregation = oppositeAggregation[aggregateType];
 
   if (!aggregation || !data) {
@@ -67,16 +65,44 @@ const transformData = (data: DemographicDataType[], aggregateType: string) => {
   return { series, labels };
 };
 
+const transformDataSimple = (data: DemographicDataType[], limit = 10) => {
+  if (!data) {
+    return { series: [], labels: [] };
+  }
+
+  // Combine all the data into one array of objects
+  const combinedData = data.reduce((acc, curr) => acc.concat(curr.data), [] as ChartDataPoint[]);
+
+  const combinedDataNoDupes = combinedData.reduce((acc, {x, y}) => {
+    acc[x] = (acc[x] || 0) + y;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const combinedDataArray = Object.entries(combinedDataNoDupes).map(([x, y]) => ({x: capitalizeFirstLetter(x), y})).sort((a, b) => b.y - a.y);
+
+  return {
+    series: [
+      {
+        name: 'Count',
+        data: combinedDataArray.slice(0, limit).map((entry) => entry.y),
+      },
+    ],
+    labels: combinedDataArray.slice(0, limit).map((entry) => entry.x),
+  };
+}
+
 interface DemographicComparsionChartTypes {
   aggregateType: string;
   currentPageKey: string;
   onDataStatusChange: (status: boolean) => void;
+  advancedView: boolean;
 }
 
 const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   aggregateType,
   currentPageKey,
   onDataStatusChange,
+  advancedView,
 }) => {
   const theme = useGeneralOptionsStore((state) => state.theme);
 
@@ -121,7 +147,14 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   }
 
   const aggregatedDataForKey = aggregatedData[currentPageKey];
-  const { series, labels } = transformData(aggregatedDataForKey || [], aggregateType);
+
+  const totalTermCount = aggregatedDataForKey?.reduce((acc, curr) => {
+    return acc + curr.data.reduce((acc, curr) => acc + curr.y, 0);
+  }, 0);
+
+  const { series, labels } = advancedView
+    ? transformDataGranular(aggregatedDataForKey || [], aggregateType)
+    : transformDataSimple(aggregatedDataForKey || []);
 
   const chartOptions: ApexOptions = {
     colors: chartColors,
@@ -137,17 +170,17 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
           zoomout: false,
         },
       },
-      stacked: true,
+      stacked: advancedView ? true : false,
       stackType: '100%',
       background: theme === 'dark' ? '#212529' : '',
     },
     legend: {
-      show: true,
+      show: advancedView ? true : false,
     },
     plotOptions: {
       bar: {
         horizontal: true,
-        distributed: false,
+        distributed: advancedView ? false : true,
         barHeight: '50%',
         borderRadius: 0,
         borderRadiusWhenStacked: 'last',
@@ -163,6 +196,12 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
       labels: {
         show: true,
       },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val: number) => {
+        return advancedView ? `${val.toPrecision(3)}%` : `${(val / totalTermCount! * 100).toPrecision(3)}%`;
+      }
     },
     tooltip: {
       x: {

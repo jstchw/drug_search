@@ -18,6 +18,7 @@ import Scrollbar from '../../components/Scrollbar/Scrollbar';
 import useSearchStore from '../../stores/searchStore';
 import { AnimatePresence, useInView } from 'framer-motion';
 import DemographicModal from '../../components/DemographicModal/DemographicModal';
+import useDemographicStore from '../../stores/demographicStore';
 
 const Result = () => {
   const { params, paramError } = useUrlParams();
@@ -96,11 +97,17 @@ const Result = () => {
     setShowScrollbar(!!!isSearchBoxInView);
   }, [isSearchBoxInView]);
 
+  const showDemographic = useDemographicStore((state) => state.showDemographic);
+
   return (
     <>
       <AnimatePresence>{showScrollbar && <Scrollbar key={'scrollbar'} />}</AnimatePresence>
 
-      <DemographicModal />
+      <AnimatePresence>
+        { showDemographic && 
+          <DemographicModal />
+        }
+      </AnimatePresence>
 
       <InfoCard />
 

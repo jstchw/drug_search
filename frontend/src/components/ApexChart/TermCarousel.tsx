@@ -88,7 +88,7 @@ const determineDisplayType = (searchBy: string) => {
 
 const useDynamicTermData = (noFilterRequest: boolean, source: string) => {
   return source === 'fda' ? useFdaTermData(noFilterRequest) : usePmTermData();
-}
+};
 
 interface TermCarouselProps {
   noFilterRequest?: boolean;

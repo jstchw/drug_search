@@ -1,11 +1,10 @@
-import json
 from Bio import Entrez
 import re
 import time
 from constants import age_groups, sex_groups
 
 
-def format_json_drug(drug, product_name=None):
+def format_json_drug(drug: dict, product_name: str = None) -> dict:
     """
     Format the given drug data into a standardized JSON format.
     
@@ -34,7 +33,7 @@ def format_json_drug(drug, product_name=None):
     }
 
 
-def strict_search(entry, params, search_fields):
+def strict_search(entry, params, search_fields) -> list:
     """
     Perform a strict search on the given entry using the provided parameters and search fields.
     Currently NOT IN USE.
@@ -56,7 +55,7 @@ def strict_search(entry, params, search_fields):
     return matched_entries
 
 
-def search_json(params, data, limit=10) -> list:
+def search_json(params: dict, data: list[dict], limit=10) -> list:
     """
     Search for entries in a JSON file based on the given parameters.
 
@@ -178,7 +177,7 @@ def search_json(params, data, limit=10) -> list:
     return sorted_entries
 
 
-def get_pubmed_metadata(pubmed_ids):
+def get_pubmed_metadata(pubmed_ids: list) -> list:
     """
     Retrieves metadata from PubMed for the given PubMed IDs.
 
@@ -202,7 +201,7 @@ def get_pubmed_metadata(pubmed_ids):
     return filter_pubmed_metadata(records)
 
 
-def filter_pubmed_metadata(records):
+def filter_pubmed_metadata(records: list[dict]) -> list:
     """
     Generate a list of filtered PubMed metadata records based on the input records.
     Take only what's needed for the frontend.
@@ -296,7 +295,7 @@ def filter_pubmed_metadata(records):
     return filtered_records
 
 
-def transform_dict_to_x_y(data):
+def transform_dict_to_x_y(data) -> list[dict]:
     """
     Transform the given dictionary into a format suitable for a chart.
 
@@ -304,7 +303,7 @@ def transform_dict_to_x_y(data):
         data (dict): A dictionary containing the data to be transformed.
 
     Returns:
-        list: A list of dictionaries containing the transformed data.
+        list: A list of dictionaries containing the transformed data in a format [x: key, y: value...]
     """
     chart_data = []
 
@@ -344,7 +343,7 @@ def count_entries_by_gender(data: list):
     return dict(counts.items())
 
 
-def count_entries_by_age(data: list):
+def count_entries_by_age(data: list) -> dict:
     """
     Count the number of entries in the given data by age property.
 
@@ -371,7 +370,7 @@ def count_entries_by_age(data: list):
     return dict(counts.items())
 
 
-def count_entries_by_year(data):
+def count_entries_by_year(data: list) -> dict:
     """
     Count the number of entries in the given data by publication date.
 
@@ -396,7 +395,7 @@ def count_entries_by_year(data):
     return dict(sorted(counts.items(), key=lambda x: x[0]))
 
 
-def count_entries_by_terms(data, search_type, limit=None):
+def count_entries_by_terms(data: list[dict], search_type: str, limit: int = None) -> dict:
     """
     Count the number of entries in the given data by the specified property and search criteria.
 
@@ -423,7 +422,7 @@ def count_entries_by_terms(data, search_type, limit=None):
         return dict(sorted(counts.items(), key=lambda x: x[1], reverse=True))
 
 
-def count_total_entries(data):
+def count_total_entries(data: list[dict]) -> int:
     """
     Count the total number of entries in the given data.
 
@@ -436,7 +435,7 @@ def count_total_entries(data):
     return len(data)
 
 
-def flatten_list(data):
+def flatten_list(data: list) -> list:
     """
     Flatten the given list of lists into a single list.
 

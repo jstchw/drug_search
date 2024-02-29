@@ -9,6 +9,8 @@ import { useUrlParams } from '../../hooks/useUrlParams';
 import { useDemographicData } from '../../hooks/useDemographicData';
 import { ApexOptions } from 'apexcharts';
 import { capitalizeFirstLetter } from '../../utils/utils';
+import { Row } from 'react-bootstrap';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const getParamsArray = (term: string, searchBy: string, searchMode: string): URLParams[] => {
   const paramList: URLParams[] = [];
@@ -181,9 +183,10 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
       bar: {
         horizontal: true,
         distributed: advancedView ? false : true,
-        barHeight: '50%',
-        borderRadius: 0,
-        borderRadiusWhenStacked: 'last',
+        barHeight: '60%',
+        borderRadius: 8,
+        borderRadiusWhenStacked: "all",
+        borderRadiusApplication: advancedView ? "around" : "end",
       },
     },
     xaxis: {
@@ -195,24 +198,44 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
     yaxis: {
       labels: {
         show: true,
+        style: {
+          fontSize: '16px',
+        }
       },
     },
     dataLabels: {
       enabled: true,
       formatter: (val: number) => {
         return advancedView ? `${val.toPrecision(3)}%` : `${(val / totalTermCount! * 100).toPrecision(3)}%`;
+      },
+      style: {
+        fontSize: '16px',
       }
     },
     tooltip: {
       x: {
         formatter: (val: number) => {
-          return `Group: ${val.toLocaleString()}`;
+          return advancedView ? `Group: ${val}` : `${val}`;
+        },
+      },
+      y: {
+        formatter: (val: number) => {
+          return val.toLocaleString();
         },
       },
     },
   };
 
-  return <ReactApexChart options={chartOptions} type="bar" series={series} />;
+  return (
+    <div>
+      <Row className={'text-center'}>
+        <span className={'text-secondary'}>
+          {totalTermCount?.toLocaleString()} terms for this chart in total
+        </span>
+      </Row>
+      <ReactApexChart options={chartOptions} type="bar" series={series} />
+    </div>
+  );
 };
 
 export default DemographicComparsionChart;

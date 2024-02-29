@@ -1,7 +1,7 @@
 import Chart from 'react-apexcharts';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import React from 'react';
-import { generatePath, fetchData, processTermData } from '../../utils/utils';
+import { generateFdaPath, fetchData, processTermData } from '../../utils/utils';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { useQuery } from 'react-query';
@@ -25,7 +25,7 @@ const fetchFdaDistributionData = (type: string): RadarChartReturnType => {
   } = useUrlParams();
   // Mimicking params
   const params = { terms: [term], searchBy, searchMode };
-  const url = generatePath(params, type, 10);
+  const url = generateFdaPath(params, type, 10);
 
   const { data, isError, isLoading } = useQuery(
     ['distributionChart', url],

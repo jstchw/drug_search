@@ -10,7 +10,7 @@ import { useDemographicData } from '../../hooks/useDemographicData';
 import { ApexOptions } from 'apexcharts';
 import { capitalizeFirstLetter } from '../../utils/utils';
 import { Row } from 'react-bootstrap';
-import { motion, AnimatePresence } from 'framer-motion';
+// import usePmDemographicData from '../../hooks/usePmDemographicData';
 
 const getParamsArray = (term: string, searchBy: string, searchMode: string): URLParams[] => {
   const paramList: URLParams[] = [];
@@ -119,6 +119,9 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   const paramsArray = getParamsArray(term, searchBy, searchMode);
 
   const { paramDataArray, isError } = useDemographicData(paramsArray);
+
+  // Think about how to integrate Pubmed data
+  // const { paramDataArray, isError } = usePmDemographicData(paramsArray);
 
   const hasData = React.useMemo(
     () => !!(paramDataArray && !isError && paramDataArray.length !== 0),

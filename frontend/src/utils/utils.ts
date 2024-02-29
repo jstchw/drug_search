@@ -45,7 +45,7 @@ const formatUpperBoundDate = (date: Date) => {
   return `${year}${month < 10 ? `0${month}` : month}${day < 10 ? `0${day}` : day}`;
 };
 
-export const generatePath = (
+export const generateFdaPath = (
   params: URLParams,
   countType?: string,
   limitProp?: number,
@@ -115,6 +115,15 @@ export const fetchData = async (url: string): Promise<FDARawData | BackendDataTy
   }
   return response.json();
 };
+
+export const fetchBatchData = async (urls: string[]): Promise<(FDARawData | BackendDataType)[]> => {
+  const fetchPromises = urls.map(async (url) => {
+    const response = await fetchData(url);
+    return response;
+  })
+
+  return Promise.all(fetchPromises);
+}
 
 export const mapParamToLabel = (param: string, options: SearchOptionsType[]): string => {
   const option = options.find((option) => option.param === param);

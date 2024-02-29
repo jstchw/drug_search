@@ -1,5 +1,5 @@
 import { useUrlParams } from './useUrlParams';
-import { generatePath, processTermData, fetchData } from '../utils/utils';
+import { generateFdaPath, processTermData, fetchData } from '../utils/utils';
 import { useQuery } from 'react-query';
 import { FDARawData, ResultItem } from 'src/types';
 
@@ -18,7 +18,7 @@ export const useFdaTermData = (noFilterRequest = false) => {
     };
   }
 
-  const reportUrl = generatePath(params);
+  const reportUrl = generateFdaPath(params);
 
   const {
     data: reportData,

@@ -1,4 +1,4 @@
-import { generatePath } from '../utils/utils';
+import { generateFdaPath } from '../utils/utils';
 import { useUrlParams } from './useUrlParams';
 import { processYearData } from '../utils/utils';
 import { fetchData } from '../utils/utils';
@@ -20,9 +20,9 @@ export const useFdaTimeSeries = (noFilterRequest = false) => {
     };
   }
 
-  const timeSeriesUrl = generatePath(params, 'receiveDate');
+  const timeSeriesUrl = generateFdaPath(params, 'receiveDate');
 
-  const seriesCountUrl = generatePath(params, undefined, undefined, true);
+  const seriesCountUrl = generateFdaPath(params, undefined, undefined, true);
 
   const {
     data: timeSeriesData,

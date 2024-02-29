@@ -284,8 +284,6 @@ def get_pm_terms():
 
     results = search_json(params, data=pubmed_data, limit=1000)
 
-    print(results, flush=True)
-
     if results:
         count_by_term = count_entries_by_terms(results, params['search_type'], limit=50)
     else:

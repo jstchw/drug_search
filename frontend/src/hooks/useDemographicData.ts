@@ -1,6 +1,6 @@
 import { URLParams } from '../types';
 import { ResultItem, DemographicDataType } from '../types';
-import { generatePath, mapParamArrayToLabels, processTermData } from '../utils/utils';
+import { generateFdaPath, mapParamArrayToLabels, processTermData } from '../utils/utils';
 import { useQuery } from 'react-query';
 
 type UseTermDataBatchReturnType = {
@@ -11,7 +11,7 @@ type UseTermDataBatchReturnType = {
 
 const fetchDemographicData = async (paramsArray: URLParams[]): Promise<DemographicDataType[]> => {
   const fetchPromises = paramsArray.map(async (params) => {
-    const url = generatePath(params, undefined, 10);
+    const url = generateFdaPath(params, undefined, 10);
 
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);

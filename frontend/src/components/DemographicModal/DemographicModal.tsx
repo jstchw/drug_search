@@ -26,10 +26,11 @@ const DemographicModal = () => {
 
   const groupPageKeys = useDemographicStore((state) => state.groupPageKeys);
 
-  const [hasDemographicData, setHasDemographicData] = React.useState<boolean>(false);
+  const demographicType = useDemographicStore((state) => state.demographicType);
 
-  const handleDemographicStatusChange = (status: boolean) => {
-    setHasDemographicData(status);
+  const [hasFdaDemographicData, setHasFdaDemographicData] = React.useState<boolean>(false);
+  const handleFdaDemographicStatusChange = (status: boolean) => {
+    setHasFdaDemographicData(status);
   };
 
   const [isDemographicChartAdvanced, setIsDemographicChartAdvanced] = React.useState<boolean>(false);
@@ -47,6 +48,11 @@ const DemographicModal = () => {
     setHasPmDistributionData(status);
   };
 
+  const [hasPmDemographicData, setHasPmDemographicData] = React.useState<boolean>(false);
+  const handlePmDemographicStatusChange = (status: boolean) => {
+    setHasPmDemographicData(status);
+  };
+
   // Aggregatation states
   const [aggregateType, setAggregateType] = React.useState<AggregateType>('Sex'); // default
 
@@ -59,6 +65,11 @@ const DemographicModal = () => {
   const [isPubmedDistribution, setIsPubmedDistribution] = React.useState<boolean>(false);
   const togglePubmedDistribution = React.useCallback(() => {
     setIsPubmedDistribution((prev) => !prev);
+  }, []);
+
+  const [demographicDataSource, setDemographicDataSource] = React.useState<'fda' | 'pm'>('fda');
+  const toggleDemographicDataSource = React.useCallback(() => {
+    setDemographicDataSource((prev) => (prev === 'fda' ? 'pm' : 'fda'));
   }, []);
 
   /* Framer motion variants */
@@ -135,7 +146,7 @@ const DemographicModal = () => {
             </Col>
           </Row>
           <motion.div variants={itemVariants}>
-            {hasDemographicData && (
+            {hasFdaDemographicData && (
               <div>
                 <Row className={'text-center mt-3 mb-1'}>
                   <span className={'fs-2 fw-light'}>Demographic breakdown</span>
@@ -145,6 +156,13 @@ const DemographicModal = () => {
                     Advanced view
                   </ToggleSwitch>
                 </Row>
+                {demographicType === 'side_effect' && (
+                  <Row className={'mb-2'}>
+                    <ToggleSwitch handleToggleSwitch={toggleDemographicDataSource}>
+                      View Pubmed data
+                    </ToggleSwitch>
+                  </Row>
+                  )}
                 <Row className={'text-center mb-2'}>
                   <span className={'text-secondary'}>Group by:</span>
                 </Row>
@@ -187,8 +205,9 @@ const DemographicModal = () => {
               <DemographicComparsionChart
                 aggregateType={aggregateType}
                 currentPageKey={currentPageKey}
-                onDataStatusChange={handleDemographicStatusChange}
+                onDataStatusChange={demographicDataSource === 'fda' ? handleFdaDemographicStatusChange : handlePmDemographicStatusChange}
                 advancedView={isDemographicChartAdvanced}
+                source={demographicDataSource}
               />
             </Row>
           </motion.div>

@@ -1,5 +1,5 @@
-import { URLParams } from "../types";
-import { fetchBatchData } from "../utils/utils";
+import { BackendDataType, URLParams, DemographicDataType } from "../types";
+import { fetchBatchData, mapParamArrayToLabels } from "../utils/utils";
 import { useQuery } from "react-query";
 import { backendUrl } from "../constants";
 
@@ -10,8 +10,7 @@ const generatePmUniversalUrls = (paramsArray: URLParams[]) => {
             `search_mode=${params.searchMode}&` +
             `search_type=${params.searchBy}&` +
             `sex=${params.sex}&` +
-            `age_min=${params.age?.min}&` +
-            `age_max=${params.age?.max}&`;
+            `age=${encodeURIComponent(JSON.stringify(params.age))}&`
 
         return url;
     });
@@ -27,9 +26,17 @@ const usePmDemographicData = (paramsArray: URLParams[]) => {
         data: paramDataArray,
         error,
         isLoading,
-    } = useQuery(queryKey, () => fetchBatchData(urls), {
+    } = useQuery(queryKey, () => fetchBatchData(urls) as Promise<BackendDataType[]>, {
         staleTime: 3600000,
         retry: false,
+        select: (data) => {
+            return data.map((item, index) => {
+                return {
+                    params: mapParamArrayToLabels(paramsArray[index] as URLParams),
+                    data: item.data,
+                };
+            }) as DemographicDataType[];
+        }
     });
 
     const isError = !!error;

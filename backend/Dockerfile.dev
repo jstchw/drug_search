@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-WORKDIR /drug-search-flask
+WORKDIR /usr/src/app
 
 COPY requirements.txt ./
 
@@ -15,8 +15,8 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# ENV PYTHONPATH=/usr/src/app/app
+ENV PYTHONPATH=/usr/src/app/app
 
 EXPOSE 16000
 
-# CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=16000"]
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=16000"]

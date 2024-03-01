@@ -282,10 +282,12 @@ def get_pm_terms():
         'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
     }
 
+    print(params, flush=True)
+
     results = search_json(params, data=pubmed_data, limit=1000)
 
     if results:
-        count_by_term = count_entries_by_terms(results, params['search_type'], limit=50)
+        count_by_term = count_entries_by_terms(results, params['search_type'], limit=10)
     else:
         count_by_term = {"error": "No data found"}
 

@@ -6,11 +6,11 @@ import _ from 'lodash';
 import { searchAgeGroups, searchSex, chartColors, oppositeAggregation } from '../../constants';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
-import { useDemographicData } from '../../hooks/useDemographicData';
+import { useDemographicData as useFdaDemographicData } from '../../hooks/useDemographicData';
 import { ApexOptions } from 'apexcharts';
 import { capitalizeFirstLetter } from '../../utils/utils';
 import { Row } from 'react-bootstrap';
-// import usePmDemographicData from '../../hooks/usePmDemographicData';
+import usePmDemographicData from '../../hooks/usePmDemographicData';
 
 const getParamsArray = (term: string, searchBy: string, searchMode: string): URLParams[] => {
   const paramList: URLParams[] = [];
@@ -91,6 +91,10 @@ const transformDataSimple = (data: DemographicDataType[], limit = 10) => {
     ],
     labels: combinedDataArray.slice(0, limit).map((entry) => entry.x),
   };
+};
+
+const useDynamicDemoData = (paramsArray: URLParams[], source: 'fda' | 'pm') => {
+  return source === 'fda' ? useFdaDemographicData(paramsArray) : usePmDemographicData(paramsArray);
 }
 
 interface DemographicComparsionChartTypes {
@@ -98,6 +102,7 @@ interface DemographicComparsionChartTypes {
   currentPageKey: string;
   onDataStatusChange: (status: boolean) => void;
   advancedView: boolean;
+  source: 'fda' | 'pm';
 }
 
 const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
@@ -105,6 +110,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   currentPageKey,
   onDataStatusChange,
   advancedView,
+  source,
 }) => {
   const theme = useGeneralOptionsStore((state) => state.theme);
 
@@ -118,10 +124,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
 
   const paramsArray = getParamsArray(term, searchBy, searchMode);
 
-  const { paramDataArray, isError } = useDemographicData(paramsArray);
-
-  // Think about how to integrate Pubmed data
-  // const { paramDataArray, isError } = usePmDemographicData(paramsArray);
+  const { paramDataArray, isError } = useDynamicDemoData(paramsArray, source);
 
   const hasData = React.useMemo(
     () => !!(paramDataArray && !isError && paramDataArray.length !== 0),
@@ -153,13 +156,13 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
 
   const aggregatedDataForKey = aggregatedData[currentPageKey];
 
-  const totalTermCount = aggregatedDataForKey?.reduce((acc, curr) => {
-    return acc + curr.data.reduce((acc, curr) => acc + curr.y, 0);
-  }, 0);
-
   const { series, labels } = advancedView
     ? transformDataGranular(aggregatedDataForKey || [], aggregateType)
     : transformDataSimple(aggregatedDataForKey || []);
+
+    const totalTermCount = series.reduce((acc, curr) => {
+      return acc + curr.data.reduce((acc, curr) => acc + curr, 0);
+    }, 0);
 
   const chartOptions: ApexOptions = {
     colors: chartColors,

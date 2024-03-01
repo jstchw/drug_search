@@ -1,6 +1,6 @@
 FROM node:21-slim
 
-WORKDIR /usr/src/app
+WORKDIR /drug-search-front/app
 
 COPY package.json yarn.lock .vscode .yarnrc.yml ./
 
@@ -17,4 +17,4 @@ COPY .prettierignore .prettierrc ./
 
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+# CMD ["yarn", "start"]

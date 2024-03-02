@@ -294,7 +294,7 @@ export const drugGroupConfig: DrugGroupConfig = {
 
 export const backendUrl = `${window.location.protocol}//${window.location.hostname}:16000/api`;
 
-export const analysisFrontendUrl = 'http://drug_watch_analysis_frontend:3001';
+export const analysisFrontendUrl = `${window.location.protocol}//${window.location.hostname}:3001/`;
 
 export const baseFdaUrl = 'https://api.fda.gov/drug/event.json';
 

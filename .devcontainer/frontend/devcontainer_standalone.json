@@ -1,12 +1,12 @@
 {
-    "name": "DrugWatch Search Backend",
-    "dockerComposeFile": "../../../cs310/docker-compose.yaml",
-    "service": "drug_watch_search_backend",
+    "name": "DrugSearch Frontend",
+    "dockerComposeFile": "../../compose.yml",
+    "service": "frontend",
     "workspaceFolder": "/usr/src/app",
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python",
+                "arcanis.vscode-zipfs",
                 "esbenp.prettier-vscode",
                 "GitHub.copilot",
                 "GitHub.copilot-chat"

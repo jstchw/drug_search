@@ -19,6 +19,7 @@ import useSearchStore from '../../stores/searchStore';
 import { AnimatePresence, useInView } from 'framer-motion';
 import DemographicModal from '../../components/DemographicModal/DemographicModal';
 import useDemographicStore from '../../stores/demographicStore';
+import { versionInfo } from '../../constants';
 
 const Result = () => {
   const { params, paramError } = useUrlParams();
@@ -75,7 +76,7 @@ const Result = () => {
   // Effect to update the document title
   React.useEffect(() => {
     if (params.terms && capitalizedTerms.length > 0) {
-      document.title = capitalizedTerms.join(' & ') + ' - Drug Search';
+      document.title = `${capitalizedTerms.join(' & ')} - ${versionInfo.appName}`;
     }
   }, [capitalizedTerms, params.terms]);
 

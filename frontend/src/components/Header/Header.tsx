@@ -1,6 +1,7 @@
 import './Header.css';
 import { Badge } from 'react-bootstrap';
 import { Search as SearchIcon } from 'react-bootstrap-icons';
+import { versionInfo } from '../../constants';
 
 const Header = () => {
   return (
@@ -8,9 +9,9 @@ const Header = () => {
       <Badge className={'p-2'} style={{ cursor: 'pointer' }} onClick={() => (window.location.href = '/')}>
         <span className={'fs-5'}>
           <SearchIcon />
-          DrugSearch
+          {versionInfo.appName}
         </span>
-        <Badge className={'version-sticker'}>Alpha</Badge>
+        <Badge className={'version-sticker'}>{versionInfo.tag}</Badge>
       </Badge>
     </div>
   );

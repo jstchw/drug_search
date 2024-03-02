@@ -1,6 +1,7 @@
 import { Row, Nav } from 'react-bootstrap';
 import Header from '../../components/Header/Header';
 import SearchBox from '../../components/SearchBox/SearchBox';
+import { analysisFrontendUrl } from '../../constants';
 import './Search.css';
 
 const Search = () => {
@@ -15,7 +16,7 @@ const Search = () => {
             <Nav.Link active>Search</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link>Annotate</Nav.Link>
+            <Nav.Link href={analysisFrontendUrl}>Annotate</Nav.Link>
           </Nav.Item>
         </Nav>
       </Row>

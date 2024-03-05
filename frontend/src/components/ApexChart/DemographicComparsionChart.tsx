@@ -75,12 +75,17 @@ const transformDataSimple = (data: DemographicDataType[], limit = 10) => {
   // Combine all the data into one array of objects
   const combinedData = data.reduce((acc, curr) => acc.concat(curr.data), [] as ChartDataPoint[]);
 
-  const combinedDataNoDupes = combinedData.reduce((acc, {x, y}) => {
-    acc[x] = (acc[x] || 0) + y;
-    return acc;
-  }, {} as Record<string, number>);
+  const combinedDataNoDupes = combinedData.reduce(
+    (acc, { x, y }) => {
+      acc[x] = (acc[x] || 0) + y;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
-  const combinedDataArray = Object.entries(combinedDataNoDupes).map(([x, y]) => ({x: capitalizeFirstLetter(x), y})).sort((a, b) => b.y - a.y);
+  const combinedDataArray = Object.entries(combinedDataNoDupes)
+    .map(([x, y]) => ({ x: capitalizeFirstLetter(x), y }))
+    .sort((a, b) => b.y - a.y);
 
   return {
     series: [
@@ -95,7 +100,7 @@ const transformDataSimple = (data: DemographicDataType[], limit = 10) => {
 
 const useDynamicDemoData = (paramsArray: URLParams[], source: 'fda' | 'pm') => {
   return source === 'fda' ? useFdaDemographicData(paramsArray) : usePmDemographicData(paramsArray);
-}
+};
 
 interface DemographicComparsionChartTypes {
   aggregateType: string;
@@ -160,9 +165,9 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
     ? transformDataGranular(aggregatedDataForKey || [], aggregateType)
     : transformDataSimple(aggregatedDataForKey || []);
 
-    const totalTermCount = series.reduce((acc, curr) => {
-      return acc + curr.data.reduce((acc, curr) => acc + curr, 0);
-    }, 0);
+  const totalTermCount = series.reduce((acc, curr) => {
+    return acc + curr.data.reduce((acc, curr) => acc + curr, 0);
+  }, 0);
 
   const chartOptions: ApexOptions = {
     colors: chartColors,
@@ -191,8 +196,8 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
         distributed: advancedView ? false : true,
         barHeight: '60%',
         borderRadius: 8,
-        borderRadiusWhenStacked: "all",
-        borderRadiusApplication: advancedView ? "around" : "end",
+        borderRadiusWhenStacked: 'all',
+        borderRadiusApplication: advancedView ? 'around' : 'end',
       },
     },
     xaxis: {
@@ -206,17 +211,17 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
         show: true,
         style: {
           fontSize: '16px',
-        }
+        },
       },
     },
     dataLabels: {
       enabled: true,
       formatter: (val: number) => {
-        return advancedView ? `${val.toPrecision(3)}%` : `${(val / totalTermCount! * 100).toPrecision(3)}%`;
+        return advancedView ? `${val.toPrecision(3)}%` : `${((val / totalTermCount!) * 100).toPrecision(3)}%`;
       },
       style: {
         fontSize: '16px',
-      }
+      },
     },
     tooltip: {
       x: {
@@ -235,9 +240,7 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   return (
     <div>
       <Row className={'text-center'}>
-        <span className={'text-secondary'}>
-          {totalTermCount?.toLocaleString()} terms for this chart in total
-        </span>
+        <span className={'text-secondary'}>{totalTermCount?.toLocaleString()} terms for this chart in total</span>
       </Row>
       <ReactApexChart options={chartOptions} type="bar" series={series} />
     </div>

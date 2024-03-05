@@ -1,14 +1,27 @@
 import { useRelevantArticles } from '../../hooks/useRelevantArticles';
-import { Books, LinkSimple } from '@phosphor-icons/react';
-import { Accordion, Button, Row, Col, Badge } from 'react-bootstrap';
+import { Books, LinkSimple, X } from '@phosphor-icons/react';
+import { Accordion, Button, ButtonGroup, Row, Col, Badge } from 'react-bootstrap';
 import { highlightWords } from '../../utils/utils';
 import { useUrlParams } from '../../hooks/useUrlParams';
+import useArticleStore from '../../stores/articleStore';
+import { useEffect } from 'react';
+import { capitalizeFirstLetter } from '../../utils/utils';
 
 const RelevantArticles = () => {
   const { relevantArticles, relevantArticlesError } = useRelevantArticles();
   const {
-    params: { terms },
+    params: { terms, searchBy },
   } = useUrlParams();
+
+  const articleTerms = useArticleStore((state) => state.articleTerms);
+
+  useEffect(() => {
+    useArticleStore.getState().resetArticleTerms();
+
+    terms.forEach((term) => {
+      useArticleStore.getState().addArticleTerm(capitalizeFirstLetter(term), searchBy);
+    });
+  }, [searchBy, terms]);
 
   if (relevantArticlesError || relevantArticles.length === 0) {
     return;
@@ -16,11 +29,32 @@ const RelevantArticles = () => {
 
   return (
     <div className={'mb-5'}>
-      <h3 className={'d-flex justify-content-center align-items-center mb-4'}>
+      <h3 className={'d-flex justify-content-center align-items-center mb-2'}>
         <Books className={'text-secondary'} weight={'light'} />
         <div className={'vr mx-2'} />
         Relevant Articles
       </h3>
+      <Row className={'mb-4'}>
+        <Col>
+          <div className={'text-secondary d-flex justify-content-center mb-2'}>Matching for:</div>
+          <div className={'d-flex justify-content-center'}>
+            <h5>
+              {articleTerms.map((item) => {
+                return (
+                  <ButtonGroup key={item.term + item.type} className={'mx-1'}>
+                    <Button variant={'outline-secondary'} style={{pointerEvents: 'none'}}>
+                      {item.term}
+                    </Button>
+                    <Button variant={'outline-secondary'} onClick={() => useArticleStore.getState().removeArticleTerm(item.term, item.type)}>
+                      <X />
+                    </Button>
+                  </ButtonGroup>
+                );
+              })}
+            </h5>
+          </div>
+        </Col>
+      </Row>
       <Accordion>
         {relevantArticles.map((article, index) => (
           <Accordion.Item key={index} eventKey={index.toString()}>

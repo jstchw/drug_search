@@ -120,10 +120,10 @@ export const fetchBatchData = async (urls: string[]): Promise<(FDARawData | Back
   const fetchPromises = urls.map(async (url) => {
     const response = await fetchData(url);
     return response;
-  })
+  });
 
   return Promise.all(fetchPromises);
-}
+};
 
 export const mapParamToLabel = (param: string, options: SearchOptionsType[]): string => {
   const option = options.find((option) => option.param === param);

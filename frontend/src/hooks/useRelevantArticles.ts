@@ -2,6 +2,7 @@ import { useUrlParams } from './useUrlParams';
 import { useState } from 'react';
 import { backendUrl } from '../constants';
 import { useEffect } from 'react';
+import useArticleStore from '../stores/articleStore';
 
 type RelevantArticle = {
   title: string;
@@ -20,6 +21,8 @@ export const useRelevantArticles = () => {
   const [relevantArticles, setRelevantArticles] = useState<RelevantArticle[]>([]);
   const [relevantArticlesError, setRelevantArticlesError] = useState<unknown | boolean>(false);
 
+  const terms = useArticleStore((state) => state.articleTerms);
+
   useEffect(() => {
     const fetchRelevantArticles = async () => {
       const url =
@@ -29,7 +32,8 @@ export const useRelevantArticles = () => {
         `search_type=${params.searchBy}&` +
         `sex=${params.sex}&` +
         `age=${encodeURIComponent(JSON.stringify(params.age))}&` +
-        `country=${params.country}`;
+        `country=${params.country}&` +
+        `term_array=${encodeURIComponent(JSON.stringify(terms))}`;
 
       try {
         const response = await fetch(url);

@@ -18,6 +18,9 @@ import { capitalizeFirstLetter, getColorFromPercentage, valueToPercentage } from
 import _ from 'lodash';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+import { ControlledMenu, MenuItem } from '@szhsin/react-menu';
+import '@szhsin/react-menu/dist/index.css';
+import useArticleStore from '../../stores/articleStore';
 
 const cloudOptions: OptionsProp = {
   enableTooltip: true,
@@ -110,6 +113,21 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
   const setDemographicTerm = useDemographicStore((state) => state.setDemographicTerm);
   const setDemographicType = useDemographicStore((state) => state.setDemographicType);
 
+  /* Context menu declarations */
+  const [isContextMenuOpen, setIsContextMenuOpen] = React.useState<boolean>(false);
+  const [contextMenuAnchor, setContextMenuAnchor] = React.useState({ x: 0, y: 0 });
+  const [contextMenuSelectedTerm, setContextMenuSelectedTerm] = React.useState<string>('');
+
+  const openDemographicModal = () => {
+    setDemographicTerm(contextMenuSelectedTerm);
+    setDemographicType(determineDisplayType(searchBy));
+    setShowDemographic(true);
+  };
+
+  const articleTerms = useArticleStore((state) => state.articleTerms);
+  const addArticleTerm = useArticleStore((state) => state.addArticleTerm);
+  const removeArticleTerm = useArticleStore((state) => state.removeArticleTerm);
+
   // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
     if (reportData && !isError) {
@@ -191,13 +209,17 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
         opacity: 0.2,
       },
       events: {
-        dataPointSelection: (_, __, config) => {
-          // Timeout to prevent result page re render (NO IDEA WHY THIS HAPPENS)
-          setTimeout(() => {
-            setDemographicTerm(capitalizeFirstLetter(config.w.config.labels[config.dataPointIndex]));
-            setDemographicType(determineDisplayType(searchBy));
-            setShowDemographic(true);
-          }, 0);
+        dataPointSelection: (event, _, config) => {
+          setContextMenuSelectedTerm(capitalizeFirstLetter(config.w.config.labels[config.dataPointIndex]));
+          setContextMenuAnchor({ x: event.clientX, y: event.clientY });
+          setIsContextMenuOpen(true);
+        },
+      },
+    },
+    states: {
+      active: {
+        filter: {
+          type: 'none',
         },
       },
     },
@@ -233,6 +255,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       },
     },
     tooltip: {
+      enabled: isContextMenuOpen ? false : true,
       y: {
         formatter: (value: number) => {
           return `${value.toLocaleString()} from ${totalSideEffectCount.toLocaleString()}`;
@@ -299,6 +322,16 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       }}
       exit={{ opacity: 0 }}
     >
+      <ControlledMenu
+        anchorPoint={contextMenuAnchor}
+        state={isContextMenuOpen ? 'open' : 'closed'}
+        onClose={() => setIsContextMenuOpen(false)}
+        direction={'bottom'}
+      >
+        <MenuItem onClick={openDemographicModal}>Demgoraphic breakdown</MenuItem>
+        <MenuItem onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy))}>Add to article filters</MenuItem>
+      </ControlledMenu>
+
       <Row className={'mt-1'}>
         <Col className={'mb-3 text-center'}>
           <span className={'text-secondary'}>{totalSideEffectCount.toLocaleString()} terms in total</span>

@@ -11,7 +11,7 @@ const Search = () => {
         <Header />
       </Row>
       <Row className={'mb-2'}>
-        <Nav className={'p-0'}> 
+        <Nav className={'p-0'}>
           <Nav.Item>
             <Nav.Link active>Search</Nav.Link>
           </Nav.Item>

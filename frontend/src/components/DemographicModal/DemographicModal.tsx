@@ -105,9 +105,7 @@ const DemographicModal = () => {
               <span className={'fs-2 fw-light'}>Report statistics</span>
             </Row>
             <Row className={hasFdaDistributionData ? 'd-flex' : 'd-none'}>
-              <ToggleSwitch handleToggleSwitch={togglePubmedDistribution}>
-                View Pubmed data
-              </ToggleSwitch>
+              <ToggleSwitch handleToggleSwitch={togglePubmedDistribution}>View Pubmed data</ToggleSwitch>
             </Row>
           </>
         )}
@@ -121,28 +119,28 @@ const DemographicModal = () => {
         >
           <Row>
             <Col className={'mb-3 text-center'}>
-                <Row>
-                  <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
-                </Row>
-                {isPubmedDistribution && (
-                  <motion.div variants={itemVariants}>
+              <Row>
+                <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
+              </Row>
+              {isPubmedDistribution && (
+                <motion.div variants={itemVariants}>
                   <Row className={'mt-4'}>
                     <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
                   </Row>
-                  </motion.div>
-                )}
+                </motion.div>
+              )}
             </Col>
             <Col className={'mb-3 text-center'}>
-                <Row>
-                  <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
-                </Row>
-                {isPubmedDistribution && (
-                  <motion.div variants={itemVariants}>
+              <Row>
+                <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
+              </Row>
+              {isPubmedDistribution && (
+                <motion.div variants={itemVariants}>
                   <Row className={'mt-4'}>
                     <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
                   </Row>
-                  </motion.div>
-                )}
+                </motion.div>
+              )}
             </Col>
           </Row>
           <motion.div variants={itemVariants}>
@@ -152,17 +150,13 @@ const DemographicModal = () => {
                   <span className={'fs-2 fw-light'}>Demographic breakdown</span>
                 </Row>
                 <Row className={'mb-2'}>
-                  <ToggleSwitch handleToggleSwitch={toggleDemographicChartAdvanced}>
-                    Advanced view
-                  </ToggleSwitch>
+                  <ToggleSwitch handleToggleSwitch={toggleDemographicChartAdvanced}>Advanced view</ToggleSwitch>
                 </Row>
                 {demographicType === 'side_effect' && (
                   <Row className={'mb-2'}>
-                    <ToggleSwitch handleToggleSwitch={toggleDemographicDataSource}>
-                      View Pubmed data
-                    </ToggleSwitch>
+                    <ToggleSwitch handleToggleSwitch={toggleDemographicDataSource}>View Pubmed data</ToggleSwitch>
                   </Row>
-                  )}
+                )}
                 <Row className={'text-center mb-2'}>
                   <span className={'text-secondary'}>Group by:</span>
                 </Row>
@@ -205,7 +199,9 @@ const DemographicModal = () => {
               <DemographicComparsionChart
                 aggregateType={aggregateType}
                 currentPageKey={currentPageKey}
-                onDataStatusChange={demographicDataSource === 'fda' ? handleFdaDemographicStatusChange : handlePmDemographicStatusChange}
+                onDataStatusChange={
+                  demographicDataSource === 'fda' ? handleFdaDemographicStatusChange : handlePmDemographicStatusChange
+                }
                 advancedView={isDemographicChartAdvanced}
                 source={demographicDataSource}
               />

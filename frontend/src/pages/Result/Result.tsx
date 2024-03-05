@@ -104,11 +104,7 @@ const Result = () => {
     <>
       <AnimatePresence>{showScrollbar && <Scrollbar key={'scrollbar'} />}</AnimatePresence>
 
-      <AnimatePresence>
-        { showDemographic && 
-          <DemographicModal />
-        }
-      </AnimatePresence>
+      <AnimatePresence>{showDemographic && <DemographicModal />}</AnimatePresence>
 
       <InfoCard />
 

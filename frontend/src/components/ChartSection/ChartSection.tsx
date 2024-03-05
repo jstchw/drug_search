@@ -79,9 +79,7 @@ const ChartSection = () => {
               {/* There is no point in showing the button when params are filtered becasue the data is too sparse */}
               {!areParamsFiltered && (
                 <Row className={'my-1'}>
-                  <ToggleSwitch handleToggleSwitch={togglePubmedIncludedTimeSeries}>
-                    View Pubmed data
-                  </ToggleSwitch>
+                  <ToggleSwitch handleToggleSwitch={togglePubmedIncludedTimeSeries}>View Pubmed data</ToggleSwitch>
                 </Row>
               )}
 
@@ -140,9 +138,7 @@ const ChartSection = () => {
               </Row>
               {!areParamsFiltered && params.searchBy === 'side_effect' && (
                 <Row className={'my-1'}>
-                  <ToggleSwitch handleToggleSwitch={togglePubmedTermCarousel}>
-                    View Pubmed data
-                  </ToggleSwitch>
+                  <ToggleSwitch handleToggleSwitch={togglePubmedTermCarousel}>View Pubmed data</ToggleSwitch>
                 </Row>
               )}
               <Row className={'d-flex justify-content-center text-secondary'}>

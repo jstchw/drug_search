@@ -124,9 +124,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
     setShowDemographic(true);
   };
 
-  const articleTerms = useArticleStore((state) => state.articleTerms);
   const addArticleTerm = useArticleStore((state) => state.addArticleTerm);
-  const removeArticleTerm = useArticleStore((state) => state.removeArticleTerm);
 
   // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
@@ -329,7 +327,9 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
         direction={'bottom'}
       >
         <MenuItem onClick={openDemographicModal}>Demgoraphic breakdown</MenuItem>
-        <MenuItem onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy))}>Add to article filters</MenuItem>
+        <MenuItem onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy), true)}>
+          Add to article filters
+        </MenuItem>
       </ControlledMenu>
 
       <Row className={'mt-1'}>

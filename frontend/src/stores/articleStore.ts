@@ -4,11 +4,12 @@ interface StoreStates {
   articleTerms: {
     term: string;
     type: string;
+    isRemovable: boolean;
   }[];
 }
 
 interface StoreActions {
-  addArticleTerm: (term: string, type: string) => void;
+  addArticleTerm: (term: string, type: string, isRemovable: boolean) => void;
   removeArticleTerm: (term: string, type: string) => void;
   resetArticleTerms: () => void;
 }
@@ -17,13 +18,13 @@ type Store = StoreStates & StoreActions;
 
 const useArticleStore = create<Store>((set) => ({
   articleTerms: [],
-  addArticleTerm: (term: string, type: string) =>
+  addArticleTerm: (term: string, type: string, isRemovable: boolean) =>
     set((state) => {
-        const termExists = state.articleTerms.some(item => item.term === term);
-        if (!termExists) {
-            return { articleTerms: [...state.articleTerms, { term, type }] };
-        }
-        return state;
+      const termExists = state.articleTerms.some((item) => item.term === term);
+      if (!termExists) {
+        return { articleTerms: [...state.articleTerms, { term, type, isRemovable }] };
+      }
+      return state;
     }),
   removeArticleTerm: (term: string, type: string) =>
     set((state) => ({

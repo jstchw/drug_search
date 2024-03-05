@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { SearchOptions, AgeOptions, SearchOptionsType, URLParams } from '../types';
+import useArticleStore from '../stores/articleStore';
 
 export const useSearch = (paramType: 'SearchOptions' | 'URLParams') => {
   const navigate = useNavigate();
@@ -8,6 +9,9 @@ export const useSearch = (paramType: 'SearchOptions' | 'URLParams') => {
       const prettyInputValues = inputValue.map((value) => value.charAt(0).toLowerCase() + value.slice(1));
       const queryParams = new URLSearchParams();
       queryParams.append('query', prettyInputValues.join('-'));
+
+      // Reset the article matching term on new search
+      useArticleStore.getState().resetArticleTerms();
 
       if (paramType === 'SearchOptions') {
         const searchOptions = params as SearchOptions;

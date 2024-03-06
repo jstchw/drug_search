@@ -4,7 +4,7 @@ import { URLParams } from '../../types';
 import ReactApexChart from 'react-apexcharts';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import React from 'react';
-import ReactWordcloud, { OptionsProp } from 'react-wordcloud';
+import ReactWordcloud, { OptionsProp, CallbacksProp } from 'react-wordcloud';
 import { Carousel } from 'react-responsive-carousel';
 import { Nav, OverlayTrigger, Popover, Pagination, Row, Col } from 'react-bootstrap';
 import { Cloud, List, Pill } from '@phosphor-icons/react';
@@ -278,7 +278,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
     };
   });
 
-  const cloudCallbacks = {
+  const cloudCallbacks: CallbacksProp = {
     getWordColor: (word: { text: string; value: number }) => {
       const maxFrequency = Math.max(...cloudData.map((w) => w.value));
       const frequencyRatio = word.value / maxFrequency;
@@ -302,10 +302,10 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
         return `rgb(${redComponent}, 0, 0)`;
       }
     },
-    onWordClick: (word: { text: string }) => {
-      setDemographicTerm(capitalizeFirstLetter(word.text));
-      setDemographicType(determineDisplayType(searchBy));
-      setShowDemographic(true);
+    onWordClick: (word: { text: string }, event) => {
+      setContextMenuSelectedTerm(capitalizeFirstLetter(word.text));
+      setContextMenuAnchor({ x: event!.clientX, y: event!.clientY });
+      setIsContextMenuOpen(true);
     },
   };
 

@@ -49,3 +49,12 @@ count_properties_from_search_type = {
     ],
     'side_effect': 'generic_name',
 }
+
+search_fields: dict = {
+    'generic_name': ['drug'],
+    'brand_name': ['drug'],
+    'side_effect': [
+        'effect',
+        'treatment_disorder',
+    ]
+}

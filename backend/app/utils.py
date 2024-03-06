@@ -1,7 +1,7 @@
 from Bio import Entrez
 import re
 import time
-from constants import age_groups, sex_groups
+from constants import age_groups, sex_groups, search_fields
 
 
 def format_json_drug(drug: dict, product_name: str = None) -> dict:
@@ -33,26 +33,26 @@ def format_json_drug(drug: dict, product_name: str = None) -> dict:
     }
 
 
-def strict_search(entry, params, search_fields) -> list:
-    """
-    Perform a strict search on the given entry using the provided parameters and search fields.
-    Currently NOT IN USE.
+def strict_search(entry, params):
+    for term_dict in params['terms']:
+        term = term_dict['term']
+        search_type = term_dict['type']
+        fields = search_fields.get(search_type, [])
+        matched = False
 
-    Args:
-        entry (dict): The entry to be searched.
-        params (dict): The parameters for the search.
-        search_fields (list): The fields to be searched in the entry.
+        for field in fields:
+            items = entry.get(field, [])
+            if items:
+                if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for item in items):
+                    # All terms for this search_type are present in the entry's field
+                    matched = True
+                    break
 
-    Returns:
-        list: A list of matched entries.
-    """
-    matched_entries = []
+        if not matched:
+            # Not all terms for this search_type are present, so the entry doesn't match
+            return False
 
-    if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
-            search_fields for item in entry.get(field, []) for term in params['terms']):
-        matched_entries.append(entry)
-
-    return matched_entries
+    return True
 
 
 def search_json(params: dict, data: list[dict], limit=10) -> list:
@@ -66,12 +66,6 @@ def search_json(params: dict, data: list[dict], limit=10) -> list:
     """
     start_time = time.time()
     matched_entries = []
-    search_fields = []
-
-    if params['search_type'] in ['generic_name', 'brand_name']:
-        search_fields = ['drug']  # Search in 'drug' for both generic and brand names
-    elif params['search_type'] == 'side_effect':
-        search_fields = ['effect', 'treatment_disorder']  # Search in both for side effects
 
     # Check if gender actually exists in the parameters and is not empty
     gender_specified = params.get('sex') is not None and params.get('sex').strip() != ''
@@ -143,31 +137,54 @@ def search_json(params: dict, data: list[dict], limit=10) -> list:
             if entry_country is None or country_filter != entry_country.lower():
                 continue
 
-
-
-
+        
         if params['search_mode'] == 'strict':
-            # Strict search:
-            # Match only if all drugs or side effects are present in the entry
-            # NOW WORKS ONLY WITH GENERIC NAME OR BRAND NAME
-            # DOES NOT WORK WITH SIDE EFFECTS!!!
-            for field in search_fields:
-                items = entry.get(field, [])
-                if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for item in
-                       items for term in params['terms']):
-                    # Check if the drug is exclusive in the entry
-                    if len(items) == len(params['terms']):
-                        matched_entries.append(entry)
-        else:
-            # Relaxed search:
-            # Match even if more drugs or side effects are present in the entry
-            # Regex explanation:
-            # (?:\b|\s) - Match a word boundary or a whitespace character
-            # {} - The search term
-            # (?:\b|\s|$) - Match a word boundary, a whitespace character or the end of the string
-            if all(any(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
-                    search_fields for item in entry.get(field, [])) for term in params['terms']):
+            if strict_search(entry, params):
                 matched_entries.append(entry)
+        else:
+            matched_all_terms = True
+            for term_dict in params.get('terms', []):
+                term = term_dict['term']
+                search_type = term_dict['type']
+                term_matched = False
+
+                for field in search_fields.get(search_type, []):
+                    items = entry.get(field, [])
+                    if any(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for item in items):
+                        term_matched = True
+                        break
+
+                if not term_matched:
+                    matched_all_terms = False
+                    break
+
+            if matched_all_terms:
+                matched_entries.append(entry)
+
+
+
+        # if params['search_mode'] == 'strict':
+        #     # Strict search:
+        #     # Match only if all drugs or side effects are present in the entry
+        #     # NOW WORKS ONLY WITH GENERIC NAME OR BRAND NAME
+        #     # DOES NOT WORK WITH SIDE EFFECTS!!!
+        #     for field in search_fields:
+        #         items = entry.get(field, [])
+        #         if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for item in
+        #                items for term in params['terms']):
+        #             # Check if the drug is exclusive in the entry
+        #             if len(items) == len(params['terms']):
+        #                 matched_entries.append(entry)
+        # else:
+        #     # Relaxed search:
+        #     # Match even if more drugs or side effects are present in the entry
+        #     # Regex explanation:
+        #     # (?:\b|\s) - Match a word boundary or a whitespace character
+        #     # {} - The search term
+        #     # (?:\b|\s|$) - Match a word boundary, a whitespace character or the end of the string
+        #     if all(any(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
+        #             search_fields for item in entry.get(field, [])) for term in params['terms']):
+        #         matched_entries.append(entry)
 
 
     # Sort the entries by publication date in descending order and apply the limit

@@ -9,7 +9,7 @@ import { Carousel } from 'react-responsive-carousel';
 import { Nav, OverlayTrigger, Popover, Pagination, Row, Col } from 'react-bootstrap';
 import { Cloud, List, Pill } from '@phosphor-icons/react';
 import { SealWarning, ChartLine, SmileyNervous } from '@phosphor-icons/react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { usePmTermData } from '../../hooks/usePmTermData';
@@ -18,7 +18,8 @@ import { capitalizeFirstLetter, getColorFromPercentage, valueToPercentage } from
 import _ from 'lodash';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-import { ControlledMenu, MenuItem } from '@szhsin/react-menu';
+import { MenuItem } from '@szhsin/react-menu';
+import ContextMenu from '../ContextMenu/ContextMenu';
 import '@szhsin/react-menu/dist/index.css';
 import useArticleStore from '../../stores/articleStore';
 
@@ -309,76 +310,78 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
   };
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{
-        type: 'spring',
-        stiffness: 260,
-        damping: 20,
-      }}
-      exit={{ opacity: 0 }}
-    >
-      <ControlledMenu
-        anchorPoint={contextMenuAnchor}
-        state={isContextMenuOpen ? 'open' : 'closed'}
-        onClose={() => setIsContextMenuOpen(false)}
-        direction={'bottom'}
+    <>
+      <AnimatePresence>
+        <ContextMenu
+          anchorPoint={contextMenuAnchor}
+          isOpen={isContextMenuOpen}
+          onClose={() => setIsContextMenuOpen(false)}
+        >
+          <MenuItem onClick={openDemographicModal}>Demgoraphic breakdown</MenuItem>
+          <MenuItem onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy), true)}>
+            Add to article filters
+          </MenuItem>
+        </ContextMenu>
+      </AnimatePresence>
+      <motion.div
+        layout
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          type: 'spring',
+          stiffness: 260,
+          damping: 20,
+        }}
+        exit={{ opacity: 0 }}
       >
-        <MenuItem onClick={openDemographicModal}>Demgoraphic breakdown</MenuItem>
-        <MenuItem onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy), true)}>
-          Add to article filters
-        </MenuItem>
-      </ControlledMenu>
-
-      <Row className={'mt-1'}>
-        <Col className={'mb-3 text-center'}>
-          <span className={'text-secondary'}>{totalSideEffectCount.toLocaleString()} terms in total</span>
-        </Col>
-      </Row>
-      <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3 z-index-n-1'}>
-        <Nav.Item>
-          <Nav.Link className={'d-flex align-items-center'} eventKey="0" onClick={() => setCarouselIndex(0)}>
-            <List weight={'light'} />
-            <div className={'vr mx-2'} />
-            Term Chart
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link className={'d-flex align-items-center'} eventKey="1" onClick={() => setCarouselIndex(1)}>
-            <Cloud weight={'light'} />
-            <div className={'vr mx-2'} />
-            Word Cloud
-          </Nav.Link>
-        </Nav.Item>
-      </Nav>
-      <Carousel
-        showThumbs={false}
-        showIndicators={false}
-        showArrows={false}
-        showStatus={false}
-        selectedItem={carouselIndex}
-        swipeable={false}
-      >
-        <div>
-          <ReactApexChart
-            options={chartOptions}
-            series={[
-              {
-                ...chartData.series[0],
-                data: coloredDataForCurrentPage,
-              },
-            ]}
-            type={chartOptions.chart?.type}
-          />
-          <Pagination size={'lg'} className={'d-flex justify-content-center'}>
-            {paginationItems}
-          </Pagination>
-        </div>
-        <ReactWordcloud words={cloudData} options={cloudOptions} callbacks={cloudCallbacks} />
-      </Carousel>
-    </motion.div>
+        <Row className={'mt-1'}>
+          <Col className={'mb-3 text-center'}>
+            <span className={'text-secondary'}>{totalSideEffectCount.toLocaleString()} terms in total</span>
+          </Col>
+        </Row>
+        <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3 z-index-n-1'}>
+          <Nav.Item>
+            <Nav.Link className={'d-flex align-items-center'} eventKey="0" onClick={() => setCarouselIndex(0)}>
+              <List weight={'light'} />
+              <div className={'vr mx-2'} />
+              Term Chart
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link className={'d-flex align-items-center'} eventKey="1" onClick={() => setCarouselIndex(1)}>
+              <Cloud weight={'light'} />
+              <div className={'vr mx-2'} />
+              Word Cloud
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+        <Carousel
+          showThumbs={false}
+          showIndicators={false}
+          showArrows={false}
+          showStatus={false}
+          selectedItem={carouselIndex}
+          swipeable={false}
+        >
+          <div>
+            <ReactApexChart
+              options={chartOptions}
+              series={[
+                {
+                  ...chartData.series[0],
+                  data: coloredDataForCurrentPage,
+                },
+              ]}
+              type={chartOptions.chart?.type}
+            />
+            <Pagination size={'lg'} className={'d-flex justify-content-center'}>
+              {paginationItems}
+            </Pagination>
+          </div>
+          <ReactWordcloud words={cloudData} options={cloudOptions} callbacks={cloudCallbacks} />
+        </Carousel>
+      </motion.div>
+    </>
   );
 };
 

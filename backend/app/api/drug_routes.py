@@ -115,18 +115,14 @@ def get_articles():
     - JSON: A JSON response containing the articles based on the search parameters.
     """
     params = {
-        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
         'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
-        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None,
         'sex': request.args.get('sex') if request.args.get('sex') in ['male', 'female'] else None,
         'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
         'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None,
-        'term_array': json.loads(request.args.get('term_array')) if request.args.get('term_array') else None
+        'terms': json.loads(request.args.get('terms')) if request.args.get('terms') else None
     }
 
-    print(params['term_array'], flush=True)
-
-    if not params['search_type'] or not params['terms'] or not params['search_mode']:
+    if not params['terms'] or not params['search_mode']:
         return jsonify({"error": "Missing required parameters"}), 400
 
     results = search_json(params,

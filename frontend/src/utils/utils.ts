@@ -108,12 +108,19 @@ export const generateFdaPath = (
   }
 };
 
-export const fetchData = async (url: string): Promise<FDARawData | BackendDataType> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`HTTP error: ${response.status}`);
+export const fetchData = async (url: string): Promise<any> => {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const error = new Error(`HTTP error: ${response.status}`);
+      return Promise.reject(error);
+    }
+
+    return response.json();
+  } catch (error) {
+    return Promise.reject(error);
   }
-  return response.json();
 };
 
 export const fetchBatchData = async (urls: string[]): Promise<(FDARawData | BackendDataType)[]> => {

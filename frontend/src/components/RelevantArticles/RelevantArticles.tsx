@@ -7,12 +7,14 @@ import useArticleStore from '../../stores/articleStore';
 import { useEffect, useMemo } from 'react';
 import { capitalizeFirstLetter } from '../../utils/utils';
 import { motion } from 'framer-motion';
+import { BarLoader } from 'react-spinners';
 
 const RelevantArticles = () => {
   const { relevantArticles, relevantArticlesError, isLoading } = useRelevantArticles();
   const {
     params: { terms, searchBy },
   } = useUrlParams();
+
 
   const articleTerms = useArticleStore((state) => state.articleTerms);
 
@@ -73,15 +75,18 @@ const RelevantArticles = () => {
       </Row>
       <Row>
         {isLoading && (
-          <div className={'d-flex justify-content-center'}>
-            <div className={'spinner-border'} role={'status'}>
-              <span className={'visually-hidden'}>Loading...</span>
-            </div>
+          <div className={'d-flex justify-content-center mb-4'}>
+            <BarLoader className={'text-red'} loading={isLoading} speedMultiplier={2}/>
           </div>
         )}
       </Row>
       {(relevantArticles.length > 0 || articleTerms.some((term) => term.isRemovable === true)) && (
-        <motion.div layout transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}>
+        <motion.div layout transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
+        style={{
+          filter: isLoading ? 'blur(0.5em) grayscale(1)' : 'none',
+          pointerEvents: isLoading ? 'none' : 'auto',
+          }}
+        >
           {relevantArticles.length > 0 ? (
             <Accordion>
               {relevantArticles.map((article, index) => (

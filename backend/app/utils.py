@@ -418,8 +418,8 @@ def count_entries_by_terms(data: list[dict], search_type: str, limit: int = None
 
     Args:
         data (list): A list of entries to be counted.
-        property (str): The property to be counted.
-        search_by (str): The search criteria. Can be 'generic_name', 'brand_name', or 'side_effect'.
+        search_type (str): The property to be counted.
+        limit (int): An integer specifying the maximum number of counts to return (default is None).
 
     Returns:
         dict: A dictionary containing the counts of entries by the specified property and search criteria. Sorted by count.

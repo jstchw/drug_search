@@ -104,9 +104,8 @@ def get_articles():
     Retrieves articles based on the provided search parameters and returns a JSON response.
 
     Parameters:
-    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
     - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
-    - terms (list): A list of search terms.
+    - terms (list): A list of search terms with term value and type.
     - sex (str): The gender, can be 'male' or 'female'.
     - age (int): The age of the person.
     - country (str): The country for the search.
@@ -147,9 +146,8 @@ def get_pm_timedata():
     dictionary in format {total: 'total count of publications', [x: 'year', y: 'number of publications'...]}.
 
     Parameters:
-    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
     - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
-    - terms (list): A list of search terms.
+    - terms (list): A list of search terms with term value and type.
     - sex (str): The sex of the patient, can be 'male' and 'female'.
     - age (int): The age of the patient.
     - country (str): The country for the search.
@@ -194,9 +192,8 @@ def get_pm_age_distribution():
     dictionary in format {total: count, data: [x: 'age_group', y: 'number of publications'...]}.
 
     Parameters:
-    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
     - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
-    - terms (list): A list of search terms.
+    - terms (list): A list of search terms with term value and type.
 
     Returns:
     - JSON: A JSON response containing the total count of publications for the provided term and count by age.
@@ -226,16 +223,15 @@ def get_pm_age_distribution():
 @drug_api.route('/get_pm_sex_distribution', methods=['GET'])
 def get_pm_sex_distribution():
     """
-    Retrieves number of publications for the provided params and returns a ready-to-use
-    dictionary in format {total: count, data: [x: 'age_group', y: 'number of publications'...]}.
+    Retrieves the sex distribution of PubMed articles based on search parameters.
 
     Parameters:
-    - search_type (str): The type of search, can be 'generic_name', 'brand_name', or 'side_effect'.
     - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
-    - terms (list): A list of search terms.
+    - terms (list): A list of search terms with term value and type.
 
     Returns:
-    - JSON: A JSON response containing the total count of publications for the provided term and count by age.
+        A JSON response containing the total count and data of articles by sex distribution.
+        If no data is found, returns a JSON response with an error message and a 404 status code.
     """
     
     params = {
@@ -251,6 +247,8 @@ def get_pm_sex_distribution():
         count_by_sex = {"error": "No data found"}
 
     if not results or not count_by_sex:
+        # Handle error case here
+        # Handle error case here
         return jsonify({"error": "No data found"}), 404
     
     return jsonify({
@@ -262,12 +260,17 @@ def get_pm_sex_distribution():
 @drug_api.route('/get_pm_terms', methods=['GET'])
 def get_pm_terms():
     """
-    Retrieves statistics about the term and an amount of reports for the provided term.
+    Retrieves statistics about the term and the number of reports for the provided term.
 
     Parameters:
+    - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
+    - terms (list): A list of search terms with term value and type.
+    - sex (str): The sex of the patient, can be 'male' or 'female'.
+    - age (int): The age of the patient.
+    - country (str): The country for the search.
 
     Returns:
-    - JSON: Ready-to-use dictionary in format {total: count, data: [x: 'term', y: 'number of reports'...]}.
+    - JSON: A JSON response containing the total count of reports for the provided term and count by term.
     """
     params = {
         'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,

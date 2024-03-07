@@ -162,11 +162,15 @@ const Result = () => {
             <ChartSection />
           </Row>
 
-          <Row className={'justify-content-center mx-auto'}>
-            <Col xs={isMobile ? 12 : 8}>
-              <RelevantArticles />
-            </Col>
-          </Row>
+          <div className="d-flex flex-column min-vh-100">
+            <div className="mb-5">
+              <Row className="justify-content-center mx-auto">
+                <Col xs={isMobile ? 12 : 8}>
+                  <RelevantArticles />
+                </Col>
+              </Row>
+            </div>
+          </div>
         </>
       )}
     </>

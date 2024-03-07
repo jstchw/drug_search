@@ -1,5 +1,5 @@
 import { useUrlParams } from './useUrlParams';
-import { fetchData } from '../utils/utils';
+import { fetchData, getNewStyleTerms } from '../utils/utils';
 import { useQuery } from 'react-query';
 import { backendUrl } from '../constants';
 import { BackendDataType } from '../types';
@@ -9,11 +9,12 @@ export const usePmTimeSeries = () => {
     params: { terms, searchBy, searchMode },
   } = useUrlParams();
 
+  const termsWithTypes = getNewStyleTerms(terms, searchBy);
+
   const url =
     `${backendUrl}/drug/get_pm_timedata?` +
-    `terms=${terms}&` +
-    `search_mode=${searchMode}&` +
-    `search_type=${searchBy}&`;
+    `terms=${encodeURIComponent(JSON.stringify(termsWithTypes))}&` +
+    `search_mode=${searchMode}&`
 
   const {
     data,

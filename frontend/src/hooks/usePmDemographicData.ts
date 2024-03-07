@@ -1,15 +1,16 @@
 import { BackendDataType, URLParams, DemographicDataType } from '../types';
-import { fetchBatchData, mapParamArrayToLabels } from '../utils/utils';
+import { fetchBatchData, mapParamArrayToLabels, getNewStyleTerms } from '../utils/utils';
 import { useQuery } from 'react-query';
 import { backendUrl } from '../constants';
 
 const generatePmUniversalUrls = (paramsArray: URLParams[]) => {
   const urls = paramsArray.map((params) => {
+    const termsWithTypes = getNewStyleTerms(params.terms, params.searchBy);
+
     const url =
       `${backendUrl}/drug/get_pm_terms?` +
-      `terms=${params.terms}&` +
+      `terms=${encodeURIComponent(JSON.stringify(termsWithTypes))}&` +
       `search_mode=${params.searchMode}&` +
-      `search_type=${params.searchBy}&` +
       `sex=${params.sex}&` +
       `age=${encodeURIComponent(JSON.stringify(params.age))}&`;
 

@@ -217,3 +217,7 @@ export const percentageToValue = (percentage: number, total: number) => {
 export const valueToPercentage = (value: number, total: number) => {
   return (value / total) * 100;
 };
+
+export const getNewStyleTerms = (terms: string[], searchBy: string) => {
+  return terms.map(term => ({ 'term': term, 'type': searchBy }));
+}

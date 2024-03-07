@@ -1,7 +1,7 @@
 import Chart from 'react-apexcharts';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 import React from 'react';
-import { generateFdaPath, fetchData, processTermData } from '../../utils/utils';
+import { generateFdaPath, fetchData, processTermData, getNewStyleTerms } from '../../utils/utils';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { useQuery } from 'react-query';
@@ -47,20 +47,20 @@ const fetchPmdDistributionData = (type: string): RadarChartReturnType => {
     params: { searchMode },
   } = useUrlParams();
 
+  const termWithTypes = getNewStyleTerms([term], searchBy);
+
   let url = '';
 
   if (type === 'age_group') {
     url =
       `${backendUrl}/drug/get_pm_age_distribution?` +
-      `terms=${term}&` +
-      `search_mode=${searchMode}&` +
-      `search_type=${searchBy}&`;
+      `terms=${encodeURIComponent(JSON.stringify(termWithTypes))}&` +
+      `search_mode=${searchMode}&`;
   } else if (type === 'patient_sex') {
     url =
       `${backendUrl}/drug/get_pm_sex_distribution?` +
-      `terms=${term}&` +
-      `search_mode=${searchMode}&` +
-      `search_type=${searchBy}&`;
+      `terms=${encodeURIComponent(JSON.stringify(termWithTypes))}&` +
+      `search_mode=${searchMode}&`;
   }
 
   const { data, isError, isLoading } = useQuery(

@@ -32,6 +32,7 @@ export const useRelevantArticles = () => {
     data = [],
     error,
     isLoading,
+    isFetching,
   } = useQuery<RelevantArticle[]>(
     ['relevantArticlesUrl', url],
     () => {
@@ -48,6 +49,10 @@ export const useRelevantArticles = () => {
       refetchOnWindowFocus: false,
     }
   );
+
+  const loading = isLoading || isFetching;
+
+  return { relevantArticles: data, relevantArticlesError: error, isLoading: loading };
 
   return { relevantArticles: data, relevantArticlesError: error, isLoading };
 };

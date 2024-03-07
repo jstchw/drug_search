@@ -1,17 +1,18 @@
 import { useUrlParams } from './useUrlParams';
-import { fetchData } from '../utils/utils';
+import { fetchData, getNewStyleTerms } from '../utils/utils';
 import { useQuery } from 'react-query';
 import { BackendDataType, ChartDataPoint } from 'src/types';
 import { backendUrl } from '../constants';
 
 export const usePmTermData = () => {
-  let { params } = useUrlParams();
+  let { params: { terms, searchBy, searchMode } } = useUrlParams();
+
+  const termsWithTypes = getNewStyleTerms(terms, searchBy);
 
   const url =
     `${backendUrl}/drug/get_pm_terms?` +
-    `terms=${params.terms}&` +
-    `search_mode=${params.searchMode}&` +
-    `search_type=${params.searchBy}&`;
+    `terms=${encodeURIComponent(JSON.stringify(termsWithTypes))}&` +
+    `search_mode=${searchMode}&`;
 
   const {
     data: reportData,

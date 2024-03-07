@@ -63,7 +63,6 @@ const transformDataGranular = (data: DemographicDataType[], aggregateType: strin
       return termData ? termData.y : 0;
     }),
   }));
-
   return { series, labels };
 };
 
@@ -159,7 +158,8 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
     return null;
   }
 
-  const aggregatedDataForKey = aggregatedData[currentPageKey];
+  // This is currently a crutch to avoid the issue of overcrowding the chart in the advanced view with source PM.
+  const aggregatedDataForKey = source === 'fda' ? aggregatedData[currentPageKey] : aggregatedData[currentPageKey]?.slice(0, 10);
 
   const { series, labels } = advancedView
     ? transformDataGranular(aggregatedDataForKey || [], aggregateType)

@@ -158,15 +158,14 @@ def get_pm_timedata():
     - JSON: A JSON response containing the total count of publications for the provided term and count by year.
     """
     params = {
-        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
         'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
-        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None,
+        'terms': json.loads(request.args.get('terms')) if request.args.get('terms') else None,
         'sex': request.args.get('sex') if request.args.get('sex') in ['male', 'female'] else None,
         'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
         'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
     }
 
-    results = search_json(params, data=pubmed_data, limit=1000)
+    results = search_json(params, data=pubmed_data, limit=10000)
     total_entries = count_total_entries(results)
 
     if results:
@@ -204,9 +203,8 @@ def get_pm_age_distribution():
     """
 
     params = {
-        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
         'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
-        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None
+        'terms': json.loads(request.args.get('terms')) if request.args.get('terms') else None,
     }
 
     results = search_json(params, data=pubmed_data, limit=1000)
@@ -241,9 +239,8 @@ def get_pm_sex_distribution():
     """
     
     params = {
-        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
         'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
-        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None
+        'terms': json.loads(request.args.get('terms')) if request.args.get('terms') else None,
     }
 
     results = search_json(params, data=pubmed_data, limit=1000)
@@ -273,20 +270,20 @@ def get_pm_terms():
     - JSON: Ready-to-use dictionary in format {total: count, data: [x: 'term', y: 'number of reports'...]}.
     """
     params = {
-        'search_type': request.args.get('search_type') if request.args.get('search_type') in ['generic_name', 'brand_name', 'side_effect'] else None,
         'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
-        'terms': request.args.get('terms').strip().split(',') if request.args.get('terms') else None,
+        'terms': json.loads(request.args.get('terms')) if request.args.get('terms') else None,
         'sex': request.args.get('sex') if request.args.get('sex') in ['male', 'female'] else None,
         'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
         'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
     }
 
-    print(params, flush=True)
-
     results = search_json(params, data=pubmed_data, limit=1000)
-
+    
+    # Current solution to count by term works only if all terms are of the same type
+    # It can be changed to accommodate different way of searching but this will be done when
+    # an AI model will be able to determine the type of each term automatically.
     if results:
-        count_by_term = count_entries_by_terms(results, params['search_type'], limit=10)
+        count_by_term = count_entries_by_terms(results, params['terms'][0]['type'], limit=50)
     else:
         count_by_term = {"error": "No data found"}
 

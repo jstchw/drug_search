@@ -71,6 +71,15 @@ const RelevantArticles = () => {
           </div>
         </Col>
       </Row>
+      <Row>
+        {isLoading && (
+          <div className={'d-flex justify-content-center'}>
+            <div className={'spinner-border'} role={'status'}>
+              <span className={'visually-hidden'}>Loading...</span>
+            </div>
+          </div>
+        )}
+      </Row>
       {(relevantArticles.length > 0 || articleTerms.some((term) => term.isRemovable === true)) && (
         <motion.div layout transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}>
           {relevantArticles.length > 0 ? (

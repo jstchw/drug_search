@@ -159,7 +159,8 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   }
 
   // This is currently a crutch to avoid the issue of overcrowding the chart in the advanced view with source PM.
-  const aggregatedDataForKey = source === 'fda' ? aggregatedData[currentPageKey] : aggregatedData[currentPageKey]?.slice(0, 10);
+  const aggregatedDataForKey =
+    source === 'fda' ? aggregatedData[currentPageKey] : aggregatedData[currentPageKey]?.slice(0, 10);
 
   const { series, labels } = advancedView
     ? transformDataGranular(aggregatedDataForKey || [], aggregateType)

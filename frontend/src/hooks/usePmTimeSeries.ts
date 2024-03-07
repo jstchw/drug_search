@@ -14,7 +14,7 @@ export const usePmTimeSeries = () => {
   const url =
     `${backendUrl}/drug/get_pm_timedata?` +
     `terms=${encodeURIComponent(JSON.stringify(termsWithTypes))}&` +
-    `search_mode=${searchMode}&`
+    `search_mode=${searchMode}&`;
 
   const {
     data,

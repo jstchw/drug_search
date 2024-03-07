@@ -5,7 +5,9 @@ import { BackendDataType, ChartDataPoint } from 'src/types';
 import { backendUrl } from '../constants';
 
 export const usePmTermData = () => {
-  let { params: { terms, searchBy, searchMode } } = useUrlParams();
+  let {
+    params: { terms, searchBy, searchMode },
+  } = useUrlParams();
 
   const termsWithTypes = getNewStyleTerms(terms, searchBy);
 

@@ -8,7 +8,7 @@ import { searchTypes } from '../../constants';
 import { Form, Dropdown, InputGroup } from 'react-bootstrap';
 import useArticleStore from '../../stores/articleStore';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const ArticleTermInput = () => {
   const theme = useGeneralOptionsStore((state) => state.theme);

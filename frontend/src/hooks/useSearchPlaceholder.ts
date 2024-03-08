@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { placeholders } from '../constants';
 import { SearchOptionsType } from '../types';
 
-const useSearchPlaceholder = (duration: number, searchBy: SearchOptionsType) => {
+const useSearchPlaceholder = (duration: number, searchBy: SearchOptionsType, shouldStop: boolean) => {
   const [currentPlaceholder, setCurrentPlaceholder] = useState<string | undefined>(undefined);
-  const [currentIndex, setCurrentIndex] = useState<number>(0); // used to be null
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
     const setRandomPlaceholder = () => {
@@ -21,8 +21,12 @@ const useSearchPlaceholder = (duration: number, searchBy: SearchOptionsType) => 
 
     const interval = setInterval(setRandomPlaceholder, duration); // then update it every `duration` milliseconds
 
+    if (shouldStop) {
+      clearInterval(interval);
+    }
+
     return () => clearInterval(interval);
-  }, [duration, searchBy]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [duration, searchBy, shouldStop]);
 
   return currentPlaceholder;
 };

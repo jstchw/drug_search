@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons';
 import './SearchBox.css';
@@ -19,13 +19,14 @@ const SearchBox = () => {
   const [inputValue, setInputValue] = useSearchStore((state) => [state.searchInput, state.setSearchInput]);
 
   const inputRef = React.useRef<string[]>([]);
+  const [isInputRefPresent, setIsInputRefPresent] = React.useState(false);
 
   const [showOptionModal, setShowOptionModal] = React.useState(false);
 
   const { executeSearch } = useSearch('SearchOptions');
 
   // Timeout for the placeholder animation
-  const searchPlaceholder = useSearchPlaceholder(3000, searchOptions.searchBy);
+  const searchPlaceholder = useSearchPlaceholder(3000, searchOptions.searchBy, isInputRefPresent);
 
   const [fuse, setFuse] = React.useState<Fuse<string> | null>(null);
   // Elements for the suggestion mechanism
@@ -53,6 +54,11 @@ const SearchBox = () => {
       setSuggestions([]);
     }
   };
+
+  // Stop the placeholder animation when the input is not empty
+  useEffect(() => {
+    setIsInputRefPresent(inputRef.current.some(element => element.trim() !== ""));
+  }, [inputRef.current]);
 
   return (
     <div className={'d-flex justify-content-center text-center'}>

@@ -12,21 +12,21 @@ const DrugDescription = (props: { drugInfo: DrugProperties }) => {
       <Card.Body className="text-start">
         {props.drugInfo && props.drugInfo.iupac && (
           <div className={'d-flex align-items-center mb-3'}>
-            <span className={'fs-5'}>IUPAC</span>
+            <span className={'fs-5'}>IUPAC name</span>
             <div className={'vr mx-2'} />
             <span className={'iupac'}>{props.drugInfo.iupac}</span>
           </div>
         )}
         {props.drugInfo && props.drugInfo.classification && (
           <div className={'d-flex align-items-center mb-3'}>
-            <span className={'fs-5'}>Class</span>
+            <span className={'fs-5'}>Chemical class</span>
             <div className={'vr mx-2'} />
             {props.drugInfo.classification}
           </div>
         )}
         {props.drugInfo && props.drugInfo.formula && (
           <div className={'d-flex align-items-center'}>
-            <span className={'fs-5'}>Formula</span>
+            <span className={'fs-5'}>Chemical formula</span>
             <div className={'vr mx-2'} />
             {props.drugInfo.formula}
           </div>

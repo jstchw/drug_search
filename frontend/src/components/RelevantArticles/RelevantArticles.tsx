@@ -8,6 +8,7 @@ import { useEffect, useMemo } from 'react';
 import { capitalizeFirstLetter } from '../../utils/utils';
 import { motion } from 'framer-motion';
 import { BarLoader } from 'react-spinners';
+import ArticleTermInput from './ArticleTermInput';
 
 const RelevantArticles = () => {
   const { relevantArticles, relevantArticlesError, isLoading } = useRelevantArticles();
@@ -39,9 +40,13 @@ const RelevantArticles = () => {
         <div className={'vr mx-2'} />
         Relevant Articles
       </h3>
+      <Row>
+        <Col className={'d-flex justify-content-center'}>
+          <ArticleTermInput />
+        </Col>
+      </Row>
       <Row className={'mb-4'}>
         <Col>
-          <div className={'text-secondary d-flex justify-content-center'}>Matching for</div>
           <hr className={'w-25 mx-auto'} />
           <div className={'d-flex justify-content-center flex-wrap'}>
             {articleTerms.map((item) => {

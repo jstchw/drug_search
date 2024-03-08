@@ -83,7 +83,7 @@ const SearchBox = () => {
               value={inputValue.map((item) => ({ value: item, label: item }))}
               menuIsOpen={
                 suggestions.length > 0 ||
-                (searchOptions.searchBy.index === 2 && inputRef.current.some((item) => item.length > 0))
+                inputRef.current.some((item) => item.length > 0)
               }
               onInputChange={(e) => handleInputChange(e)}
               onChange={(e) => setInputValue(e.map((item) => item.value))}

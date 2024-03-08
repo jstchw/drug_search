@@ -14,6 +14,7 @@ drug_api = Blueprint('drug_api', __name__)
 data_manager = DataManager.get_instance()
 substances = data_manager.substances
 products = data_manager.products
+side_effects = data_manager.side_effects
 drug_json = data_manager.drug_json
 pubmed_data = data_manager.pubmed_data
 
@@ -52,15 +53,15 @@ def get_suggestions():
     otherwise returns a string "Invalid search type" and a status code 400.
     """
     search_by = request.args.get('searchBy')
-    try:
-        if search_by == 'patient.drug.openfda.generic_name':
+    match search_by:
+        case 'generic_name':
             return jsonify([row['Common name'] for row in substances])
-        elif search_by == 'patient.drug.openfda.brand_name':
+        case 'brand_name':
             return jsonify([row['DrugName'] for row in products])
-        else:
+        case 'side_effect':
+            return jsonify([row['term'] for row in side_effects])
+        case _:
             return jsonify({"error": "Invalid search type"}), 400
-    except Exception as e:
-        return jsonify({"error": e}), 500
 
 
 @drug_api.route('/get_info', methods=['GET'])

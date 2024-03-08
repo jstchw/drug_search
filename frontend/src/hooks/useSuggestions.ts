@@ -7,13 +7,11 @@ export const useSuggestions = (searchBy: SearchOptionsType, setFuse: React.Dispa
   useEffect(() => {
     async function fetchSuggestions() {
       try {
-        if (searchBy.param !== 'side_effect') {
-          // Form a URL based on the searchBy parameter and fetch the data
-          const url = `${backendUrl}/drug/get_suggestions?searchBy=${encodeURIComponent(searchBy.value)}`;
-          const response = await fetch(url);
-          const data: string[] = await response.json();
-          setFuse(new Fuse(data, fuseOptions));
-        }
+        // Form a URL based on the searchBy parameter and fetch the data
+        const url = `${backendUrl}/drug/get_suggestions?searchBy=${encodeURIComponent(searchBy.param)}`;
+        const response = await fetch(url);
+        const data: string[] = await response.json();
+        setFuse(new Fuse(data, fuseOptions));
       } catch (error) {
         console.error('Error fetching suggestions:', error);
       }

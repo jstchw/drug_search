@@ -23,6 +23,9 @@ class DataManager:
         with open('data/suggestions/products.json', 'r') as file:
             self.products = json.load(file)
 
+        with open('data/suggestions/side_effects.json', 'r') as file:
+            self.side_effects = json.load(file)
+
         # Data initialization for DRUGBANK JSON
         with open('data/drugbank/drugs.json', 'r') as file:
             self.drug_json = json.load(file)

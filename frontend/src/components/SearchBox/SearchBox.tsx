@@ -43,18 +43,11 @@ const SearchBox = () => {
     // Needed to manipulate the menu (open and close) when there are no suggestions
     inputRef.current = [e.toString()];
     if (e) {
-      if (searchOptions.searchBy.index === 0 || searchOptions.searchBy.index === 1) {
-        if (fuse) {
-          const suggestion = fuse.search(e, { limit: 5 });
-          if (suggestion.length > 0) {
-            setSuggestions(suggestion);
-          }
+      if (fuse) {
+        const suggestion = fuse.search(e, { limit: 5 });
+        if (suggestion.length > 0) {
+          setSuggestions(suggestion);
         }
-      } else {
-        /* If the search type is side effects, it will update the input value every time the user types
-                       This is needed because we don't have suggestions for side effects yet (04/01/2024)
-                    */
-        setSuggestions([]);
       }
     } else {
       setSuggestions([]);

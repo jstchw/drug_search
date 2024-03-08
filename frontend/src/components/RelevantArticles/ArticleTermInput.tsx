@@ -8,6 +8,7 @@ import { searchTypes } from '../../constants';
 import { Form, Dropdown, InputGroup } from 'react-bootstrap';
 import useArticleStore from '../../stores/articleStore';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ArticleTermInput = () => {
   const theme = useGeneralOptionsStore((state) => state.theme);
@@ -19,6 +20,9 @@ const ArticleTermInput = () => {
   const inputRef = useRef<string[]>([]);
 
   const addArticleTerm = useArticleStore((state) => state.addArticleTerm);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const handleDropdownToggle = () => setIsDropdownOpen(!isDropdownOpen);
 
   useSuggestions(searchType, setFuse);
 
@@ -42,15 +46,27 @@ const ArticleTermInput = () => {
   }
 
   return (
-    <div>
+    <motion.div layout>
       <Form className={'mb-2'}>
         <InputGroup>
-          <Dropdown>
-            <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
+          <Dropdown onToggle={handleDropdownToggle} show={isDropdownOpen}>
+            <Dropdown.Toggle 
+              variant="outline-secondary" 
+              id="dropdown-basic"
+            >
               {searchType.label}
             </Dropdown.Toggle>
 
-            <Dropdown.Menu>
+
+            <Dropdown.Menu as={motion.div}
+              initial="closed"
+              animate={isDropdownOpen ? "open" : "closed"}
+              variants={{
+                  open: { opacity: 1 },
+                  closed: { opacity: 0 }
+              }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
               {searchTypes.map((type, index) => (
                 <Dropdown.Item
                   key={index}
@@ -100,7 +116,7 @@ const ArticleTermInput = () => {
           />
         </InputGroup>
       </Form>
-    </div>
+    </motion.div>
   );
 }
 

@@ -40,6 +40,11 @@ const RelevantArticles = () => {
         <div className={'vr mx-2'} />
         Relevant Articles
       </h3>
+      <Row className={'mb-2'}>
+        <Col className={'d-flex justify-content-center'}>
+          <span className={'text-secondary'}>Add your own terms</span>
+        </Col>
+      </Row>
       <Row>
         <Col className={'d-flex justify-content-center'}>
           <ArticleTermInput />
@@ -95,7 +100,7 @@ const RelevantArticles = () => {
           {relevantArticles.length > 0 ? (
             <Accordion>
               {relevantArticles.map((article, index) => (
-                <Accordion.Item key={index} eventKey={index.toString()}>
+                <Accordion.Item key={index} eventKey={index.toString()} as={motion.div}>
                   <Accordion.Header>
                     <div>
                       <div className={'mb-2'}>{article.title}</div>

@@ -97,7 +97,7 @@ const ArticleTermInput = () => {
             value={ inputValue ?
               { value: inputValue, label: inputValue } : null
             }
-            placeholder={'Add terms...'}
+            placeholder={'Filter by terms...'}
             classNames={{
               control: () => 
               theme === 'dark'

@@ -49,10 +49,8 @@ export const useRelevantArticles = () => {
       refetchOnWindowFocus: false,
     }
   );
-
+  
   const loading = isLoading || isFetching;
 
-  return { relevantArticles: data, relevantArticlesError: error, isLoading: loading };
-
-  return { relevantArticles: data, relevantArticlesError: error, isLoading };
+  return { relevantArticles: data, errorCode: error as number, isLoading: loading };
 };

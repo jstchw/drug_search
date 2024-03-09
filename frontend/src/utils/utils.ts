@@ -5,8 +5,6 @@ import {
   URLParams,
   SearchOptionsType,
   PercentageIntensityColors,
-  FDARawData,
-  BackendDataType,
 } from '../types';
 import { baseFdaUrl, searchModes, searchSex, searchTypes, percentageIntensityColors, whatToCount } from '../constants';
 import React from 'react';
@@ -108,13 +106,12 @@ export const generateFdaPath = (
   }
 };
 
-export const fetchData = async (url: string): Promise<any> => {
+export const fetchData = async <T>(url: string): Promise<T> => {
   try {
     const response = await fetch(url);
 
     if (!response.ok) {
-      const error = new Error(`HTTP error: ${response.status}`);
-      return Promise.reject(error);
+      return Promise.reject(response.status);
     }
 
     return response.json();
@@ -123,11 +120,8 @@ export const fetchData = async (url: string): Promise<any> => {
   }
 };
 
-export const fetchBatchData = async (urls: string[]): Promise<(FDARawData | BackendDataType)[]> => {
-  const fetchPromises = urls.map(async (url) => {
-    const response = await fetchData(url);
-    return response;
-  });
+export const fetchBatchData = async <T>(urls: string[]): Promise<T[]> => {
+  const fetchPromises: Promise<T>[] = urls.map((url) => fetchData<T>(url));
 
   return Promise.all(fetchPromises);
 };

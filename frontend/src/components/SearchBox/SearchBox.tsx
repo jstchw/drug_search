@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { FilterLeft as FilterLeftIcon, Search as SearchIcon } from 'react-bootstrap-icons';
-import './SearchBox.css';
 import OptionModal from '../OptionModal/OptionModal';
 import { useSuggestions } from '../../hooks/useSuggestions';
 import Fuse, { FuseResult, Expression } from 'fuse.js';
@@ -10,6 +9,7 @@ import { useSearch } from '../../hooks/useSearch';
 import useSearchPlaceholder from '../../hooks/useSearchPlaceholder';
 import useSearchStore from '../../stores/searchStore';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
+import { CSSObjectWithLabel } from 'react-select';
 
 const SearchBox = () => {
   const theme = useGeneralOptionsStore((state) => state.theme);
@@ -83,7 +83,6 @@ const SearchBox = () => {
             </>
 
             <CreatableSelect
-              className={'creatable-select'}
               isMulti
               // display the passed input value if it exists
               value={inputValue.map((item) => ({ value: item, label: item }))}
@@ -112,6 +111,12 @@ const SearchBox = () => {
                 option: (state) => (state.isFocused && theme === 'dark' ? 'text-dark' : ''),
                 multiValue: () => 'bg-secondary-subtle',
                 multiValueLabel: () => (theme === 'dark' ? 'text-light' : ''),
+              }}
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  minWidth: '11rem',
+                }) as CSSObjectWithLabel,
               }}
             />
 

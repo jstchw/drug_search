@@ -98,8 +98,6 @@ const DemographicModal = () => {
       <Modal.Header closeButton>
         <Button variant={'outline-primary me-2'} style={{ pointerEvents: 'none'}}>{mapParamToLabel(demographicType, searchTypes)}</Button>
         <Modal.Title>{term}</Modal.Title>
-        <div className={'mx-2 vr'} />
-        <span className={'text-secondary'}>Demographic breakdown</span>
       </Modal.Header>
       <Modal.Body>
         {hasFdaDistributionData && (

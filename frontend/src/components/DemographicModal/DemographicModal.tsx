@@ -1,4 +1,4 @@
-import { Modal, Col, Row, Nav } from 'react-bootstrap';
+import { Modal, Col, Row, Nav, Button } from 'react-bootstrap';
 import { searchAgeGroups, searchSex } from '../../constants';
 import DemographicComparsionChart from '../ApexChart/DemographicComparsionChart';
 import useDemographicStore from '../../stores/demographicStore';
@@ -6,6 +6,8 @@ import React from 'react';
 import DonutChart from '../ApexChart/DonutChart';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import { motion } from 'framer-motion';
+import { mapParamToLabel } from '../../utils/utils';
+import { searchTypes } from '../../constants';
 
 type AggregateType = 'Sex' | 'Age';
 
@@ -94,6 +96,7 @@ const DemographicModal = () => {
   return (
     <Modal show={show} onHide={handleShow} centered size={'xl'}>
       <Modal.Header closeButton>
+        <Button variant={'outline-primary me-2'} style={{ pointerEvents: 'none'}}>{mapParamToLabel(demographicType, searchTypes)}</Button>
         <Modal.Title>{term}</Modal.Title>
         <div className={'mx-2 vr'} />
         <span className={'text-secondary'}>Demographic breakdown</span>

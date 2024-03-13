@@ -317,7 +317,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
           isOpen={isContextMenuOpen}
           onClose={() => setIsContextMenuOpen(false)}
         >
-          <MenuItem onClick={openDemographicModal}>Demgoraphic breakdown</MenuItem>
+          <MenuItem onClick={openDemographicModal}>Demographic breakdown</MenuItem>
           <MenuItem onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy), true)}>
             Add to article filters
           </MenuItem>

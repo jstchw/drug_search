@@ -1,6 +1,6 @@
 import { motion, Variants } from 'framer-motion';
 import { ControlledMenu } from '@szhsin/react-menu';
-import React, { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
 
 const OFFSET_X = 50;
@@ -24,7 +24,7 @@ interface AnimatedMenuProps {
   children: ReactNode;
 }
 
-const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ isOpen, anchorPoint, onClose, children }) => {
+const AnimatedMenu: FC<AnimatedMenuProps> = ({ isOpen, anchorPoint, onClose, children }) => {
   const adjustedAnchorPoint = { x: anchorPoint.x + OFFSET_X, y: anchorPoint.y + OFFSET_Y };
   const theme = useGeneralOptionsStore((state) => state.theme);
 
@@ -38,7 +38,7 @@ const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ isOpen, anchorPoint, onClos
       <ControlledMenu 
         menuClassName={
           theme === 'dark' ? 'bg-dark text-white' : ''
-        } 
+        }
         anchorPoint={adjustedAnchorPoint} 
         state={isOpen ? 'open' : 'closed'} 
         onClose={onClose}

@@ -17,7 +17,7 @@ const Search = () => {
             <Nav.Link active className={'text-primary'}>Search</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href={analysisFrontendUrl}>Analysis</Nav.Link>
+            <Nav.Link href={analysisFrontendUrl}>Annotate</Nav.Link>
           </Nav.Item>
         </Nav>
       </Row>

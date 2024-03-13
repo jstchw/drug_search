@@ -4,7 +4,7 @@ import SearchBox from '../../components/SearchBox/SearchBox';
 import Header from '../../components/Header/Header';
 import { Col, Row } from 'react-bootstrap';
 import useDrugInfo from '../../hooks/useDrugInfo';
-import React from 'react';
+import React, { memo } from 'react';
 import DrugPropertyBox from '../../components/DrugPropertyBox/DrugPropertyBox';
 import { SearchHistoryContext } from '../../contexts/SearchHistoryContext';
 import ChartSection from '../../components/ChartSection/ChartSection';
@@ -90,19 +90,13 @@ const Result = () => {
     }
   }, [drugInfo, params, updateSearchHistory]);
 
-  const [showScrollbar, setShowScrollbar] = React.useState(false);
   const searchBoxSectionRef = React.useRef<HTMLDivElement>(null);
-  const isSearchBoxInView = useInView(searchBoxSectionRef);
-
-  React.useEffect(() => {
-    setShowScrollbar(!!!isSearchBoxInView);
-  }, [isSearchBoxInView]);
 
   const showDemographic = useDemographicStore((state) => state.showDemographic);
 
   return (
     <>
-      <AnimatePresence>{showScrollbar && <Scrollbar key={'scrollbar'} />}</AnimatePresence>
+      <Scrollbar key={'scrollbar'} searchBoxSectionRef={searchBoxSectionRef}/>
 
       <AnimatePresence>{showDemographic && <DemographicModal />}</AnimatePresence>
 

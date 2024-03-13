@@ -317,8 +317,20 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
           isOpen={isContextMenuOpen}
           onClose={() => setIsContextMenuOpen(false)}
         >
-          <MenuItem onClick={openDemographicModal}>Demographic breakdown</MenuItem>
-          <MenuItem onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy), true)}>
+          <MenuItem 
+            onClick={openDemographicModal}
+            className={(state) => (
+              state.hover ? 'text-black' : ''
+            )}
+          >
+            Demographic breakdown
+          </MenuItem>
+          <MenuItem 
+            onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy), true)}
+            className={(state) => (
+              state.hover ? 'text-black' : ''
+            )}
+          >
             Add to article filters
           </MenuItem>
         </ContextMenu>

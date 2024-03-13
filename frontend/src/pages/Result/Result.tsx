@@ -4,7 +4,7 @@ import SearchBox from '../../components/SearchBox/SearchBox';
 import Header from '../../components/Header/Header';
 import { Col, Row } from 'react-bootstrap';
 import useDrugInfo from '../../hooks/useDrugInfo';
-import React, { memo } from 'react';
+import React from 'react';
 import DrugPropertyBox from '../../components/DrugPropertyBox/DrugPropertyBox';
 import { SearchHistoryContext } from '../../contexts/SearchHistoryContext';
 import ChartSection from '../../components/ChartSection/ChartSection';
@@ -16,7 +16,7 @@ import RelevantArticles from '../../components/RelevantArticles/RelevantArticles
 import InfoCard from '../../components/InfoCard/InfoCard';
 import Scrollbar from '../../components/Scrollbar/Scrollbar';
 import useSearchStore from '../../stores/searchStore';
-import { AnimatePresence, useInView } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import DemographicModal from '../../components/DemographicModal/DemographicModal';
 import useDemographicStore from '../../stores/demographicStore';
 import { versionInfo } from '../../constants';

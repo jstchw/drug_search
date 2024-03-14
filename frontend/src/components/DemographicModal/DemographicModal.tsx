@@ -8,6 +8,7 @@ import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import { motion } from 'framer-motion';
 import { mapParamToLabel } from '../../utils/utils';
 import { searchTypes } from '../../constants';
+import { isMobile } from 'react-device-detect';
 
 type AggregateType = 'Sex' | 'Age';
 
@@ -119,7 +120,7 @@ const DemographicModal = () => {
           exit={{ opacity: 0 }}
         >
           <Row>
-            <Col className={'mb-3 text-center'}>
+            <Col xs={isMobile ? 12 : 6} className={'mb-3 text-center'}>
               <Row>
                 <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
               </Row>
@@ -131,7 +132,7 @@ const DemographicModal = () => {
                 </motion.div>
               )}
             </Col>
-            <Col className={'mb-3 text-center'}>
+            <Col xs={isMobile ? 12 : 6} className={'mb-3 text-center'}>
               <Row>
                 <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
               </Row>

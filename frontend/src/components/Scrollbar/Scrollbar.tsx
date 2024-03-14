@@ -1,4 +1,4 @@
-import { Nav, Row, Col } from 'react-bootstrap';
+import { Nav, Col } from 'react-bootstrap';
 import SearchBox from '../SearchBox/SearchBox';
 import Header from '../Header/Header';
 import { motion, useInView, AnimatePresence } from 'framer-motion';

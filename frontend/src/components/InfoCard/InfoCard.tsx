@@ -3,12 +3,17 @@ import { Toast, ToastContainer, Col } from 'react-bootstrap';
 import { useUrlParams } from '../../hooks/useUrlParams';
 import { URLParams } from '../../types';
 import { mapParamArrayToLabels } from '../../utils/utils';
+import { isMobile } from 'react-device-detect';
 
 const InfoCard = () => {
   const { params, paramError } = useUrlParams();
   const show = !paramError;
 
   const constraints = mapParamArrayToLabels(params);
+
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <ToastContainer className={'patient-card m-3'} position={'bottom-end'} containerPosition={'fixed'}>

@@ -19,7 +19,7 @@ const Scrollbar: FC<ScrollbarProps> = ({ searchBoxSectionRef }) => {
   return (
     <>
     <AnimatePresence>
-      {showScrollbar && (
+      {showScrollbar ? (
           <motion.div
             initial={{ y: -100 }}
             animate={{ y: 0 }}
@@ -39,7 +39,7 @@ const Scrollbar: FC<ScrollbarProps> = ({ searchBoxSectionRef }) => {
                   <Header />
                 </Col>
 
-                <Col xs={4} className="d-flex justify-content-center">
+                <Col className="d-flex justify-content-center ">
                   <SearchBox />
                 </Col>
 
@@ -47,7 +47,7 @@ const Scrollbar: FC<ScrollbarProps> = ({ searchBoxSectionRef }) => {
               </Row>
             </Nav>
           </motion.div>
-      )}
+      ) : undefined}
     </AnimatePresence>
     </>
   );

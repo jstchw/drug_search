@@ -64,7 +64,7 @@ const SearchBox = () => {
     <div className={'d-flex justify-content-center text-center'}>
       <Form onSubmit={handleSearch}>
         <Form.Group controlId="searchTerm">
-          <InputGroup>
+          <InputGroup className='flex-nowrap'>
             <>
               <Button
                 variant="outline-secondary"

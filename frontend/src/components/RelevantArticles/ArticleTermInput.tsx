@@ -21,9 +21,6 @@ const ArticleTermInput = () => {
 
   const addArticleTerm = useArticleStore((state) => state.addArticleTerm);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const handleDropdownToggle = () => setIsDropdownOpen(!isDropdownOpen);
-
   useSuggestions(searchType, setFuse);
 
   const handleInputChange = (e: string | Expression) => {
@@ -49,7 +46,7 @@ const ArticleTermInput = () => {
     <motion.div layout>
       <Form className={'mb-2'}>
         <InputGroup>
-          <Dropdown onToggle={handleDropdownToggle} show={isDropdownOpen}>
+          <Dropdown>
             <Dropdown.Toggle 
               variant="outline-secondary" 
               id="dropdown-basic"
@@ -58,15 +55,7 @@ const ArticleTermInput = () => {
             </Dropdown.Toggle>
 
 
-            <Dropdown.Menu as={motion.div}
-              initial="closed"
-              animate={isDropdownOpen ? "open" : "closed"}
-              variants={{
-                  open: { opacity: 1 },
-                  closed: { opacity: 0 }
-              }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <Dropdown.Menu>
               {searchTypes.map((type, index) => (
                 <Dropdown.Item
                   key={index}

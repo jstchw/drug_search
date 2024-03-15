@@ -422,10 +422,10 @@ def count_entries_by_terms(data: list[dict], search_type: str, limit: int = None
         limit (int): An integer specifying the maximum number of counts to return (default is None).
 
     Returns:
-        dict: A dictionary containing the counts of entries by the specified property and search criteria. Sorted by count.
+        dict: A dictionary containing the counts of entries by the specified property and search criteria.
+              Sorted by count, with the top `limit` items and an "Other" key summing the remaining items.
     """
     counts = {}
-
     for entry in data:
         if search_type == 'side_effect':
             if 'drug' in entry:
@@ -433,10 +433,21 @@ def count_entries_by_terms(data: list[dict], search_type: str, limit: int = None
                 for drug in drugs:
                     counts[drug] = counts.get(drug, 0) + 1
 
+    # Sort the counts in descending order
+    sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+
     if limit:
-        return dict(sorted(counts.items(), key=lambda x: x[1], reverse=True)[:limit])
+        # Get the top `limit` items
+        top_counts = dict(sorted_counts[:limit])
+
+        # Sum the remaining counts as "Other"
+        other_count = sum(count for _, count in sorted_counts[limit:])
+        if other_count > 0:
+            top_counts["Other"] = other_count
+
+        return top_counts
     else:
-        return dict(sorted(counts.items(), key=lambda x: x[1], reverse=True))
+        return dict(sorted_counts)
 
 
 def count_total_entries(data: list[dict]) -> int:

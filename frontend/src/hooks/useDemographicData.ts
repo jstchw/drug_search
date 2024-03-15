@@ -35,6 +35,7 @@ export const useDemographicData = (paramsArray: URLParams[]): UseTermDataBatchRe
   } = useQuery(queryKey, () => fetchDemographicData(paramsArray), {
     staleTime: 3600000,
     retry: false,
+    keepPreviousData: true,
   });
 
   const isError = !!error;

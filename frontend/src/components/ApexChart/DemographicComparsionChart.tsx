@@ -34,6 +34,7 @@ const getParamsArray = (term: string, searchBy: string, searchMode: string): URL
   return paramList;
 };
 
+/* GROUP THE DATA BY SELECTED AGGREGATE TYPE (MALE, FEMALE, AGE GROUP ETC) */
 const groupData = (data: DemographicDataType[], filterType: keyof DemographicDataType['params']) => {
   const aggregatedData: Record<string, DemographicDataType[]> = {};
   data.forEach((entry) => {
@@ -46,6 +47,7 @@ const groupData = (data: DemographicDataType[], filterType: keyof DemographicDat
   return aggregatedData;
 };
 
+/* ADVANCED VIEW DATA TRANSFORMATION */
 const transformDataGranular = (data: DemographicDataType[], aggregateType: string) => {
   const aggregation = oppositeAggregation[aggregateType];
 
@@ -63,9 +65,11 @@ const transformDataGranular = (data: DemographicDataType[], aggregateType: strin
       return termData ? termData.y : 0;
     }),
   }));
+
   return { series, labels };
 };
 
+/* SIMPLE VIEW DATA TRANSFORMATION */
 const transformDataSimple = (data: DemographicDataType[], limit = 10) => {
   if (!data) {
     return { series: [], labels: [] };
@@ -90,13 +94,20 @@ const transformDataSimple = (data: DemographicDataType[], limit = 10) => {
     series: [
       {
         name: 'Count',
-        data: combinedDataArray.slice(0, limit).map((entry) => entry.y),
+        data: combinedDataArray
+          .filter((entry) => entry.x !== 'Other')
+          .slice(0, limit)
+          .map((entry) => entry.y),
       },
     ],
-    labels: combinedDataArray.slice(0, limit).map((entry) => entry.x),
+    labels: combinedDataArray
+      .filter((entry) => entry.x !== 'Other')
+      .slice(0, limit)
+      .map((entry) => entry.x),
   };
 };
 
+/* ALTERNATE BETWEEN FDA AND PM */
 const useDynamicDemoData = (paramsArray: URLParams[], source: 'fda' | 'pm') => {
   return source === 'fda' ? useFdaDemographicData(paramsArray) : usePmDemographicData(paramsArray);
 };
@@ -158,13 +169,12 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
     return null;
   }
 
-  // This is currently a crutch to avoid the issue of overcrowding the chart in the advanced view with source PM.
   const aggregatedDataForKey =
     source === 'fda' ? aggregatedData[currentPageKey] : aggregatedData[currentPageKey]?.slice(0, 10);
 
   const { series, labels } = advancedView
     ? transformDataGranular(aggregatedDataForKey || [], aggregateType)
-    : transformDataSimple(aggregatedDataForKey || []);
+    : transformDataSimple(aggregatedDataForKey || []); 
 
   const totalTermCount = series.reduce((acc, curr) => {
     return acc + curr.data.reduce((acc, curr) => acc + curr, 0);

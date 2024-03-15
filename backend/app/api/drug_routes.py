@@ -281,13 +281,13 @@ def get_pm_terms():
         'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
     }
 
-    results = search_json(params, data=pubmed_data, limit=1000)
+    results = search_json(params, data=pubmed_data, limit=10000)
     
     # Current solution to count by term works only if all terms are of the same type
     # It can be changed to accommodate different way of searching but this will be done when
     # an AI model will be able to determine the type of each term automatically.
     if results:
-        count_by_term = count_entries_by_terms(results, params['terms'][0]['type'], limit=50)
+        count_by_term = count_entries_by_terms(results, params['terms'][0]['type'], limit=10)
     else:
         count_by_term = {"error": "No data found"}
 

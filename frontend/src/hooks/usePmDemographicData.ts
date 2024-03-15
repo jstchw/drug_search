@@ -36,9 +36,11 @@ const usePmDemographicData = (paramsArray: URLParams[]) => {
         return {
           params: mapParamArrayToLabels(paramsArray[index] as URLParams),
           data: item.data,
+          total: item.total,
         };
       }) as DemographicDataType[];
     },
+    keepPreviousData: true,
   });
 
   const isError = !!error;

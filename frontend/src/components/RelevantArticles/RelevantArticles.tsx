@@ -16,7 +16,6 @@ const RelevantArticles = () => {
     params: { terms, searchBy },
   } = useUrlParams();
 
-
   const articleTerms = useArticleStore((state) => state.articleTerms);
 
   const wordsToHighlight = useMemo(() => {
@@ -77,15 +76,17 @@ const RelevantArticles = () => {
       <Row>
         {isLoading && (
           <div className={'d-flex justify-content-center mb-4'}>
-            <BarLoader className={'text-red'} loading={isLoading} speedMultiplier={2}/>
+            <BarLoader className={'text-red'} loading={isLoading} speedMultiplier={2} />
           </div>
         )}
       </Row>
-      <motion.div layout transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
+      <motion.div
+        layout
+        transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
         style={{
           filter: isLoading ? 'blur(0.5em) grayscale(1)' : 'none',
           pointerEvents: isLoading ? 'none' : 'auto',
-          }}
+        }}
       >
         {errorCode >= 500 ? (
           <div className={'d-flex justify-content-center'}>

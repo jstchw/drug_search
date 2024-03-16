@@ -7,7 +7,15 @@ import {
   PercentageIntensityColors,
   DemographicRequestType,
 } from '../types';
-import { baseFdaUrl, searchModes, searchSex, searchTypes, percentageIntensityColors, whatToCount, searchAgeGroups } from '../constants';
+import {
+  baseFdaUrl,
+  searchModes,
+  searchSex,
+  searchTypes,
+  percentageIntensityColors,
+  whatToCount,
+  searchAgeGroups,
+} from '../constants';
 import React from 'react';
 
 export const processTermData = (data: ResultItem[]): ChartDataPoint[] => {
@@ -217,25 +225,38 @@ export const getNewStyleTerms = (terms: string[], searchBy: string) => {
   return terms.map((term) => ({ term: term, type: searchBy }));
 };
 
-export const generateRequestArgs = (term: string, type: string, aggregateType: string, currentPageKey: string, advancedView: boolean, searchMode: string) => {
+export const generateRequestArgs = (
+  term: string,
+  type: string,
+  aggregateType: string,
+  currentPageKey: string,
+  advancedView: boolean,
+  searchMode: string
+) => {
   const requestArgs: DemographicRequestType = {
-    terms: [{
-      term: term.toLowerCase(),
-      type: type.toLowerCase(),
-    }],
+    terms: [
+      {
+        term: term.toLowerCase(),
+        type: type.toLowerCase(),
+      },
+    ],
     searchMode: searchMode.toLowerCase(),
     groupType: aggregateType.toLowerCase(),
     view: advancedView ? 'advanced' : 'simple',
   };
-  
+
   if (aggregateType === 'Age' && searchAgeGroups[currentPageKey]) {
     requestArgs.age = {
       min: searchAgeGroups[currentPageKey]?.min.toString() ?? '',
       max: searchAgeGroups[currentPageKey]?.max.toString() ?? '',
     };
   } else if (aggregateType === 'Sex') {
+    requestArgs.age = {
+      min: '0',
+      max: '120'
+    };
     requestArgs.sex = currentPageKey.toLowerCase();
   }
 
   return requestArgs;
-}
+};

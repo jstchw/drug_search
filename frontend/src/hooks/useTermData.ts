@@ -24,14 +24,14 @@ export const useTermData = (source: string, noFilterRequest = false) => {
     url = baseUrl + termsParam + '&' + searchModeParam + sexParam + ageParam + viewParam + return_limit;
   }
 
-  const {
-    data,
-    isError,
-    isLoading,
-  } = useQuery(['usePmTermData', url], () => fetchData(url) as Promise<DemographicResponseType>, {
-    staleTime: 3600000,
-    retry: false,
-  });
+  const { data, isError, isLoading } = useQuery(
+    ['usePmTermData', url],
+    () => fetchData(url) as Promise<DemographicResponseType>,
+    {
+      staleTime: 3600000,
+      retry: false,
+    }
+  );
 
   return { data, isError, isLoading };
 };

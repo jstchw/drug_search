@@ -57,14 +57,14 @@ const SearchBox = () => {
 
   // Stop the placeholder animation when the input is not empty
   useEffect(() => {
-    setIsInputRefPresent(inputRef.current.some(element => element.trim() !== ""));
+    setIsInputRefPresent(inputRef.current.some((element) => element.trim() !== ''));
   }, [inputRef.current]);
 
   return (
     <div className={'d-flex justify-content-center text-center'}>
       <Form onSubmit={handleSearch}>
         <Form.Group controlId="searchTerm">
-          <InputGroup className='flex-nowrap'>
+          <InputGroup className="flex-nowrap">
             <>
               <Button
                 variant="outline-secondary"
@@ -86,10 +86,7 @@ const SearchBox = () => {
               isMulti
               // display the passed input value if it exists
               value={inputValue.map((item) => ({ value: item, label: item }))}
-              menuIsOpen={
-                suggestions.length > 0 ||
-                inputRef.current.some((item) => item.length > 0)
-              }
+              menuIsOpen={suggestions.length > 0 || inputRef.current.some((item) => item.length > 0)}
               onInputChange={(e) => handleInputChange(e)}
               onChange={(e) => setInputValue(e.map((item) => item.value))}
               options={suggestions.map((suggestion) => ({
@@ -113,10 +110,11 @@ const SearchBox = () => {
                 multiValueLabel: () => (theme === 'dark' ? 'text-light' : ''),
               }}
               styles={{
-                control: (provided) => ({
-                  ...provided,
-                  minWidth: '11rem',
-                }) as CSSObjectWithLabel,
+                control: (provided) =>
+                  ({
+                    ...provided,
+                    minWidth: '11rem',
+                  }) as CSSObjectWithLabel,
               }}
             />
 

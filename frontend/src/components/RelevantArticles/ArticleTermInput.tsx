@@ -1,6 +1,6 @@
 import CreatableSelect from 'react-select/creatable';
 import { CSSObjectWithLabel } from 'react-select';
-import { useState, useRef} from 'react';
+import { useState, useRef } from 'react';
 import { useSuggestions } from '../../hooks/useSuggestions';
 import Fuse, { FuseResult, Expression } from 'fuse.js';
 import { SearchOptionsType } from '../../types';
@@ -40,27 +40,20 @@ const ArticleTermInput = () => {
   const handleSubmit = (value: string) => {
     addArticleTerm(value, searchType.param, true);
     setInputValue('');
-  }
+  };
 
   return (
     <motion.div layout>
       <Form className={'mb-2'}>
         <InputGroup>
           <Dropdown>
-            <Dropdown.Toggle 
-              variant="outline-secondary" 
-              id="dropdown-basic"
-            >
+            <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic">
               {searchType.label}
             </Dropdown.Toggle>
 
-
             <Dropdown.Menu>
               {searchTypes.map((type, index) => (
-                <Dropdown.Item
-                  key={index}
-                  onClick={() => setSearchType(type)}
-                >
+                <Dropdown.Item key={index} onClick={() => setSearchType(type)}>
                   {type.label}
                 </Dropdown.Item>
               ))}
@@ -69,10 +62,7 @@ const ArticleTermInput = () => {
 
           <CreatableSelect
             className={'text-center'}
-            menuIsOpen={
-              suggestions.length > 0 ||
-              inputRef.current.some((item) => item.length > 0)
-            }
+            menuIsOpen={suggestions.length > 0 || inputRef.current.some((item) => item.length > 0)}
             components={{
               DropdownIndicator: () => null,
               IndicatorSeparator: () => null,
@@ -83,30 +73,29 @@ const ArticleTermInput = () => {
               label: suggestion.item,
             }))}
             onChange={(e) => e && handleSubmit(e.value)}
-            value={ inputValue ?
-              { value: inputValue, label: inputValue } : null
-            }
+            value={inputValue ? { value: inputValue, label: inputValue } : null}
             placeholder={'Filter by terms...'}
             classNames={{
-              control: () => 
-              theme === 'dark'
-                    ? 'bg-transparent border-secondary rounded-start-0 rounded-end-2'
-                    : 'bg-white border-secondary rounded-start-0 rounded-end-2',
-                    menu: () => (theme === 'dark' ? 'bg-dark text-light' : ''),
-                    input: () => (theme === 'dark' ? 'bg-transparent text-light' : ''),
-                    option: (state) => (state.isFocused && theme === 'dark' ? 'text-dark' : ''),
+              control: () =>
+                theme === 'dark'
+                  ? 'bg-transparent border-secondary rounded-start-0 rounded-end-2'
+                  : 'bg-white border-secondary rounded-start-0 rounded-end-2',
+              menu: () => (theme === 'dark' ? 'bg-dark text-light' : ''),
+              input: () => (theme === 'dark' ? 'bg-transparent text-light' : ''),
+              option: (state) => (state.isFocused && theme === 'dark' ? 'text-dark' : ''),
             }}
             styles={{
-              control: (base) => ({
-                ...base,
-                minWidth: '13em',
-              }) as CSSObjectWithLabel,
+              control: (base) =>
+                ({
+                  ...base,
+                  minWidth: '13em',
+                }) as CSSObjectWithLabel,
             }}
           />
         </InputGroup>
       </Form>
     </motion.div>
   );
-}
+};
 
 export default ArticleTermInput;

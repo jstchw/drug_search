@@ -288,13 +288,12 @@ def get_pm_terms():
         'group_type': json.loads(request.args.get('group_type')) if request.args.get('group_type') else None,
         'return_limit': json.loads(request.args.get('return_limit')) if request.args.get('return_limit') else 10,
     }
-
-    param_list = generate_param_list(params)
     
     if params['view'] == 'simple':
         results = search_json(params, data=pubmed_data, limit=10000)
         demographic_breakdown = get_simple_demographic_breakdown(results, limit = params['return_limit'])
     elif params['view'] == 'advanced':
+        param_list = generate_param_list(params)
         results = []
         for param in param_list:
             search_results = search_json(param, data=pubmed_data, limit=10000)
@@ -334,6 +333,8 @@ def get_fda_terms():
         'group_type': json.loads(request.args.get('group_type')) if request.args.get('group_type') else None,
         'return_limit': json.loads(request.args.get('return_limit')) if request.args.get('return_limit') else 10,
     }
+
+    print(params, flush=True)
 
     try:
         results = asyncio.run(search_fda(params, limit = params['return_limit']))

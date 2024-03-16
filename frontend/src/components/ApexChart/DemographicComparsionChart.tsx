@@ -11,6 +11,7 @@ import useDemographicData from '../../hooks/useDemographicData';
 import { BarLoader } from 'react-spinners';
 import { motion } from 'framer-motion';
 import { generateRequestArgs, valueToPercentage } from '../../utils/utils';
+import { getColorFromPercentage } from '../../utils/utils';
 
 interface DemographicComparsionChartTypes {
   aggregateType: string;
@@ -37,15 +38,11 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
     state.setGroupPageKeys,
   ]);
 
-
   const requestArgs = generateRequestArgs(term, searchType, aggregateType, currentPageKey, advancedView, searchMode);
 
   const { data, isError, isLoading } = useDemographicData(requestArgs, source);
 
-  const hasData = React.useMemo(
-    () => !!(data && !isError),
-    [data, isError]
-  );
+  const hasData = React.useMemo(() => !!(data && !isError), [data, isError]);
 
   React.useEffect(() => {
     onDataStatusChange(true);
@@ -69,7 +66,13 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
   }
 
   const chartOptions: ApexOptions = {
-    colors: chartColors,
+    colors: !advancedView ? [
+      function ({ value }: { value: number }) {
+        if (!data) return '';
+        const percentage = valueToPercentage(value, data.total_count);
+        return getColorFromPercentage(percentage);
+      }
+    ] : chartColors,
     theme: {
       mode: theme,
     },
@@ -115,10 +118,11 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
     },
     dataLabels: {
       enabled: true,
-      formatter: function(val, opts) {
-        // Assuming your raw data is accessible, e.g., in a `series` array
-        const rawValue = data.series[opts.seriesIndex].data[opts.dataPointIndex];
-        return rawValue?.toLocaleString(); // This will display raw values instead of percentages
+      formatter: (_, opts) => {
+        if (!data) return '';
+
+        const rawValue = data.series[opts.seriesIndex]?.data[opts.dataPointIndex];
+        return rawValue?.toLocaleString() as string;
       },
       style: {
         fontSize: '16px',
@@ -132,9 +136,16 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
       },
       y: {
         formatter: (val: number, opts) => {
+          if (!data) return '';
+
           if (advancedView) {
             const categoryIndex = opts.dataPointIndex;
-            const sumForCategory = data.series.reduce((acc, series) => acc + series.data[categoryIndex], 0);
+            const sumForCategory = data.series.reduce((acc, series) => {
+              if (series.data && Array.isArray(series.data) && series.data[categoryIndex] !== undefined) {
+                return acc + (series.data[categoryIndex] as number);
+              }
+              return acc;
+            }, 0);
             return `${valueToPercentage(val, sumForCategory).toPrecision(3)}% out of ${sumForCategory.toLocaleString()}`;
           } else {
             return `${valueToPercentage(val, data?.total_count).toPrecision(3)}% out of ${data?.total_count.toLocaleString()}`;
@@ -146,26 +157,31 @@ const DemographicComparsionChart: React.FC<DemographicComparsionChartTypes> = ({
 
   return (
     <>
-    {isLoading && (
-      <div className={'d-flex justify-content-center mb-4'}>
-        <BarLoader className={'text-red'} loading={isLoading} speedMultiplier={2}/>
-      </div>
-    )}
-    <motion.div layout transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
-      style={{
-        filter: isLoading ? 'blur(0.5em) grayscale(1)' : 'none',
-        pointerEvents: isLoading ? 'none' : 'auto',
-        }}
-    >
-      {data?.total_count && (
-      <Row className={'text-center'}>
-        <span className={'text-secondary'}>Percentage is calculated using only the presented data</span>
-        <span className={'text-secondary'}>Some data may not be displayed due to low significance</span>
-        <span className={'text-secondary mt-2'}>{data.total_count.toLocaleString()} events collected for {data.categories.length} {advancedView ? 'categories' : 'terms'}</span>
-      </Row>
+      {isLoading && (
+        <div className={'d-flex justify-content-center mb-4'}>
+          <BarLoader className={'text-red'} loading={isLoading} speedMultiplier={2} />
+        </div>
       )}
-      <ReactApexChart options={chartOptions} series={data?.series} type="bar" />
-    </motion.div>
+      <motion.div
+        layout
+        transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
+        style={{
+          filter: isLoading ? 'blur(0.5em) grayscale(1)' : 'none',
+          pointerEvents: isLoading ? 'none' : 'auto',
+        }}
+      >
+        {data?.total_count && (
+          <Row className={'text-center'}>
+            <span className={'text-secondary'}>Percentage is calculated using only the presented data</span>
+            <span className={'text-secondary'}>Some data may not be displayed due to low significance</span>
+            <span className={'text-secondary mt-2'}>
+              {data.total_count.toLocaleString()} events collected for {data.categories.length}{' '}
+              {advancedView ? 'categories' : 'terms'}
+            </span>
+          </Row>
+        )}
+        <ReactApexChart options={chartOptions} series={data?.series} type="bar" />
+      </motion.div>
     </>
   );
 };

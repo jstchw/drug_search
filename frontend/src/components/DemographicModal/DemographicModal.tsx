@@ -97,11 +97,12 @@ const DemographicModal = () => {
   return (
     <Modal show={show} onHide={handleShow} centered size={'xl'}>
       <Modal.Header closeButton>
-        <Button variant={'outline-primary me-2'} style={{ pointerEvents: 'none'}}>{mapParamToLabel(demographicType, searchTypes)}</Button>
+        <Button variant={'outline-primary me-2'} style={{ pointerEvents: 'none' }}>
+          {mapParamToLabel(demographicType, searchTypes)}
+        </Button>
         <Modal.Title>{term}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <AnimatePresence>
         {hasFdaDistributionData && (
           <>
             <Row className={'mb-2 text-center'}>
@@ -112,105 +113,107 @@ const DemographicModal = () => {
             </Row>
           </>
         )}
-        <motion.div
-          key={'distribution'}
-          layout
-          variants={containerVariants}
-          initial={'hidden'}
-          animate={'visible'}
-          exit={{ opacity: 0 }}
-        >
-          <Row>
-            <Col xs={isMobile ? 12 : 6} className={'mb-3 text-center'}>
-              <Row>
-                <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
-              </Row>
-              {isPubmedDistribution && (
-                <motion.div variants={itemVariants}>
-                  <Row className={'mt-4'}>
-                    <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
-                  </Row>
-                </motion.div>
-              )}
-            </Col>
-            <Col xs={isMobile ? 12 : 6} className={'mb-3 text-center'}>
-              <Row>
-                <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
-              </Row>
-              {isPubmedDistribution && (
-                <motion.div variants={itemVariants}>
-                  <Row className={'mt-4'}>
-                    <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
-                  </Row>
-                </motion.div>
-              )}
-            </Col>
-          </Row>
-          <motion.div variants={itemVariants}>
-            {hasFdaDemographicData && (
-              <div>
-                <Row className={'text-center mt-3 mb-1'}>
-                  <span className={'fs-2 fw-light'}>Demographic breakdown</span>
-                </Row>
-                <Row className={'mb-2'}>
-                  <ToggleSwitch handleToggleSwitch={toggleDemographicChartAdvanced}>Advanced view</ToggleSwitch>
-                </Row>
-                {demographicType === 'side_effect' && (
-                  <Row className={'mb-2'}>
-                    <ToggleSwitch handleToggleSwitch={toggleDemographicDataSource}>View Pubmed data</ToggleSwitch>
-                  </Row>
-                )}
-                <Row className={'text-center mb-2'}>
-                  <span className={'text-secondary'}>Group by:</span>
-                </Row>
-                <Row>
-                  <Nav
-                    variant={'pills'}
-                    className="justify-content-center align-items-center mb-3"
-                    onSelect={(index) => {
-                      setAggregateType(index as AggregateType);
-                    }}
-                    defaultActiveKey={aggregateType}
-                  >
-                    <Nav.Item className={'mx-1'}>
-                      <Nav.Link eventKey={'Sex'}>Sex</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item className={'mx-1'}>
-                      <Nav.Link eventKey={'Age'}>Age</Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </Row>
-                <Row>
-                  <Nav variant={'pills'} className="justify-content-center mb-3">
-                    {groupPageKeys && groupPageKeys.map((key, index) => (
-                      <Nav.Item key={`${key}-${index}`} className={'mx-1'}>
-                        <Nav.Link
-                          eventKey={index}
-                          active={currentPageKey === key}
-                          onClick={() => setCurrentPageKey(key)}
-                          className={'outline-primary'}
-                        >
-                          {key}
-                        </Nav.Link>
-                      </Nav.Item>
-                    ))}
-                  </Nav>
-                </Row>
-              </div>
-            )}
+        <AnimatePresence>
+          <motion.div
+            key={`distribution`}
+            layout
+            variants={containerVariants}
+            initial={'hidden'}
+            animate={'visible'}
+            exit={{ opacity: 0 }}
+          >
             <Row>
-              <DemographicComparsionChart
-                aggregateType={aggregateType}
-                currentPageKey={currentPageKey}
-                onDataStatusChange={
-                  demographicDataSource === 'fda' ? handleFdaDemographicStatusChange : handlePmDemographicStatusChange
-                }
-                advancedView={isDemographicChartAdvanced}
-                source={demographicDataSource}
-              />
+              <Col xs={isMobile ? 12 : 6} className={'mb-3 text-center'}>
+                <Row>
+                  <DonutChart source={'fda'} type={'age_group'} onDataStatusChange={handleFdaDistributionStatus} />
+                </Row>
+                {isPubmedDistribution && (
+                  <motion.div variants={itemVariants}>
+                    <Row className={'mt-4'}>
+                      <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
+                    </Row>
+                  </motion.div>
+                )}
+              </Col>
+              <Col xs={isMobile ? 12 : 6} className={'mb-3 text-center'}>
+                <Row>
+                  <DonutChart source={'fda'} type={'patient_sex'} onDataStatusChange={handleFdaDistributionStatus} />
+                </Row>
+                {isPubmedDistribution && (
+                  <motion.div variants={itemVariants}>
+                    <Row className={'mt-4'}>
+                      <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
+                    </Row>
+                  </motion.div>
+                )}
+              </Col>
             </Row>
+            <motion.div key={'breakdown'} variants={itemVariants}>
+              {hasFdaDemographicData && (
+                <div>
+                  <Row className={'text-center mt-3 mb-1'}>
+                    <span className={'fs-2 fw-light'}>Demographic breakdown</span>
+                  </Row>
+                  <Row className={'mb-2'}>
+                    <ToggleSwitch handleToggleSwitch={toggleDemographicChartAdvanced}>Advanced view</ToggleSwitch>
+                  </Row>
+                  {demographicType === 'side_effect' && (
+                    <Row className={'mb-2'}>
+                      <ToggleSwitch handleToggleSwitch={toggleDemographicDataSource}>View Pubmed data</ToggleSwitch>
+                    </Row>
+                  )}
+                  <Row className={'text-center mb-2'}>
+                    <span className={'text-secondary'}>Group by:</span>
+                  </Row>
+                  <Row>
+                    <Nav
+                      variant={'pills'}
+                      className="justify-content-center align-items-center mb-3"
+                      onSelect={(index) => {
+                        setAggregateType(index as AggregateType);
+                      }}
+                      defaultActiveKey={aggregateType}
+                    >
+                      <Nav.Item className={'mx-1'}>
+                        <Nav.Link eventKey={'Sex'}>Sex</Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item className={'mx-1'}>
+                        <Nav.Link eventKey={'Age'}>Age</Nav.Link>
+                      </Nav.Item>
+                    </Nav>
+                  </Row>
+                  <Row>
+                    <Nav variant={'pills'} className="justify-content-center mb-3">
+                      {groupPageKeys &&
+                        groupPageKeys.map((key, index) => (
+                          <Nav.Item key={`${key}-${index}`} className={'mx-1'}>
+                            <Nav.Link
+                              eventKey={index}
+                              active={currentPageKey === key}
+                              onClick={() => setCurrentPageKey(key)}
+                              className={'outline-primary'}
+                            >
+                              {key}
+                            </Nav.Link>
+                          </Nav.Item>
+                        ))}
+                    </Nav>
+                  </Row>
+                </div>
+              )}
+              <Row>
+                <DemographicComparsionChart
+                  aggregateType={aggregateType}
+                  currentPageKey={currentPageKey}
+                  onDataStatusChange={
+                    demographicDataSource === 'fda' ? handleFdaDemographicStatusChange : handlePmDemographicStatusChange
+                  }
+                  advancedView={isDemographicChartAdvanced}
+                  source={demographicDataSource}
+                />
+              </Row>
+            </motion.div>
           </motion.div>
-        </motion.div>
         </AnimatePresence>
       </Modal.Body>
     </Modal>

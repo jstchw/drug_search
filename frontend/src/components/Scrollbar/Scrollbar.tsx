@@ -19,8 +19,8 @@ const Scrollbar: FC<ScrollbarProps> = ({ searchBoxSectionRef }) => {
 
   return (
     <>
-    <AnimatePresence>
-      {showScrollbar ? (
+      <AnimatePresence>
+        {showScrollbar ? (
           <motion.div
             initial={{ y: -200 }}
             animate={{ y: 0 }}
@@ -35,11 +35,7 @@ const Scrollbar: FC<ScrollbarProps> = ({ searchBoxSectionRef }) => {
             className="fixed-top py-4 rounded shadow-lg bg-body"
           >
             <Nav>
-              <Col 
-                className={
-                  !isMobile ? 'ms-4' : 'justify-content-center align-items-center d-flex mb-3'
-                }
-              >
+              <Col className={!isMobile ? 'ms-4' : 'justify-content-center align-items-center d-flex mb-3'}>
                 <Header />
               </Col>
 
@@ -50,8 +46,8 @@ const Scrollbar: FC<ScrollbarProps> = ({ searchBoxSectionRef }) => {
               <Col xs={4}></Col>
             </Nav>
           </motion.div>
-      ) : undefined}
-    </AnimatePresence>
+        ) : undefined}
+      </AnimatePresence>
     </>
   );
 };

@@ -103,9 +103,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
   const theme = useGeneralOptionsStore((state) => state.theme);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
-  // const { reportData, isError } = useDynamicTermData(noFilterRequest, source);
-
-  const {data, isError, isLoading } = useTermData(source, noFilterRequest);
+  const { data, isError } = useTermData(source, noFilterRequest);
 
   const setShowDemographic = useDemographicStore((state) => state.setShowDemographic);
   const setDemographicTerm = useDemographicStore((state) => state.setDemographicTerm);
@@ -145,12 +143,12 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
   // Pagination items
   const seriesForCurrentPage = data?.series.map((series) => ({
     ...series,
-    data: series.data.slice(
-      currentChartPage * itemsPerPage,
-      (currentChartPage + 1) * itemsPerPage
-    ),
+    data: series.data.slice(currentChartPage * itemsPerPage, (currentChartPage + 1) * itemsPerPage),
   }));
-  const categoriesForCurrentPage = data?.categories.slice(currentChartPage * itemsPerPage, (currentChartPage + 1) * itemsPerPage);
+  const categoriesForCurrentPage = data?.categories.slice(
+    currentChartPage * itemsPerPage,
+    (currentChartPage + 1) * itemsPerPage
+  );
 
   const totalPageCount = Math.ceil(data.categories.length / itemsPerPage);
   const paginationItems = [];
@@ -162,11 +160,10 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
     );
   }
 
-
   /* Apex Chart declarations */
   const chartOptions: ApexOptions = {
     colors: [
-      function({ value }: { value: number}) {
+      function ({ value }: { value: number }) {
         const percentage = valueToPercentage(value, data.total_count);
         return getColorFromPercentage(percentage);
       },
@@ -258,13 +255,13 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       // },
       formatter: (value: number) => {
         return `${value.toLocaleString()}`;
-      }
+      },
     },
   };
 
   /* Word Cloud declarations*/
   const cloudData = data.categories.map((category, index) => {
-    const value = data.series[0]?.data[index];
+    const value = data.series[0]?.data[index] as number;
     return {
       text: category.toUpperCase(),
       value: value,
@@ -273,7 +270,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
 
   const cloudCallbacks: CallbacksProp = {
     getWordColor: (word: { text: string; value: number }) => {
-      const maxFrequency = Math.max(...cloudData.map((w) => w.value) as number[]);
+      const maxFrequency = Math.max(...(cloudData.map((w) => w.value) as number[]));
       const frequencyRatio = word.value / maxFrequency;
 
       if (theme === 'dark') {
@@ -310,19 +307,12 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
           isOpen={isContextMenuOpen}
           onClose={() => setIsContextMenuOpen(false)}
         >
-          <MenuItem 
-            onClick={openDemographicModal}
-            className={(state) => (
-              state.hover ? 'text-black' : ''
-            )}
-          >
+          <MenuItem onClick={openDemographicModal} className={(state) => (state.hover ? 'text-black' : '')}>
             Demographic breakdown
           </MenuItem>
-          <MenuItem 
+          <MenuItem
             onClick={() => addArticleTerm(contextMenuSelectedTerm, determineDisplayType(searchBy), true)}
-            className={(state) => (
-              state.hover ? 'text-black' : ''
-            )}
+            className={(state) => (state.hover ? 'text-black' : '')}
           >
             Add to article filters
           </MenuItem>
@@ -341,7 +331,9 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       >
         <Row className={'mt-1'}>
           <Col className={'mb-3 text-center'}>
-            <span className={'text-secondary'}>{data.total_count.toLocaleString()} events collected for {data.categories.length} terms</span>
+            <span className={'text-secondary'}>
+              {data.total_count.toLocaleString()} events collected for {data.categories.length} terms
+            </span>
           </Col>
         </Row>
         <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3 z-index-n-1'}>
@@ -369,11 +361,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
           swipeable={false}
         >
           <div>
-            <ReactApexChart
-              options={chartOptions}
-              series={seriesForCurrentPage}
-              type={'bar'}
-            />
+            <ReactApexChart options={chartOptions} series={seriesForCurrentPage} type={'bar'} />
             <Pagination size={'lg'} className={'d-flex justify-content-center'}>
               {paginationItems}
             </Pagination>

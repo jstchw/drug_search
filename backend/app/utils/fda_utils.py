@@ -45,7 +45,7 @@ def generate_fda_url(params: dict, entry_count: bool = False, limit = 50) -> str
         if max_age is None:
             max_age = default_max_age
     
-        age_range = f"[{min_age}+TO+{max_age}]"
+    age_range = f"[{min_age}+TO+{max_age}]"
 
     search_parts = []
     sex_param = params.get('sex')

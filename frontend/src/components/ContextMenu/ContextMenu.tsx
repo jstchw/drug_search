@@ -35,12 +35,10 @@ const AnimatedMenu: FC<AnimatedMenuProps> = ({ isOpen, anchorPoint, onClose, chi
       animate={isOpen ? 'open' : 'closed'}
       style={{ position: 'absolute', zIndex: 1000 }}
     >
-      <ControlledMenu 
-        menuClassName={
-          theme === 'dark' ? 'bg-dark text-white' : ''
-        }
-        anchorPoint={adjustedAnchorPoint} 
-        state={isOpen ? 'open' : 'closed'} 
+      <ControlledMenu
+        menuClassName={theme === 'dark' ? 'bg-dark text-white' : ''}
+        anchorPoint={adjustedAnchorPoint}
+        state={isOpen ? 'open' : 'closed'}
         onClose={onClose}
       >
         {children}

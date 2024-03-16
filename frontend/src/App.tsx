@@ -7,7 +7,7 @@ import useGeneralOptionsStore from './stores/generalOptionsStore';
 const initSettings = () => {
   const theme = useGeneralOptionsStore((state) => state.theme);
   document.documentElement.setAttribute('data-bs-theme', theme);
-}
+};
 
 const App = () => {
   initSettings();

@@ -96,9 +96,9 @@ const Result = () => {
 
   return (
     <>
-      <Scrollbar key={'scrollbar'} searchBoxSectionRef={searchBoxSectionRef}/>
+      <Scrollbar key={'scrollbar'} searchBoxSectionRef={searchBoxSectionRef} />
 
-      <AnimatePresence>{showDemographic && <DemographicModal />}</AnimatePresence>
+      <AnimatePresence mode={'wait'}>{showDemographic && <DemographicModal />}</AnimatePresence>
 
       <InfoCard />
 

@@ -144,7 +144,7 @@ export type DemographicRequestType = {
   country?: string;
   view: string;
   groupType: string;
-}
+};
 
 export type DemographicResponseType = {
   categories: string[];

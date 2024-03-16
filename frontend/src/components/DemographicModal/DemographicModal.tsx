@@ -181,7 +181,7 @@ const DemographicModal = () => {
                 </Row>
                 <Row>
                   <Nav variant={'pills'} className="justify-content-center mb-3">
-                    {groupPageKeys.map((key, index) => (
+                    {groupPageKeys && groupPageKeys.map((key, index) => (
                       <Nav.Item key={`${key}-${index}`} className={'mx-1'}>
                         <Nav.Link
                           eventKey={index}

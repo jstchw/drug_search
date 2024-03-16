@@ -142,7 +142,7 @@ const ChartSection = () => {
                 </Row>
               )}
               <Row className={'d-flex justify-content-center text-secondary text-center'}>
-                Percentage is calculated using only the presented data.
+                Percentage is calculated using only the presented data
               </Row>
 
               {areParamsFiltered &&

@@ -4,9 +4,11 @@ import io
 from rdkit import Chem
 from rdkit.Chem import Draw
 from app.services.data_manager import DataManager
-from app.utils import count_entries_by_age, count_entries_by_gender, count_entries_by_terms, count_entries_by_year, format_json_drug, search_json, get_pubmed_metadata, transform_dict_to_x_y, count_total_entries
+from utils.pm_utils import count_entries_by_age, count_entries_by_gender, count_entries_by_year, format_json_drug, search_json, get_pubmed_metadata, transform_dict_to_x_y, get_simple_demographic_breakdown, get_advanced_demographic_breakdown
 import json
-from constants import count_properties_from_search_type
+from utils.fda_utils import search_fda
+import asyncio
+from utils.general_utils import generate_param_list
 
 drug_api = Blueprint('drug_api', __name__)
 
@@ -165,7 +167,7 @@ def get_pm_timedata():
     }
 
     results = search_json(params, data=pubmed_data, limit=10000)
-    total_entries = count_total_entries(results)
+    total_entries = len(results)
 
     if results:
         count_by_year = count_entries_by_year(results)
@@ -269,33 +271,73 @@ def get_pm_terms():
     - sex (str): The sex of the patient, can be 'male' or 'female'.
     - age (int): The age of the patient.
     - country (str): The country for the search.
+    - view (str): The view for the search, can be 'advanced' or 'simple'.
+    - group_type (str): The group type for the search. Can be 'age' or 'sex'
+    - group_name (str): The group name for the search.
 
     Returns:
     - JSON: A JSON response containing the total count of reports for the provided term and count by term.
     """
     params = {
-        'search_mode': request.args.get('search_mode') if request.args.get('search_mode') in ['relaxed', 'strict'] else None,
+        'search_mode': json.loads(request.args.get('search_mode')) if request.args.get('search_mode') else None,
         'terms': json.loads(request.args.get('terms')) if request.args.get('terms') else None,
-        'sex': request.args.get('sex') if request.args.get('sex') in ['male', 'female'] else None,
+        'sex': json.loads(request.args.get('sex')) if request.args.get('sex') else None,
         'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
-        'country': request.args.get('country') if request.args.get('country') not in [None, 'null', 'None', ''] else None
+        'country': json.loads(request.args.get('country')) if request.args.get('country') not in [None, 'null', 'None', ''] else None,
+        'view': json.loads(request.args.get('view')) if request.args.get('view') else None,
+        'group_type': json.loads(request.args.get('group_type')) if request.args.get('group_type') else None,
+        'return_limit': json.loads(request.args.get('return_limit')) if request.args.get('return_limit') else 10,
     }
 
-    results = search_json(params, data=pubmed_data, limit=10000)
+    param_list = generate_param_list(params)
     
-    # Current solution to count by term works only if all terms are of the same type
-    # It can be changed to accommodate different way of searching but this will be done when
-    # an AI model will be able to determine the type of each term automatically.
-    if results:
-        count_by_term = count_entries_by_terms(results, params['terms'][0]['type'], limit=10)
-    else:
-        count_by_term = {"error": "No data found"}
-
-    if not results or not count_by_term:
-        return jsonify({"error": "No data found"}), 404
-
+    if params['view'] == 'simple':
+        results = search_json(params, data=pubmed_data, limit=10000)
+        demographic_breakdown = get_simple_demographic_breakdown(results, limit = params['return_limit'])
+    elif params['view'] == 'advanced':
+        results = []
+        for param in param_list:
+            search_results = search_json(param, data=pubmed_data, limit=10000)
+            results.extend(zip(search_results, [param] * len(search_results)))
+    
+        demographic_breakdown = get_advanced_demographic_breakdown(results, params['group_type'], limit = 50)
 
     return jsonify({
-        "total": sum(count_by_term.values()),
-        "data": transform_dict_to_x_y(count_by_term)
+        "categories": demographic_breakdown['categories'],
+        "series": demographic_breakdown['series'],
+        "total_count": demographic_breakdown['total_count']
     }), 200
+
+
+@drug_api.route('/get_fda_terms', methods=['GET'])
+def get_fda_terms():
+    """
+    Retrieves statistics about the term and the number of reports for the provided term.
+
+    Parameters:
+    - search_mode (str): The search mode, can be 'relaxed' or 'strict'.
+    - terms (list): A list of search terms with term value and type.
+    - sex (str): The sex of the patient, can be 'male' or 'female'.
+    - age (int): The age of the patient.
+    - country (str): The country for the search.
+    - view (str): The view for the search, can be 'advanced' or 'simple'.
+    - group_type (str): The group type for the search. Can be 'age' or 'sex'
+    """
+
+    params = {
+        'search_mode': json.loads(request.args.get('search_mode')) if request.args.get('search_mode') else None,
+        'terms': json.loads(request.args.get('terms')) if request.args.get('terms') else None,
+        'sex': json.loads(request.args.get('sex')) if request.args.get('sex') else None,
+        'age': json.loads(request.args.get('age')) if request.args.get('age') else None,
+        'country': json.loads(request.args.get('country')) if request.args.get('country') not in [None, 'null', 'None', ''] else None,
+        'view': json.loads(request.args.get('view')) if request.args.get('view') else None,
+        'group_type': json.loads(request.args.get('group_type')) if request.args.get('group_type') else None,
+        'return_limit': json.loads(request.args.get('return_limit')) if request.args.get('return_limit') else 10,
+    }
+
+    try:
+        results = asyncio.run(search_fda(params, limit = params['return_limit']))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify(results), 200

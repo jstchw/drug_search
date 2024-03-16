@@ -1,51 +1,40 @@
-import { BackendDataType, URLParams, DemographicDataType } from '../types';
-import { fetchBatchData, mapParamArrayToLabels, getNewStyleTerms } from '../utils/utils';
+import { BackendDataType, URLParams, DemographicDataType, DemographicRequestType } from '../types';
+import { fetchData, mapParamArrayToLabels, getNewStyleTerms } from '../utils/utils';
 import { useQuery } from 'react-query';
 import { backendUrl } from '../constants';
 
-const generatePmUniversalUrls = (paramsArray: URLParams[]) => {
-  const urls = paramsArray.map((params) => {
-    const termsWithTypes = getNewStyleTerms(params.terms, params.searchBy);
+interface PmDemographicData {
+  categories: string[];
+  series: number[];
+  total_count: number;
+}
 
-    const url =
-      `${backendUrl}/drug/get_pm_terms?` +
-      `terms=${encodeURIComponent(JSON.stringify(termsWithTypes))}&` +
-      `search_mode=${params.searchMode}&` +
-      `sex=${params.sex}&` +
-      `age=${encodeURIComponent(JSON.stringify(params.age))}&`;
+const usePmDemographicData = (requestArgs: DemographicRequestType) => {
+  const queryKey = ['pmDemographicData', JSON.stringify(requestArgs)];
 
-    return url;
-  });
-  return urls;
-};
+  const baseUrl = `${backendUrl}/drug/get_pm_terms?`;
+  const termsParam = `terms=${encodeURIComponent(JSON.stringify(requestArgs.terms))}`;
+  const searchModeParam = `search_mode=${encodeURIComponent(JSON.stringify(requestArgs.searchMode))}`;
+  const sexParam = requestArgs.sex ? `&sex=${encodeURIComponent(JSON.stringify(requestArgs.sex))}` : '';
+  const ageParam = requestArgs.age ? `&age=${encodeURIComponent(JSON.stringify(requestArgs.age))}` : '';
+  const groupTypeParam = `&group_type=${encodeURIComponent(JSON.stringify(requestArgs.groupType))}`;
+  const viewParam = `&view=${encodeURIComponent(JSON.stringify(requestArgs.view))}`;
 
-const usePmDemographicData = (paramsArray: URLParams[]) => {
-  const queryKey = ['pmDemographicData', JSON.stringify(paramsArray)];
-
-  const urls = generatePmUniversalUrls(paramsArray);
+  const url = baseUrl + termsParam + '&' + searchModeParam + sexParam + ageParam + groupTypeParam + viewParam;
 
   const {
-    data: paramDataArray,
+    data,
     error,
     isLoading,
-  } = useQuery(queryKey, () => fetchBatchData(urls) as Promise<BackendDataType[]>, {
+  } = useQuery(queryKey, () => fetchData(url) as Promise<PmDemographicData>, {
     staleTime: 3600000,
     retry: false,
-    select: (data) => {
-      return data.map((item, index) => {
-        return {
-          params: mapParamArrayToLabels(paramsArray[index] as URLParams),
-          data: item.data,
-          total: item.total,
-        };
-      }) as DemographicDataType[];
-    },
     keepPreviousData: true,
   });
 
   const isError = !!error;
 
-  return { paramDataArray, isError, isLoading };
+  return { data, isError, isLoading };
 };
 
 export default usePmDemographicData;

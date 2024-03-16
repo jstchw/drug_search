@@ -1,38 +1,28 @@
-import { URLParams } from '../types';
-import { ResultItem, DemographicDataType } from '../types';
-import { generateFdaPath, mapParamArrayToLabels, processTermData } from '../utils/utils';
+import { DemographicRequestType, DemographicResponseType } from '../types';
 import { useQuery } from 'react-query';
+import { backendUrl } from '../constants';
+import { fetchData } from '../utils/utils';
 
-type UseTermDataBatchReturnType = {
-  paramDataArray: DemographicDataType[] | undefined;
-  isError: boolean;
-  isLoading: boolean;
-};
 
-const fetchDemographicData = async (paramsArray: URLParams[]): Promise<DemographicDataType[]> => {
-  const fetchPromises = paramsArray.map(async (params) => {
-    const url = generateFdaPath(params, undefined, 10);
+const useDemographicData = (requestArgs: DemographicRequestType, source: string) => {
+  const baseUrl = `${backendUrl}/drug/get_${source}_terms?`;
+  const termsParam = `terms=${encodeURIComponent(JSON.stringify(requestArgs.terms))}`;
+  const searchModeParam = `search_mode=${encodeURIComponent(JSON.stringify(requestArgs.searchMode))}`;
+  const sexParam = requestArgs.sex ? `&sex=${encodeURIComponent(JSON.stringify(requestArgs.sex))}` : '';
+  const ageParam = requestArgs.age ? `&age=${encodeURIComponent(JSON.stringify(requestArgs.age))}` : '';
+  const groupTypeParam = `&group_type=${encodeURIComponent(JSON.stringify(requestArgs.groupType))}`;
+  const viewParam = `&view=${encodeURIComponent(JSON.stringify(requestArgs.view))}`;
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    const result_1 = await response.json();
-    return {
-      params: mapParamArrayToLabels(params),
-      data: processTermData(result_1.results as ResultItem[]),
-    };
-  });
+  const url = baseUrl + termsParam + '&' + searchModeParam + sexParam + ageParam + groupTypeParam + viewParam;
 
-  return Promise.all(fetchPromises);
-};
-
-export const useDemographicData = (paramsArray: URLParams[]): UseTermDataBatchReturnType => {
-  const queryKey = ['termDataBatch', JSON.stringify(paramsArray)];
+  const queryKey = ['useDemographicData' + JSON.stringify(requestArgs), source];
 
   const {
-    data: paramDataArray,
+    data,
     error,
     isLoading,
-  } = useQuery(queryKey, () => fetchDemographicData(paramsArray), {
+    isFetching,
+  } = useQuery(queryKey, () => fetchData(url) as Promise<DemographicResponseType>, {
     staleTime: 3600000,
     retry: false,
     keepPreviousData: true,
@@ -40,5 +30,9 @@ export const useDemographicData = (paramsArray: URLParams[]): UseTermDataBatchRe
 
   const isError = !!error;
 
-  return { paramDataArray, isError, isLoading };
+  const loading = isLoading || isFetching;
+
+  return { data, isError, isLoading: loading };
 };
+
+export default useDemographicData;

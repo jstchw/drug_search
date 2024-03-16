@@ -1,7 +1,10 @@
 from Bio import Entrez
 import re
 import time
+import numpy as np
+from click import group
 from constants import age_groups, sex_groups, search_fields
+from collections import defaultdict
 
 
 def format_json_drug(drug: dict, product_name: str = None) -> dict:
@@ -160,31 +163,6 @@ def search_json(params: dict, data: list[dict], limit=10) -> list:
 
             if matched_all_terms:
                 matched_entries.append(entry)
-
-
-
-        # if params['search_mode'] == 'strict':
-        #     # Strict search:
-        #     # Match only if all drugs or side effects are present in the entry
-        #     # NOW WORKS ONLY WITH GENERIC NAME OR BRAND NAME
-        #     # DOES NOT WORK WITH SIDE EFFECTS!!!
-        #     for field in search_fields:
-        #         items = entry.get(field, [])
-        #         if all(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for item in
-        #                items for term in params['terms']):
-        #             # Check if the drug is exclusive in the entry
-        #             if len(items) == len(params['terms']):
-        #                 matched_entries.append(entry)
-        # else:
-        #     # Relaxed search:
-        #     # Match even if more drugs or side effects are present in the entry
-        #     # Regex explanation:
-        #     # (?:\b|\s) - Match a word boundary or a whitespace character
-        #     # {} - The search term
-        #     # (?:\b|\s|$) - Match a word boundary, a whitespace character or the end of the string
-        #     if all(any(re.search(r'(?:\b|\s){}(?:\b|\s|$)'.format(re.escape(term.lower())), item.lower()) for field in
-        #             search_fields for item in entry.get(field, [])) for term in params['terms']):
-        #         matched_entries.append(entry)
 
 
     # Sort the entries by publication date in descending order and apply the limit
@@ -443,24 +421,11 @@ def count_entries_by_terms(data: list[dict], search_type: str, limit: int = None
         # Sum the remaining counts as "Other"
         other_count = sum(count for _, count in sorted_counts[limit:])
         if other_count > 0:
-            top_counts["Other"] = other_count
+            top_counts["other"] = other_count
 
         return top_counts
     else:
         return dict(sorted_counts)
-
-
-def count_total_entries(data: list[dict]) -> int:
-    """
-    Count the total number of entries in the given data.
-
-    Args:
-        data (list): A list of entries to be counted.
-
-    Returns:
-        int: The total number of entries.
-    """
-    return len(data)
 
 
 def flatten_list(data: list) -> list:
@@ -474,3 +439,102 @@ def flatten_list(data: list) -> list:
         list: A single list containing all the elements from the input list of lists.
     """
     return [item for sublist in data for item in sublist]
+
+
+def get_simple_demographic_breakdown(data: list, limit: int = 10) -> dict:
+    """
+    Get the demographic breakdown of the given data by the specified group type and group name.
+
+    Args:
+        data (list): A list of entries to be analyzed.
+        group_type (str): The type of group to be analyzed.
+        group_name (str): The name of the group to be analyzed.
+
+    Returns:
+        dict: A dictionary containing the demographic breakdown of the given data by the specified group type and group name.
+    """
+
+    terms_and_other_count: dict = count_entries_by_terms(data, 'side_effect')
+    total_count: int = sum(terms_and_other_count.values())
+
+    categories = [category.capitalize() for category in terms_and_other_count.keys()][:limit]
+
+    series = [{
+        'data': list(terms_and_other_count.values())[:limit],
+        'name': 'Count'
+    }]
+
+    return {
+        'categories': categories,
+        'series': series,
+        'total_count': total_count
+    }
+
+
+def get_advanced_demographic_breakdown(data: list[tuple], group_type: str, limit: int = None) -> dict:
+    unique_data = []
+    seen_pubmed_ids = set()
+    for entry, param in data:
+        if entry['pubmed_id'] not in seen_pubmed_ids:
+            unique_data.append((entry, param))
+            seen_pubmed_ids.add(entry['pubmed_id'])
+    
+    categories = []
+    series_data = defaultdict(lambda: defaultdict(int))
+    
+    for entry, param in unique_data:
+        category = None
+        if group_type == 'sex':
+            age_min, age_max = param['age']['min'], param['age']['max']
+            category = f"{age_min} - {age_max}"
+        elif group_type == 'age':
+            category = param['sex']
+        
+        if category is not None:
+            term_counts = count_entries_by_terms([entry], 'side_effect', limit)
+            for term, count in term_counts.items():
+                series_data[term][category] += count
+    
+    # Calculate the average count for each term across all categories
+    term_avg_counts = {}
+    for term, category_counts in series_data.items():
+        avg_count = np.mean(list(category_counts.values()))
+        term_avg_counts[term] = avg_count
+    
+    # Filter the terms based on their average count
+    significant_terms = [term for term, avg_count in term_avg_counts.items() if avg_count >= 1.0]  # Adjust the threshold as needed
+    
+    # Sort the significant terms by their average count in descending order
+    significant_terms.sort(key=lambda term: term_avg_counts[term], reverse=True)
+    
+    # Limit the number of significant terms to 10-15 per group
+    max_terms_per_group = 15
+    limited_significant_terms = significant_terms[:max_terms_per_group]
+    
+    # Filter the series data to include only limited significant terms
+    filtered_series_data = {term: counts for term, counts in series_data.items() if term in limited_significant_terms}
+    
+    # Calculate the "Other" counts for each category
+    other_counts = defaultdict(int)
+    for term, category_counts in series_data.items():
+        if term not in limited_significant_terms:
+            for category, count in category_counts.items():
+                other_counts[category] += count
+    
+    categories = list(set(cat for term_data in filtered_series_data.values() for cat in term_data.keys()))
+    
+    series = [
+        {
+            'name': term.capitalize(),
+            'data': [filtered_series_data[term].get(cat, 0) for cat in categories]
+        }
+        for term in limited_significant_terms
+    ]
+    
+    total_count = sum(count for term_data in series_data.values() for count in term_data.values())
+    
+    return {
+        'categories': [category.capitalize() for category in categories],
+        'series': series,
+        'total_count': total_count
+    }

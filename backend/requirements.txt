@@ -4,3 +4,4 @@ rdkit==2023.9.4
 Werkzeug==3.0.1
 requests==2.31.0
 biopython==1.83
+aiohttp==3.9.3

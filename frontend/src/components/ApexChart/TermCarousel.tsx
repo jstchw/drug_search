@@ -1,4 +1,3 @@
-import { useFdaTermData } from '../../hooks/useFdaTermData';
 import { ApexOptions } from 'apexcharts';
 import { URLParams } from '../../types';
 import ReactApexChart from 'react-apexcharts';
@@ -12,7 +11,7 @@ import { SealWarning, ChartLine, SmileyNervous } from '@phosphor-icons/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import useDemographicStore from '../../stores/demographicStore';
 import { useUrlParams } from '../../hooks/useUrlParams';
-import { usePmTermData } from '../../hooks/usePmTermData';
+import { useTermData } from '../../hooks/useTermData';
 import { searchTypes } from '../../constants';
 import { capitalizeFirstLetter, getColorFromPercentage, valueToPercentage } from '../../utils/utils';
 import _ from 'lodash';
@@ -90,10 +89,6 @@ const determineDisplayType = (searchBy: string) => {
   }
 };
 
-const useDynamicTermData = (noFilterRequest: boolean, source: string) => {
-  return source === 'fda' ? useFdaTermData(noFilterRequest) : usePmTermData();
-};
-
 interface TermCarouselProps {
   noFilterRequest?: boolean;
   onRender: () => void;
@@ -108,7 +103,9 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
   const theme = useGeneralOptionsStore((state) => state.theme);
   const [carouselIndex, setCarouselIndex] = React.useState<number>(0);
 
-  const { reportData, isError } = useDynamicTermData(noFilterRequest, source);
+  // const { reportData, isError } = useDynamicTermData(noFilterRequest, source);
+
+  const {data, isError, isLoading } = useTermData(source, noFilterRequest);
 
   const setShowDemographic = useDemographicStore((state) => state.setShowDemographic);
   const setDemographicTerm = useDemographicStore((state) => state.setDemographicTerm);
@@ -129,10 +126,10 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
 
   // Callback to parent component to indicate that the component has rendered
   React.useEffect(() => {
-    if (reportData && !isError) {
+    if (data && !isError) {
       onRender();
     }
-  }, [reportData, isError]);
+  }, [data, isError]);
 
   const [currentChartPage, setCurrentChartPage] = React.useState<number>(0);
   const itemsPerPage = 10;
@@ -141,29 +138,21 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
     setCurrentChartPage(pageNumber);
   };
 
-  if (!reportData || isError) {
+  if (!data || isError) {
     return null;
   }
 
-  // Calculate the total number of side effects
-  const totalSideEffectCount = reportData.reduce((acc, obj) => acc + obj.y, 0);
-
-  // Apex Chart data
-  const chartData = {
-    labels: reportData.map((obj) => obj.x),
-    series: [
-      {
-        name: 'Events',
-        data: reportData,
-      },
-    ],
-  };
-
   // Pagination items
-  const dataForCurrentPage = reportData.slice(currentChartPage * itemsPerPage, (currentChartPage + 1) * itemsPerPage);
-  const labelsForCurrentPage = dataForCurrentPage.map((obj) => obj.x);
+  const seriesForCurrentPage = data?.series.map((series) => ({
+    ...series,
+    data: series.data.slice(
+      currentChartPage * itemsPerPage,
+      (currentChartPage + 1) * itemsPerPage
+    ),
+  }));
+  const categoriesForCurrentPage = data?.categories.slice(currentChartPage * itemsPerPage, (currentChartPage + 1) * itemsPerPage);
 
-  const totalPageCount = Math.ceil(reportData.length / itemsPerPage);
+  const totalPageCount = Math.ceil(data.categories.length / itemsPerPage);
   const paginationItems = [];
   for (let number = 0; number < totalPageCount; number++) {
     paginationItems.push(
@@ -173,14 +162,15 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
     );
   }
 
-  const coloredDataForCurrentPage = dataForCurrentPage.map((obj) => ({
-    ...obj,
-    fillColor: getColorFromPercentage(valueToPercentage(obj.y, totalSideEffectCount)),
-  }));
 
   /* Apex Chart declarations */
-
   const chartOptions: ApexOptions = {
+    colors: [
+      function({ value }: { value: number}) {
+        const percentage = valueToPercentage(value, data.total_count);
+        return getColorFromPercentage(percentage);
+      },
+    ],
     theme: {
       mode: theme,
     },
@@ -188,7 +178,6 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       show: false,
     },
     chart: {
-      type: 'bar',
       width: '100%',
       toolbar: {
         show: false,
@@ -234,7 +223,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
     grid: {
       show: false,
     },
-    labels: labelsForCurrentPage,
+    labels: categoriesForCurrentPage,
     yaxis: {
       labels: {
         show: true,
@@ -257,30 +246,34 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       enabled: isContextMenuOpen ? false : true,
       y: {
         formatter: (value: number) => {
-          return `${value.toLocaleString()} from ${totalSideEffectCount.toLocaleString()}`;
+          return `${valueToPercentage(value, data.total_count).toPrecision(3)}% from ${data.total_count.toLocaleString()}`;
         },
       },
     },
     dataLabels: {
       enabled: true,
       // Converts the value to a percentage
+      // formatter: (value: number) => {
+      //   return `${((value / data.total_count) * 100).toPrecision(3)}%`;
+      // },
       formatter: (value: number) => {
-        return `${((value / totalSideEffectCount) * 100).toPrecision(3)}%`;
-      },
+        return `${value.toLocaleString()}`;
+      }
     },
   };
 
   /* Word Cloud declarations*/
-  const cloudData = reportData.map((item) => {
+  const cloudData = data.categories.map((category, index) => {
+    const value = data.series[0]?.data[index];
     return {
-      text: item.x,
-      value: item.y,
+      text: category.toUpperCase(),
+      value: value,
     };
   });
 
   const cloudCallbacks: CallbacksProp = {
     getWordColor: (word: { text: string; value: number }) => {
-      const maxFrequency = Math.max(...cloudData.map((w) => w.value));
+      const maxFrequency = Math.max(...cloudData.map((w) => w.value) as number[]);
       const frequencyRatio = word.value / maxFrequency;
 
       if (theme === 'dark') {
@@ -348,7 +341,7 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
       >
         <Row className={'mt-1'}>
           <Col className={'mb-3 text-center'}>
-            <span className={'text-secondary'}>{totalSideEffectCount.toLocaleString()} terms in total</span>
+            <span className={'text-secondary'}>{data.total_count.toLocaleString()} events collected for {data.categories.length} terms</span>
           </Col>
         </Row>
         <Nav variant="tabs" defaultActiveKey={carouselIndex} className={'mt-3 z-index-n-1'}>
@@ -378,13 +371,8 @@ const TermCarousel: React.FC<TermCarouselProps> = ({ noFilterRequest = false, on
           <div>
             <ReactApexChart
               options={chartOptions}
-              series={[
-                {
-                  ...chartData.series[0],
-                  data: coloredDataForCurrentPage,
-                },
-              ]}
-              type={chartOptions.chart?.type}
+              series={seriesForCurrentPage}
+              type={'bar'}
             />
             <Pagination size={'lg'} className={'d-flex justify-content-center'}>
               {paginationItems}

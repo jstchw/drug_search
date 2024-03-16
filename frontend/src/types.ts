@@ -136,6 +136,22 @@ export type DemographicDataType = {
   total: number;
 };
 
+export type DemographicRequestType = {
+  terms: { term: string; type: string }[];
+  searchMode: string;
+  sex?: string;
+  age?: { min: string; max: string };
+  country?: string;
+  view: string;
+  groupType: string;
+}
+
+export type DemographicResponseType = {
+  categories: string[];
+  series: ApexAxisChartSeries;
+  total_count: number;
+};
+
 export type BackendDataType = {
   data: number[] | ChartDataPoint[];
   total: number;

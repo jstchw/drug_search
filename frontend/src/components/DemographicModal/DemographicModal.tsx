@@ -5,7 +5,7 @@ import useDemographicStore from '../../stores/demographicStore';
 import React from 'react';
 import DonutChart from '../ApexChart/DonutChart';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { mapParamToLabel } from '../../utils/utils';
 import { searchTypes } from '../../constants';
 import { isMobile } from 'react-device-detect';
@@ -101,6 +101,7 @@ const DemographicModal = () => {
         <Modal.Title>{term}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <AnimatePresence>
         {hasFdaDistributionData && (
           <>
             <Row className={'mb-2 text-center'}>
@@ -210,6 +211,7 @@ const DemographicModal = () => {
             </Row>
           </motion.div>
         </motion.div>
+        </AnimatePresence>
       </Modal.Body>
     </Modal>
   );

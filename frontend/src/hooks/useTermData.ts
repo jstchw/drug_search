@@ -2,7 +2,7 @@ import { useUrlParams } from './useUrlParams';
 import { fetchData, getNewStyleTerms } from '../utils/utils';
 import { useQuery } from 'react-query';
 import { DemographicResponseType } from 'src/types';
-import { backendUrl } from '../constants';
+import { backendUrl, searchAgeRange } from '../constants';
 
 export const useTermData = (source: string, noFilterRequest = false) => {
   const { params } = useUrlParams();
@@ -13,13 +13,21 @@ export const useTermData = (source: string, noFilterRequest = false) => {
   const termsParam = `terms=${encodeURIComponent(JSON.stringify(termsWithTypes))}`;
   const searchModeParam = `search_mode=${encodeURIComponent(JSON.stringify(params.searchMode))}`;
   const sexParam = params.sex ? `&sex=${encodeURIComponent(JSON.stringify(params.sex))}` : '';
-  const ageParam = params.age ? `&age=${encodeURIComponent(JSON.stringify(params.age))}` : '';
   const viewParam = `&view=${encodeURIComponent(JSON.stringify('simple'))}`;
   const return_limit = `&return_limit=${encodeURIComponent(JSON.stringify(50))}`;
 
+  const ageParam = noFilterRequest
+    ? `&age=${encodeURIComponent(JSON.stringify({
+        min: searchAgeRange.min.value,
+        max: searchAgeRange.max.value,
+      }))}`
+    : params.age
+    ? `&age=${encodeURIComponent(JSON.stringify(params.age))}`
+    : '';
+
   let url: string;
   if (noFilterRequest) {
-    url = baseUrl + termsParam + '&' + searchModeParam + viewParam + return_limit + ageParam;
+    url = baseUrl + termsParam + '&' + searchModeParam + viewParam + ageParam + return_limit;
   } else {
     url = baseUrl + termsParam + '&' + searchModeParam + sexParam + ageParam + viewParam + return_limit;
   }

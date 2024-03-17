@@ -333,7 +333,7 @@ def get_fda_terms():
         'group_type': json.loads(request.args.get('group_type')) if request.args.get('group_type') else None,
         'return_limit': json.loads(request.args.get('return_limit')) if request.args.get('return_limit') else 10,
     }
-
+    
     try:
         results = asyncio.run(search_fda(params, limit = params['return_limit']))
     except Exception as e:

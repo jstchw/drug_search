@@ -8,7 +8,7 @@ const useDemographicData = (requestArgs: DemographicRequestType, source: string)
   const termsParam = `terms=${encodeURIComponent(JSON.stringify(requestArgs.terms))}`;
   const searchModeParam = `search_mode=${encodeURIComponent(JSON.stringify(requestArgs.searchMode))}`;
   const sexParam = requestArgs.sex ? `&sex=${encodeURIComponent(JSON.stringify(requestArgs.sex))}` : '';
-  const ageParam = `&age=${encodeURIComponent(JSON.stringify(requestArgs.age))}`;
+  const ageParam = requestArgs.age ? `&age=${encodeURIComponent(JSON.stringify(requestArgs.age))}` : '';
   const groupTypeParam = `&group_type=${encodeURIComponent(JSON.stringify(requestArgs.groupType))}`;
   const viewParam = `&view=${encodeURIComponent(JSON.stringify(requestArgs.view))}`;
 

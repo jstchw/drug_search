@@ -247,15 +247,15 @@ export const generateRequestArgs = (
 
   if (aggregateType === 'Age' && searchAgeGroups[currentPageKey]) {
     requestArgs.age = {
-      min: searchAgeGroups[currentPageKey]?.min.toString() ?? '',
-      max: searchAgeGroups[currentPageKey]?.max.toString() ?? '',
+      min: searchAgeGroups[currentPageKey]?.min.toString() ?? '0',
+      max: searchAgeGroups[currentPageKey]?.max.toString() ?? '120',
     };
   } else if (aggregateType === 'Sex') {
+    requestArgs.sex = currentPageKey.toLowerCase();
     requestArgs.age = {
       min: '0',
-      max: '120'
-    };
-    requestArgs.sex = currentPageKey.toLowerCase();
+      max: '120',
+    }
   }
 
   return requestArgs;

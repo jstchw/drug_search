@@ -294,7 +294,7 @@ export const drugGroupConfig: DrugGroupConfig = {
 
 export const backendUrl = `${window.location.protocol}//${window.location.hostname}:16000/api`;
 
-export const annotateFrontendUrl = `${window.location.protocol}//${window.location.hostname}:3001/`;
+export const annotateFrontendUrl = import.meta.env.DEV ? `${window.location.protocol}//${window.location.hostname}:3001/` : 'https://annotate.drugwatch.net/';
 
 export const baseFdaUrl = 'https://api.fda.gov/drug/event.json';
 

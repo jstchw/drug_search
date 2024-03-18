@@ -292,7 +292,7 @@ export const drugGroupConfig: DrugGroupConfig = {
   },
 };
 
-export const backendUrl = import.meta.env.DEV ? `${window.location.protocol}//${window.location.hostname}:16000/api` : 'https://searchapi.drugwatch.net/api';
+export const backendUrl = import.meta.env.DEV ? `${window.location.protocol}//${window.location.hostname}:16000/api` : 'https://search.api.drugwatch.net/api';
 
 export const annotateFrontendUrl = import.meta.env.DEV ? `${window.location.protocol}//${window.location.hostname}:3001/` : 'https://annotate.drugwatch.net/';
 

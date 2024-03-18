@@ -3,21 +3,36 @@ FROM node:21-slim as build
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+# Copy necessary files for installing dependencies
+COPY package.json yarn.lock .yarnrc.yml ./
 
+# Copy your yarn offline cache
+COPY .yarn/ .yarn/
+
+# Install dependencies
 RUN yarn install
 
+# Copy your app source code
 COPY src ./src
-COPY public ./public
 COPY tsconfig.json ./
+COPY vite.config.mts ./
+COPY index.html ./
+COPY .prettierignore .prettierrc ./
 
+# Build your app
 RUN yarn build
 
-# Serve stage
+# Runtime stage
 FROM nginx:alpine
 
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
 
-EXPOSE 80
+# Remove default nginx static assets
+RUN rm -rf ./*
 
-CMD ["nginx", "-g", "daemon off;"]
+# Copy static assets from builder stage
+COPY --from=build /app/dist .
+
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

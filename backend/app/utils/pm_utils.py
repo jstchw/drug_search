@@ -514,13 +514,6 @@ def get_advanced_demographic_breakdown(data: list[tuple], group_type: str, limit
     # Filter the series data to include only limited significant terms
     filtered_series_data = {term: counts for term, counts in series_data.items() if term in limited_significant_terms}
     
-    # Calculate the "Other" counts for each category
-    other_counts = defaultdict(int)
-    for term, category_counts in series_data.items():
-        if term not in limited_significant_terms:
-            for category, count in category_counts.items():
-                other_counts[category] += count
-    
     categories = list(set(cat for term_data in filtered_series_data.values() for cat in term_data.keys()))
     
     series = [

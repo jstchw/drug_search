@@ -46,15 +46,15 @@ const DemographicModal = () => {
     setHasFdaDistributionData(status);
   };
 
-  const [hasPmDistributionData, setHasPmDistributionData] = React.useState<boolean>(false);
-  const handlePmDistributionStatus = (status: boolean) => {
-    setHasPmDistributionData(status);
-  };
+  // const [hasPmDistributionData, setHasPmDistributionData] = React.useState<boolean>(false);
+  // const handlePmDistributionStatus = (status: boolean) => {
+  //   setHasPmDistributionData(status);
+  // };
 
-  const [hasPmDemographicData, setHasPmDemographicData] = React.useState<boolean>(false);
-  const handlePmDemographicStatusChange = (status: boolean) => {
-    setHasPmDemographicData(status);
-  };
+  // const [hasPmDemographicData, setHasPmDemographicData] = React.useState<boolean>(false);
+  // const handlePmDemographicStatusChange = (status: boolean) => {
+  //   setHasPmDemographicData(status);
+  // };
 
   // Aggregatation states
   const [aggregateType, setAggregateType] = React.useState<AggregateType>('Sex'); // default
@@ -130,7 +130,7 @@ const DemographicModal = () => {
                 {isPubmedDistribution && (
                   <motion.div variants={itemVariants}>
                     <Row className={'mt-4'}>
-                      <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={handlePmDistributionStatus} />
+                      <DonutChart source={'pm'} type={'age_group'} onDataStatusChange={() => {}} />
                     </Row>
                   </motion.div>
                 )}
@@ -142,7 +142,7 @@ const DemographicModal = () => {
                 {isPubmedDistribution && (
                   <motion.div variants={itemVariants}>
                     <Row className={'mt-4'}>
-                      <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={handlePmDistributionStatus} />
+                      <DonutChart source={'pm'} type={'patient_sex'} onDataStatusChange={() => {}} />
                     </Row>
                   </motion.div>
                 )}
@@ -206,7 +206,7 @@ const DemographicModal = () => {
                   aggregateType={aggregateType}
                   currentPageKey={currentPageKey}
                   onDataStatusChange={
-                    demographicDataSource === 'fda' ? handleFdaDemographicStatusChange : handlePmDemographicStatusChange
+                    demographicDataSource === 'fda' ? handleFdaDemographicStatusChange : () => {}
                   }
                   advancedView={isDemographicChartAdvanced}
                   source={demographicDataSource}

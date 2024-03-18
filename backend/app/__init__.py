@@ -1,14 +1,14 @@
 from flask import Flask
 import logging
 from flask_cors import CORS
-from config import DevelopmentConfig
+from config import Config
 from api.drug_routes import drug_api
 from services.data_manager import DataManager
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(DevelopmentConfig)
+    app.config.from_object(Config)
 
     # Disable request logging
     log = logging.getLogger('werkzeug')

@@ -10,6 +10,8 @@ import {
   Tooltip,
   Overlay,
   ButtonGroup,
+  Row,
+  Col
 } from 'react-bootstrap';
 import { Moon, Sun, Funnel, ClockCounterClockwise } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
@@ -18,6 +20,8 @@ import { SearchOptions, SearchOptionsType } from '../../types';
 import SearchHistory from '../SearchHistory/SearchHistory';
 import { Carousel } from 'react-responsive-carousel';
 import useGeneralOptionsStore from '../../stores/generalOptionsStore';
+import kclNLPLogo from '../../assets/kclnlplogo.png';
+import warwickNLPLogo from '../../assets/warwicknlplogo.png';
 
 const OptionModal = (props: {
   showOptionModal: boolean;
@@ -468,17 +472,24 @@ const OptionModal = (props: {
               </Nav.Link>
             </Nav.Item>
           </Nav>
-
-          <FigureCaption className={'d-flex justify-content-center mt-3'}>
-            <a
-              className={'text-decoration-none'}
-              href={'https://github.com/jstchw/drug_search'}
-              target={'_blank'}
-              rel="noreferrer"
-            >
-              {versionInfo.appName} {versionInfo.tag} {versionInfo.number}
-            </a>
-          </FigureCaption>
+          <Row>
+            <Col className={'d-flex justify-content-center align-items-center mt-2'}>
+              <FigureCaption>
+              <a
+                className={'text-decoration-none'}
+                href={'https://github.com/jstchw/drug_search'}
+                target={'_blank'}
+                rel="noreferrer"
+              >
+                {versionInfo.appName} {versionInfo.tag} {versionInfo.number}
+              </a>
+            </FigureCaption>
+          </Col>
+          <Col className={'d-flex justify-content-center align-items-center mt-2'}>
+            <img src={kclNLPLogo} alt={'logo'} width={'50em'} height={'auto'} className={'me-3'}/>
+            <img src={warwickNLPLogo} alt={'logo'} width={'50em'} height={'auto'} />
+          </Col>
+          </Row>
         </Modal.Body>
       </Modal>
     </>

@@ -475,20 +475,23 @@ const OptionModal = (props: {
           <Row>
             <Col className={'d-flex justify-content-center align-items-center mt-2'}>
               <FigureCaption>
-              <a
-                className={'text-decoration-none'}
-                href={'https://github.com/jstchw/drug_search'}
-                target={'_blank'}
-                rel="noreferrer"
-              >
-                {versionInfo.appName} {versionInfo.tag} {versionInfo.number}
-              </a>
-            </FigureCaption>
-          </Col>
-          <Col className={'d-flex justify-content-center align-items-center mt-2'}>
-            <img src={kclNLPLogo} alt={'logo'} width={'50em'} height={'auto'} className={'me-3'}/>
-            <img src={warwickNLPLogo} alt={'logo'} width={'50em'} height={'auto'} />
-          </Col>
+                <a
+                  className={'text-decoration-none'}
+                  href={'https://github.com/jstchw/drug_search'}
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
+                  {versionInfo.appName} {versionInfo.tag} {versionInfo.number}
+                </a>
+              </FigureCaption>
+            </Col>
+            <Col className={'d-flex justify-content-center align-items-center mt-2'}>
+              <img src={kclNLPLogo} alt={'logo'} width={'50em'} height={'auto'} className={'me-3'}/>
+              <img src={warwickNLPLogo} alt={'logo'} width={'50em'} height={'auto'} />
+            </Col>
+          </Row>
+          <Row>
+            <small className={'text-secondary text-small justify-content-center align-items-center d-flex mt-2'}>©2024 King’s College London and University of Warwick</small>
           </Row>
         </Modal.Body>
       </Modal>
